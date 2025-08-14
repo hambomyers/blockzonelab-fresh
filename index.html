@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlockZone Lab - Premium Crypto Edutainment</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="BlockZone Lab - Professional gaming tournaments with real USDC prizes and comprehensive blockchain education. FREE first game daily, $0.25 per game or $2.50 day pass until 11pm EST.">
+    <meta name="keywords" content="blockchain gaming, USDC prizes, crypto education, skill-based games, neon drop, tournaments, Sonic Labs">
+    
+    <!-- Your Perfected Navigation & Branding Styles -->
+    <link rel="stylesheet" href="shared/navigation-styles.css">
+    <link rel="stylesheet" href="shared/responsive-framework.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00ff41">
+    
+    <style>
+        /* Landing Page Specific Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Open Sans', sans-serif;
+        }
+        
+        .main-content {
+            padding-top: 60px; /* Account for fixed navbar */
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 4rem 0;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .cta-btn:hover {
+            background: var(--primary);
+            color: var(--bg-primary);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .cta-btn.primary {
+            background: var(--primary);
+            color: var(--bg-primary);
+        }
+        
+        .cta-btn.primary:hover {
+            background: transparent;
+            color: var(--primary);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+        
+        .feature-card {
+            background: rgba(26, 26, 46, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- YOUR PERFECTED NAVIGATION BAR -->
+    <div id="navigation-placeholder"></div>
+    
+    <!-- YOUR BEAUTIFUL HERO BRANDING -->
+    <div id="hero-placeholder"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Call to Action Section -->
+            <section class="cta-section">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary);">Ready to Play & Learn?</h2>
+                <p style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 2rem;">
+                    Start with a FREE game daily, then compete for real USDC prizes in our skill-based tournaments.
+                </p>
+                
+                <div class="cta-buttons">
+                    <a href="gaming/neondrop.html" class="cta-btn primary">
+                        🎮 Play NeonDrop - FREE Game
+                    </a>
+                    <a href="academy/" class="cta-btn">
+                        🎓 Start Learning - Academy
+                    </a>
+                </div>
+            </section>
+            
+            <!-- Features Grid -->
+            <section class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎮</div>
+                    <h3>Skill-Based Gaming</h3>
+                    <p>Play NeonDrop and compete for real USDC prizes. FREE first game daily, then $0.25 per game or $2.50 unlimited day pass.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3>Daily Leaderboards</h3>
+                    <p>Compete against players worldwide on our daily leaderboards. Rankings reset at 11pm EST with fresh opportunities to win.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎓</div>
+                    <h3>Blockchain Academy</h3>
+                    <p>Master blockchain technology with 48 interactive lessons, hands-on demos, and professional certifications.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3>Sonic Labs Integration</h3>
+                    <p>Built on Sonic Labs network with seamless wallet integration, Apple Pay support, and instant transactions.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Real USDC Prizes</h3>
+                    <p>Win actual cryptocurrency prizes in our tournaments. All payments processed securely through Sonic Labs blockchain.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Optimized</h3>
+                    <p>Perfect gaming and learning experience on any device. Responsive design that works flawlessly on phones and desktops.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <script>
+        // Load your perfected navigation template
+        fetch('shared/navigation-template.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('navigation-placeholder').innerHTML = html;
+                // Add the loaded class for animations
+                setTimeout(() => {
+                    document.getElementById('navbar').classList.add('loaded');
+                    // Set Home as active
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        if (link.href.endsWith('/') || link.href.includes('index')) {
+                            link.classList.add('active');
+                        }
+                    });
+                }, 100);
+            });
+        
+        // Load your beautiful hero branding template
+        fetch('shared/hero-branding-template.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('hero-placeholder').innerHTML = html;
+            });
+        
+        // Initialize identity system on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 BlockZone Lab Fresh - Loading...');
+            
+            // Load core systems
+            Promise.all([
+                import('./core/identity-system.js'),
+                import('./core/payment-system.js')
+            ]).then(() => {
+                console.log('✅ BlockZone Lab Fresh - Ready!');
+            }).catch(error => {
+                console.log('🔄 Core systems loading in background...');
+            });
+        });
+    </script>
+</body>
+</html>
