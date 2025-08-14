@@ -9,9 +9,6 @@
     <meta name="description" content="BlockZone Lab - Professional gaming tournaments with real USDC prizes and comprehensive blockchain education. FREE first game daily, $0.25 per game or $2.50 day pass until 11pm EST.">
     <meta name="keywords" content="blockchain gaming, USDC prizes, crypto education, skill-based games, neon drop, tournaments">
     
-    <!-- EXACT LEGACY STYLES -->
-    <link rel="stylesheet" href="assets/css/legacy-exact.css">
-    
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
     
@@ -22,13 +19,30 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     
     <style>
-        /* Landing Page Specific Styles */
-        body {
+        /* EXACT LEGACY STYLES - EMBEDDED TO AVOID PATH ISSUES */
+        :root {
+            --primary: #00ff41;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --neon-cyan: #00d4ff;
+            --neon-green: #00ff00;
+            --neon-red: #ff6b6b;
+            --neon-gold: #ffd700;
+        }
+
+        /* GLOBAL STYLES */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            font-family: 'Open Sans', sans-serif;
         }
         
         .main-content {

@@ -1,0 +1,16 @@
+{
+  "name": "BlockZone Lab",
+  "short_name": "BlockZone Lab",
+  "description": "Premium Crypto Edutainment - Gaming tournaments with real USDC prizes and blockchain education",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#00ff41",
+  "icons": [
+    {
+      "src": "public/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
