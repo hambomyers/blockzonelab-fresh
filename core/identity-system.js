@@ -99,28 +99,6 @@ class IdentitySystem {
             }
         }
         
-        // Try backend lookup (with timeout)
-        try {
-            const response = await Promise.race([
-                fetch('/api/player/lookup', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ deviceId: this.deviceFingerprint })
-                }),
-                new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Timeout')), 2000)
-                )
-            ]);
-            
-            if (response.ok) {
-                const player = await response.json();
-                this.savePlayerLocally(player);
-                return player;
-            }
-        } catch (error) {
-            console.log('🔄 Backend lookup failed, proceeding with local creation');
-        }
-        
         return null;
     }
     
@@ -243,40 +221,70 @@ class IdentitySystem {
             const response = await fetch('/api/player/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(player)
+                body: JSON.stringify({
+                    deviceId: player.deviceId,
+                    name: player.name,
+                    createdAt: player.createdAt,
+                    stats: player.stats,
+                    payment: player.payment
+                })
             });
             
             if (response.ok) {
-                console.log('✅ Player registered with backend');
+                const result = await response.json();
+                console.log('✅ Player registered with backend:', result.message);
+                
+                // Update local player with any backend data
+                if (result.player) {
+                    this.player = result.player;
+                    this.savePlayerLocally(result.player);
+                }
             }
         } catch (error) {
             console.log('🔄 Background registration failed, continuing offline');
         }
     }
     
-    canPlayGame() {
-        if (!this.player) return false;
+    async canPlayGame() {
+        if (!this.player) return { canPlay: false, reason: 'no_player' };
         
-        // Check day pass
+        try {
+            // Check with backend for real-time status
+            const response = await fetch('/api/player/status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ playerId: this.player.id })
+            });
+            
+            if (response.ok) {
+                const status = await response.json();
+                return {
+                    canPlay: status.canPlay,
+                    reason: status.reason,
+                    access: status.access,
+                    options: {
+                        perGame: this.onboardingConfig.gamePrice,
+                        dayPass: this.onboardingConfig.dayPassPrice
+                    }
+                };
+            }
+        } catch (error) {
+            console.log('🔄 Backend status check failed, using local fallback');
+        }
+        
+        // Local fallback
         if (this.player.payment.hasDayPass) {
             const now = new Date();
             const expiry = new Date(this.player.payment.dayPassExpiry);
             if (now < expiry) {
                 return { canPlay: true, reason: 'day_pass' };
-            } else {
-                // Day pass expired
-                this.player.payment.hasDayPass = false;
-                this.player.payment.dayPassExpiry = null;
-                this.savePlayerLocally(this.player);
             }
         }
         
-        // Check free games
         if (this.player.payment.freeGamesUsed < this.onboardingConfig.freeGamesDaily) {
             return { canPlay: true, reason: 'free_game' };
         }
         
-        // Need payment
         return { 
             canPlay: false, 
             reason: 'payment_required',

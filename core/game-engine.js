@@ -111,8 +111,47 @@ class NeonDropEngine {
         }
     }
     
-    startGame() {
+    async startGame() {
         console.log('🚀 Starting NeonDrop with your proven mechanics');
+        
+        // Check game access with backend
+        const access = await identitySystem.canPlayGame();
+        if (!access.canPlay) {
+            console.log('❌ Game access denied:', access.reason);
+            this.showPaymentRequired(access);
+            return false;
+        }
+        
+        // Start game session with backend
+        try {
+            const response = await fetch('/api/game/start', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    playerId: identitySystem.getPlayer().id,
+                    gameType: 'neon_drop'
+                })
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                this.sessionId = result.sessionId;
+                this.gameSeed = result.gameSession.seed;
+                console.log('✅ Game session started:', result.message);
+            } else {
+                const error = await response.json();
+                if (response.status === 402) {
+                    this.showPaymentRequired(error);
+                    return false;
+                }
+                throw new Error(error.error);
+            }
+        } catch (error) {
+            console.warn('⚠️ Backend game start failed, continuing offline:', error);
+            this.sessionId = `offline_${Date.now()}`;
+            this.gameSeed = Math.floor(Math.random() * 1000000);
+        }
+        
         this.state.phase = 'COUNTDOWN';
         this.state.score = 0;
         this.state.level = 1;
@@ -123,6 +162,7 @@ class NeonDropEngine {
         
         // Your countdown system
         this.startCountdown();
+        return true;
     }
     
     startCountdown() {
@@ -429,17 +469,76 @@ class NeonDropEngine {
         }
     }
     
-    gameOver() {
+    async gameOver() {
         this.state.phase = 'GAME_OVER';
         console.log('🎯 Game Over - Final Score:', this.state.score);
+        
+        // Submit score to backend
+        await this.submitScore();
         
         // Trigger your game over overlay
         this.showGameOverScreen();
     }
     
+    async submitScore() {
+        if (!this.sessionId) {
+            console.log('⚠️ No session ID, skipping score submission');
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/game/complete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sessionId: this.sessionId,
+                    score: this.state.score,
+                    lines: this.state.lines,
+                    time: this.state.time,
+                    playerName: identitySystem.getPlayer()?.name
+                })
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log('✅ Score submitted successfully');
+                console.log(`🏆 You ranked #${result.playerRank} today!`);
+                
+                // Store leaderboard data for game over screen
+                this.gameResults = {
+                    rank: result.playerRank,
+                    leaderboard: result.leaderboard,
+                    playerStats: result.playerStats,
+                    message: result.message
+                };
+                
+                // Update local player stats
+                identitySystem.updateGameStats(this.state.score, this.state.lines, this.state.time);
+                
+            } else {
+                console.warn('⚠️ Score submission failed');
+            }
+        } catch (error) {
+            console.warn('⚠️ Score submission error:', error);
+        }
+    }
+    
     showGameOverScreen() {
         // This will integrate with your beautiful game-over overlay
         console.log('🎮 Showing game over screen with your proven UI');
+        
+        // Display results if available
+        if (this.gameResults) {
+            console.log('🏆 Game Results:', this.gameResults);
+        }
+    }
+    
+    showPaymentRequired(accessInfo) {
+        console.log('💳 Payment required:', accessInfo);
+        // This will trigger your payment modal
+        if (window.paymentSystem) {
+            paymentSystem.showPaymentModal();
+        }
     }
 }
 
