@@ -1,0 +1,254 @@
+/* Lesson 2: Bitcoin & Austrian Economics - Custom Styles */
+
+/* Bitcoin-specific color scheme */
+.lesson-2 {
+    --bitcoin-orange: #f7931a;
+    --bitcoin-gold: #ffd700;
+    --austrian-blue: #2c3e50;
+    --economics-green: #27ae60;
+    --warning-red: #e74c3c;
+}
+
+/* Bitcoin-themed headers */
+.lesson-2 .lesson-header {
+    background: linear-gradient(135deg, var(--bitcoin-orange), var(--bitcoin-gold));
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 32px rgba(247, 147, 26, 0.3);
+}
+
+.lesson-2 .lesson-header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.lesson-2 .lesson-header .subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-top: 0.5rem;
+}
+
+/* Austrian economics section styling */
+.lesson-2 .austrian-section {
+    border-left: 4px solid var(--austrian-blue);
+    padding-left: 1.5rem;
+    margin: 2rem 0;
+    background: linear-gradient(90deg, rgba(44, 62, 80, 0.05), transparent);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+}
+
+.lesson-2 .austrian-section h3 {
+    color: var(--austrian-blue);
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+}
+
+/* Bitcoin concept highlights */
+.lesson-2 .bitcoin-concept {
+    background: linear-gradient(135deg, rgba(247, 147, 26, 0.1), rgba(255, 215, 0, 0.1));
+    border: 2px solid var(--bitcoin-orange);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.lesson-2 .bitcoin-concept::before {
+    content: "₿";
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 4rem;
+    opacity: 0.1;
+    color: var(--bitcoin-orange);
+    font-weight: bold;
+}
+
+.lesson-2 .bitcoin-concept h4 {
+    color: var(--bitcoin-orange);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+/* Economic insights styling */
+.lesson-2 .economic-insight {
+    background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), rgba(46, 204, 113, 0.1));
+    border: 2px solid var(--economics-green);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    position: relative;
+}
+
+.lesson-2 .economic-insight::before {
+    content: "💡";
+    position: absolute;
+    top: -15px;
+    left: 20px;
+    font-size: 2rem;
+    background: white;
+    padding: 5px;
+    border-radius: 50%;
+    border: 2px solid var(--economics-green);
+}
+
+.lesson-2 .economic-insight h4 {
+    color: var(--economics-green);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+/* Historical examples styling */
+.lesson-2 .historical-example {
+    background: linear-gradient(135deg, rgba(52, 73, 94, 0.1), rgba(44, 62, 80, 0.1));
+    border: 2px solid var(--austrian-blue);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    position: relative;
+}
+
+.lesson-2 .historical-example::before {
+    content: "📚";
+    position: absolute;
+    top: -15px;
+    left: 20px;
+    font-size: 2rem;
+    background: white;
+    padding: 5px;
+    border-radius: 50%;
+    border: 2px solid var(--austrian-blue);
+}
+
+.lesson-2 .historical-example h4 {
+    color: var(--austrian-blue);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+/* Interactive demo containers */
+.lesson-2 .demo-container {
+    background: white;
+    border: 2px solid var(--bitcoin-orange);
+    border-radius: 16px;
+    padding: 2rem;
+    margin: 2rem 0;
+    box-shadow: 0 8px 32px rgba(247, 147, 26, 0.15);
+}
+
+.lesson-2 .demo-container h3 {
+    color: var(--bitcoin-orange);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+/* Quiz section styling */
+.lesson-2 .quiz-section {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.05), rgba(192, 57, 43, 0.05));
+    border: 2px solid var(--warning-red);
+    border-radius: 16px;
+    padding: 2rem;
+    margin: 2rem 0;
+}
+
+.lesson-2 .quiz-section h3 {
+    color: var(--warning-red);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+/* Key concepts grid */
+.lesson-2 .key-concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.lesson-2 .key-concept-card {
+    background: white;
+    border: 2px solid var(--bitcoin-orange);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.lesson-2 .key-concept-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(247, 147, 26, 0.2);
+}
+
+.lesson-2 .key-concept-card h4 {
+    color: var(--bitcoin-orange);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.lesson-2 .key-concept-card p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Progress indicators */
+.lesson-2 .progress-indicator {
+    background: rgba(247, 147, 26, 0.1);
+    border-radius: 25px;
+    height: 8px;
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+.lesson-2 .progress-bar {
+    background: linear-gradient(90deg, var(--bitcoin-orange), var(--bitcoin-gold));
+    height: 100%;
+    border-radius: 25px;
+    transition: width 0.5s ease;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .lesson-2 .lesson-header h1 {
+        font-size: 2rem;
+    }
+    
+    .lesson-2 .key-concepts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .lesson-2 .demo-container {
+        padding: 1.5rem;
+    }
+}
+
+/* Animation classes */
+.lesson-2 .fade-in {
+    animation: fadeIn 0.8s ease-in;
+}
+
+.lesson-2 .slide-up {
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+} 

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlockZone Lab Smart Contracts</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../../public/favicon.svg">
+    
+    <!-- Professional Design System CSS -->
+    <link rel="stylesheet" href="../../assets/css/design-system.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="../../manifest.json">
+    <meta name="theme-color" content="#00ff41">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <style>
+        /* CRITICAL RENDERING PATH - Minimal styles for instant visual feedback */
+        :root {
+            --primary: #00ff41;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+        }
+        
+        /* CRITICAL NAVIGATION */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .navbar.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .navbar-container {
+            width: 100%;
+            margin: 0;
+            padding: 0 2rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 32px; /* Much thinner */
+        }
+        
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            transform: translateY(-10px); /* Move links up 2 more pixels */
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 0.9rem; /* Keep original size */
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+        
+        /* CRITICAL HERO SECTION */
+        .hero-section {
+            min-height: auto;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem 1rem;
+            padding-top: 0; /* BlockZone Lab blocks touching the navbar */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #0a0a0a !important;
+        }
+        
+        /* OVERRIDE THE GREEN GLOW FROM DESIGN SYSTEM */
+        .hero-section::before {
+            display: none !important;
+        }
+        
+        /* Large Hero Brand - EXACT same styling, 3x bigger */
+        .hero-brand {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3px; /* 3px gap between blocks */
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 100vw;
+            overflow: visible;
+        }
+        
+        .hero-brand-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px; /* 3x bigger (was 20px) */
+            height: 60px; /* 3x bigger (was 20px) */
+            border-radius: 3px;
+            font-size: 78px; /* Slightly smaller than 84px */
+            font-weight: bold;
+            color: #000;
+            background: #00ff41;
+            border: 2px solid #ff4444;
+            box-shadow: none;
+            transition: all 0.3s ease;
+            font-family: 'Minion Pro', 'Minion Pro Bold', 'Times New Roman', serif;
+        }
+        
+        .hero-brand-letter:nth-child(6) {
+            /* The "Z" - make it look like the favicon */
+            background: #FFFF00;
+            border: 2px solid #ff4444;
+            color: #ff4444;
+            box-shadow: none;
+            font-size: 84px; /* Larger font for the Z */
+        }
+        
+        .hero-brand-letter:nth-child(10) {
+            /* The space - make it green like the others */
+            background: #00ff41;
+            border: 2px solid #ff4444;
+            box-shadow: none;
+            width: 60px; /* Same size as letter blocks */
+        }
+        
+        /* Removed hover effect to keep backlight static */
+        
+        .hero-section.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-shadow: none;
+        }
+        
+
+        
+        /* Responsive adjustment for smaller screens */
+        @media (max-width: 900px) {
+            .hero-subtitle {
+                width: 100%;
+                padding: 0 2rem;
+            }
+        }
+        
+        /* Removed hover effect to keep backlight static */
+        
+        .hero-subtitle span {
+            font-size: clamp(2.4rem, 8vw, 3.6rem);
+            color: #0a0a0a;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero-brand {
+                gap: 2px; /* 2px gap on mobile */
+                margin-bottom: 1.5rem;
+            }
+            
+            .hero-brand-letter {
+                width: 40px; /* Smaller on mobile but still large */
+                height: 40px;
+                font-size: 48px; /* Proportional increase for mobile */
+                border-radius: 3px;
+                border-width: 1px;
+            }
+            
+            .hero-brand-letter:nth-child(10) {
+                width: 40px; /* Same size as letter blocks on mobile */
+            }
+            
+            .hero-section {
+                padding-top: 80px; /* Normal padding on mobile */
+            }
+        }
+        
+        .contracts-hero {
+            background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border: 2px solid #00ff41;
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin: 80px 0 40px 0;
+        }
+        
+        .contracts-hero h1 {
+            color: #00ff41;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #00ff41;
+        }
+        
+        .contracts-hero .subtitle {
+            color: #00d4ff;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+        
+        .contracts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .contract-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .contract-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+        
+        .contract-card h3 {
+            color: #00d4ff;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .contract-card .icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .contract-card .description {
+            color: #cccccc;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .contract-card .features {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        .contract-card .features li {
+            color: #cccccc;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .contract-card .features li:before {
+            content: "✓";
+            color: #00ff41;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        .contract-card .btn {
+            display: inline-block;
+            background: #00ff41;
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .contract-card .btn:hover {
+            background: #00cc33;
+            transform: translateY(-2px);
+        }
+        
+        .audit-badge {
+            display: inline-block;
+            background: #00ff41;
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body class="contracts-page">
+    <!-- Professional Starfield Background -->
+    <div class="starfield">
+        <div class="stars"></div>
+    </div>
+
+    <!-- Navigation - Fixed and Optimized -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <ul class="navbar-nav">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/games/" class="nav-link">Games</a></li>
+                <li><a href="/academy/" class="nav-link">Academy</a></li>
+                <li><a href="/pages/business-model.html" class="nav-link">Business</a></li>
+                <li><a href="/pages/whitepaper.html" class="nav-link">Whitepaper</a></li>
+                <li><a href="/pages/user-profile.html" class="nav-link">Support</a></li>
+                <li><a href="/pages/user-profile.html" class="nav-link">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Critical Content First -->
+    <section class="hero-section" id="heroSection">
+        <div class="hero-content">
+            <!-- Large Hero Brand -->
+            <div class="hero-brand">
+                <span class="hero-brand-letter">B</span>
+                <span class="hero-brand-letter">l</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">c</span>
+                <span class="hero-brand-letter">k</span>
+                <span class="hero-brand-letter">Z</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">n</span>
+                <span class="hero-brand-letter">e</span>
+                <span class="hero-brand-letter"> </span>
+                <span class="hero-brand-letter">L</span>
+                <span class="hero-brand-letter">a</span>
+                <span class="hero-brand-letter">b</span>
+            </div>
+            <div class="hero-subtitle" data-text="CONTRACTS">
+                <span>CONTRACTS</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="contracts-hero">
+                <h1>BlockZone Lab Smart Contracts</h1>
+                <div class="subtitle">OpenZeppelin Audited & Sonic Labs Optimized</div>
+                <p style="color: #cccccc; font-size: 1.2rem; max-width: 800px; margin: 0 auto;">
+                    Our smart contracts power the entire BlockZone Lab ecosystem, ensuring secure, transparent, 
+                    and fair gaming operations. Built with industry best practices and audited for security.
+                </p>
+            </section>
+
+            <!-- Contracts Overview -->
+            <section class="section">
+                <h2>🔒 Smart Contract Architecture</h2>
+                <p>Our contract system is designed for security, scalability, and transparency. Each contract serves a specific purpose in the BlockZone Lab ecosystem.</p>
+                
+                <div class="contracts-grid">
+                    <div class="contract-card">
+                        <div class="icon">🎮</div>
+                        <h3>BlockzoneGame <span class="audit-badge">AUDITED</span></h3>
+                        <div class="description">
+                            The main gaming contract that coordinates daily leaderboards and challenges. Handles game entry, score submissions, and challenge creation.
+                        </div>
+                        <ul class="features">
+                            <li>Game entry management</li>
+                            <li>Score submission handling</li>
+                            <li>Challenge coordination</li>
+                            <li>Event emission</li>
+                            <li>Platform fee management</li>
+                        </ul>
+                        <a href="blockzone-game.html" class="btn">View Contract</a>
+                    </div>
+                    
+                    <div class="contract-card">
+                        <div class="icon">🏆</div>
+                        <h3>DailyLeaderboard <span class="audit-badge">AUDITED</span></h3>
+                        <div class="description">
+                            Manages daily tournaments, prize pools, and player statistics. Handles free game allocation and unlimited pass purchases.
+                        </div>
+                        <ul class="features">
+                            <li>Daily tournament management</li>
+                            <li>Prize pool distribution</li>
+                            <li>Free game allocation</li>
+                            <li>Unlimited pass system</li>
+                            <li>Player statistics tracking</li>
+                        </ul>
+                        <a href="daily-leaderboard.html" class="btn">View Contract</a>
+                    </div>
+                    
+                    <div class="contract-card">
+                        <div class="icon">⚔️</div>
+                        <h3>ChallengeManager <span class="audit-badge">AUDITED</span></h3>
+                        <div class="description">
+                            Handles head-to-head challenges between players. Manages challenge creation, acceptance, and prize distribution.
+                        </div>
+                        <ul class="features">
+                            <li>Challenge creation</li>
+                            <li>Head-to-head competitions</li>
+                            <li>Prize distribution</li>
+                            <li>Challenge validation</li>
+                            <li>Multi-tier challenge system</li>
+                        </ul>
+                        <a href="challenge-manager.html" class="btn">View Contract</a>
+                    </div>
+                    
+                    <div class="contract-card">
+                        <div class="icon">💳</div>
+                        <h3>PaymentProcessor <span class="audit-badge">AUDITED</span></h3>
+                        <div class="description">
+                            Processes USDC.E payments and manages platform fees. Handles payment validation and distribution.
+                        </div>
+                        <ul class="features">
+                            <li>USDC.E payment processing</li>
+                            <li>Platform fee management</li>
+                            <li>Payment validation</li>
+                            <li>Secure fund distribution</li>
+                            <li>Transaction logging</li>
+                        </ul>
+                        <a href="payment-processor.html" class="btn">View Contract</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security & Auditing -->
+            <section class="section">
+                <h2>🛡️ Security & Auditing</h2>
+                <p>Our smart contracts undergo rigorous security audits and follow industry best practices.</p>
+                
+                <div class="business-section">
+                    <h3>🔍 OpenZeppelin Audited</h3>
+                    <p>All contracts have been audited by OpenZeppelin, the industry standard for smart contract security. Our contracts follow established patterns and best practices.</p>
+                    
+                    <h3>🔒 Security Features</h3>
+                    <ul>
+                        <li><strong>Reentrancy Protection:</strong> All external calls are protected against reentrancy attacks</li>
+                        <li><strong>Access Control:</strong> Proper role-based access control for administrative functions</li>
+                        <li><strong>Input Validation:</strong> Comprehensive validation of all user inputs</li>
+                        <li><strong>Emergency Pause:</strong> Ability to pause operations in emergency situations</li>
+                        <li><strong>Upgradeable Design:</strong> Contracts designed for future upgrades and improvements</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Contract Interactions -->
+            <section class="section">
+                <h2>🔗 Contract Interactions</h2>
+                <p>Our contracts work together to create a seamless gaming experience:</p>
+                
+                <div class="ascii-diagram" style="background: #000; color: #00ff41; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4; margin: 20px 0;">
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                           BLOCKZONE LAB CONTRACT INTERACTIONS                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   PLAYER    │───►│ BLOCKZONE   │───►│   DAILY     │───►│ PAYMENT     │
+│   ACTION    │    │   GAME      │    │ LEADERBOARD │    │ PROCESSOR   │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+       │                   │                   │                   │
+       │                   │                   │                   │
+       ▼                   ▼                   ▼                   ▼
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│  CHALLENGE  │    │  SCORE      │    │  PRIZE      │    │  USDC.E     │
+│  MANAGER    │    │ SUBMISSION  │    │ DISTRIBUTION│    │  TRANSFER   │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+
+<span style="color: #ffff00;">🎯 FLOW:</span>
+1. Player interacts with BlockzoneGame
+2. BlockzoneGame coordinates with DailyLeaderboard
+3. DailyLeaderboard manages tournaments and prizes
+4. PaymentProcessor handles USDC.E transfers
+5. ChallengeManager handles head-to-head competitions
+                </div>
+            </section>
+
+            <!-- Deployment Info -->
+            <section class="section">
+                <h2>🚀 Deployment Information</h2>
+                <p>Our contracts are deployed on the Sonic Labs blockchain for optimal performance and cost efficiency.</p>
+                
+                <div class="business-section">
+                    <h3>📍 Network: Sonic Labs</h3>
+                    <ul>
+                        <li><strong>Chain ID:</strong> Sonic Labs Mainnet</li>
+                        <li><strong>Block Explorer:</strong> Sonic Labs Explorer</li>
+                        <li><strong>Gas Optimization:</strong> Optimized for Sonic Labs</li>
+                        <li><strong>USDC.E Token:</strong> Native Sonic Labs USDC.E</li>
+                    </ul>
+                    
+                    <h3>📋 Contract Addresses</h3>
+                    <p><em>Contract addresses will be published after deployment on Sonic Labs mainnet.</em></p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span>✧</span> BlockZone Lab
+                </div>
+                <div class="footer-links">
+                    <a href="/">Home</a>
+                    <a href="/games/">Games</a>
+                    <a href="/academy/">Academy</a>
+                    <a href="/pages/whitepaper.html">Whitepaper</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 BlockZone Lab. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script type="module" src="../../shared/core/event-bus.js"></script>
+    <script>
+        // Navbar animation
+        const navbar = document.getElementById('navbar');
+        setTimeout(() => navbar.classList.add('loaded'), 100);
+        
+        // Hero section animation
+        const heroSection = document.getElementById('heroSection');
+        setTimeout(() => heroSection.classList.add('loaded'), 300);
+    </script>
+</body>
+</html> 

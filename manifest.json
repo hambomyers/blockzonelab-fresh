@@ -1,16 +1,79 @@
 {
-  "name": "BlockZone Lab",
+  "name": "BlockZone Lab - Premium Crypto Edutainment",
   "short_name": "BlockZone Lab",
-  "description": "Premium Crypto Edutainment - Gaming tournaments with real USDC prizes and blockchain education",
+  "description": "Premium Web3 gaming platform with daily tournaments and crypto education",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0a0a",
-  "theme_color": "#00ff41",
+  "orientation": "natural",
+  "theme_color": "#d4af37",
+  "background_color": "#1a1d29",
+  "scope": "/",
+  "lang": "en-US",
+  "dir": "ltr",
+  
+  "categories": ["games", "education", "finance"],
   "icons": [
     {
-      "src": "public/favicon.svg",
+      "src": "/assets/icons/icon-512.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icons/icon-512.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-512.svg",
+      "sizes": "32x32",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Play Neon Drop",
+      "short_name": "Neon Drop",
+      "description": "Jump into the arcade action",
+      "url": "/games/neondrop/"
+    },
+    {
+      "name": "Tournament Leaderboard", 
+      "short_name": "Leaderboard",
+      "description": "Check daily rankings",
+      "url": "/games/?view=leaderboard"
+    },
+    {
+      "name": "Crypto Academy",
+      "short_name": "Academy", 
+      "description": "Learn blockchain fundamentals",
+      "url": "/academy/"
+    }
+  ],
+  
+  "related_applications": [],
+  "prefer_related_applications": false,
+  
+  "share_target": {
+    "action": "/games/",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text", 
+      "url": "url"
+    }
+  },
+  
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
 }

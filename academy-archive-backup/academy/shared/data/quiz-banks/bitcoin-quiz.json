@@ -1,0 +1,427 @@
+{
+  "id": "bitcoin-fundamentals-quiz",
+  "title": "Bitcoin & Austrian Economics Fundamentals",
+  "description": "Test your knowledge of Bitcoin, blockchain technology, and Austrian economic principles",
+  "category": "cryptocurrency",
+  "difficulty": "intermediate",
+  "timeLimit": 1800,
+  "passingThreshold": 70,
+  "questions": [
+    {
+      "id": "q1",
+      "type": "multiple-choice",
+      "text": "What is the primary innovation that Bitcoin introduced to digital payments?",
+      "options": [
+        "Digital signatures",
+        "Decentralized consensus without trusted third parties",
+        "Blockchain technology",
+        "Cryptographic hashing"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Bitcoin's key innovation is achieving decentralized consensus without requiring trusted third parties. While digital signatures, blockchain, and hashing existed before, Bitcoin combined them to create a trustless payment system.",
+      "difficulty": "medium",
+      "category": "bitcoin-fundamentals"
+    },
+    {
+      "id": "q2",
+      "type": "true-false",
+      "text": "According to Austrian economics, inflation is always and everywhere a monetary phenomenon.",
+      "correctAnswer": true,
+      "explanation": "This is Milton Friedman's famous quote, which aligns with Austrian economic principles. Inflation occurs when the money supply increases faster than the production of goods and services.",
+      "difficulty": "medium",
+      "category": "austrian-economics"
+    },
+    {
+      "id": "q3",
+      "type": "multiple-choice",
+      "text": "What economic principle does Bitcoin embody that traditional fiat currencies violate?",
+      "options": [
+        "Government control of money supply",
+        "Central bank monetary policy",
+        "Sound money principles",
+        "Fractional reserve banking"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Bitcoin embodies sound money principles by having a fixed, predictable supply that cannot be inflated by any central authority, unlike fiat currencies that can be printed at will.",
+      "difficulty": "hard",
+      "category": "economics"
+    },
+    {
+      "id": "q4",
+      "type": "multiple-choice",
+      "text": "What is the maximum total supply of Bitcoin that will ever exist?",
+      "options": [
+        "21 million",
+        "100 million",
+        "1 billion",
+        "Unlimited"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Bitcoin has a hard-coded maximum supply of 21 million coins. This scarcity is fundamental to Bitcoin's value proposition and sound money characteristics.",
+      "difficulty": "easy",
+      "category": "bitcoin-fundamentals"
+    },
+    {
+      "id": "q5",
+      "type": "multiple-select",
+      "maxSelections": 3,
+      "text": "Which of the following are key principles of Austrian economics?",
+      "options": [
+        "Subjective value theory",
+        "Methodological individualism",
+        "Central planning efficiency",
+        "Spontaneous order",
+        "Government intervention",
+        "Market process theory"
+      ],
+      "correctAnswer": [0, 1, 3, 5],
+      "explanation": "Austrian economics emphasizes subjective value, methodological individualism, spontaneous order, and market process theory. Central planning and government intervention are not Austrian principles.",
+      "difficulty": "hard",
+      "category": "austrian-economics"
+    },
+    {
+      "id": "q6",
+      "type": "multiple-choice",
+      "text": "What cryptographic function does Bitcoin use to create its proof-of-work consensus mechanism?",
+      "options": [
+        "RSA encryption",
+        "SHA-256 hashing",
+        "AES encryption",
+        "Elliptic curve cryptography"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Bitcoin uses SHA-256 (Secure Hash Algorithm 256-bit) for its proof-of-work consensus mechanism. Miners must find a hash below a certain target to create new blocks.",
+      "difficulty": "medium",
+      "category": "cryptography"
+    },
+    {
+      "id": "q7",
+      "type": "true-false",
+      "text": "Thomas Sowell argued that the minimum wage laws primarily benefit low-skilled workers by increasing their wages.",
+      "correctAnswer": false,
+      "explanation": "Sowell argued that minimum wage laws actually harm low-skilled workers by pricing them out of the job market, as employers are less likely to hire workers whose productivity doesn't justify the mandated wage.",
+      "difficulty": "hard",
+      "category": "austrian-economics"
+    },
+    {
+      "id": "q8",
+      "type": "multiple-choice",
+      "text": "What economic concept describes the tendency of bad money to drive out good money from circulation?",
+      "options": [
+        "Gresham's Law",
+        "Say's Law",
+        "The Law of Diminishing Returns",
+        "The Law of Supply and Demand"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Gresham's Law states that when two forms of money exist, people will hoard the more valuable form and spend the less valuable one, driving the good money out of circulation.",
+      "difficulty": "medium",
+      "category": "economics"
+    },
+    {
+      "id": "q9",
+      "type": "multiple-choice",
+      "text": "What is the primary purpose of the Bitcoin halving event that occurs every 210,000 blocks?",
+      "options": [
+        "To increase transaction fees",
+        "To reduce the rate of new Bitcoin creation",
+        "To increase block size",
+        "To change the consensus algorithm"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The halving reduces the block reward by 50%, slowing down the rate at which new Bitcoin enters circulation. This creates a predictable, deflationary monetary policy.",
+      "difficulty": "medium",
+      "category": "bitcoin-fundamentals"
+    },
+    {
+      "id": "q10",
+      "type": "essay",
+      "text": "Explain how Bitcoin's fixed supply addresses the economic problem of inflation that plagues fiat currencies.",
+      "wordLimit": 150,
+      "minWords": 50,
+      "explanation": "Bitcoin's fixed supply prevents central authorities from printing money, eliminating the primary cause of inflation. This creates predictable scarcity and preserves purchasing power over time.",
+      "difficulty": "hard",
+      "category": "economics"
+    },
+    {
+      "id": "q11",
+      "type": "multiple-choice",
+      "text": "What economic principle does George Gilder emphasize regarding information and wealth creation?",
+      "options": [
+        "Information is a scarce resource",
+        "Information is infinite and non-rivalrous",
+        "Information should be controlled by government",
+        "Information has no economic value"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Gilder argues that information is infinite and non-rivalrous - it can be shared without being diminished, making it fundamentally different from physical resources and a key driver of wealth creation.",
+      "difficulty": "hard",
+      "category": "austrian-economics"
+    },
+    {
+      "id": "q12",
+      "type": "multiple-choice",
+      "text": "What is the primary function of a Merkle tree in Bitcoin's blockchain?",
+      "options": [
+        "To encrypt transaction data",
+        "To provide efficient transaction verification",
+        "To increase block size",
+        "To reduce mining difficulty"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Merkle trees allow efficient verification of transactions without downloading the entire blockchain. They enable lightweight clients to verify that a transaction is included in a block.",
+      "difficulty": "medium",
+      "category": "cryptography"
+    },
+    {
+      "id": "q13",
+      "type": "true-false",
+      "text": "Bitcoin's proof-of-work consensus mechanism ensures that the longest chain is always the valid one.",
+      "correctAnswer": true,
+      "explanation": "In Bitcoin, the longest chain with the most cumulative proof-of-work is considered the valid chain. This prevents double-spending and ensures network consensus.",
+      "difficulty": "medium",
+      "category": "bitcoin-fundamentals"
+    },
+    {
+      "id": "q14",
+      "type": "multiple-choice",
+      "text": "What economic concept describes the unintended consequences of government intervention in markets?",
+      "options": [
+        "Market efficiency",
+        "The Law of Unintended Consequences",
+        "Spontaneous order",
+        "Economic calculation"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The Law of Unintended Consequences describes how government interventions often create problems they were meant to solve, a key insight of Austrian economics.",
+      "difficulty": "medium",
+      "category": "austrian-economics"
+    },
+    {
+      "id": "q15",
+      "type": "multiple-select",
+      "maxSelections": 2,
+      "text": "Which of the following are characteristics of sound money?",
+      "options": [
+        "Easily divisible",
+        "Government controlled",
+        "Scarce and limited supply",
+        "Subject to inflation",
+        "Durable and portable",
+        "Requires trust in central authority"
+      ],
+      "correctAnswer": [0, 2, 4],
+      "explanation": "Sound money is easily divisible, scarce with limited supply, and durable/portable. Government control, inflation, and requiring trust in central authority are characteristics of unsound money.",
+      "difficulty": "medium",
+      "category": "economics"
+    },
+    {
+      "id": "q16",
+      "type": "multiple-choice",
+      "text": "What is the primary purpose of Bitcoin's difficulty adjustment algorithm?",
+      "options": [
+        "To increase mining rewards",
+        "To maintain consistent block time",
+        "To reduce transaction fees",
+        "To increase block size"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Bitcoin's difficulty adjustment ensures that blocks are created approximately every 10 minutes, regardless of changes in network hash rate.",
+      "difficulty": "medium",
+      "category": "bitcoin-fundamentals"
+    },
+    {
+      "id": "q17",
+      "type": "true-false",
+      "text": "Milton Friedman argued that inflation is a form of taxation that affects everyone who holds money.",
+      "correctAnswer": true,
+      "explanation": "Friedman correctly identified inflation as a hidden tax that erodes the purchasing power of money, affecting all money holders, especially those who cannot protect themselves through investments.",
+      "difficulty": "medium",
+      "category": "austrian-economics"
+    },
+    {
+      "id": "q18",
+      "type": "multiple-choice",
+      "text": "What economic principle explains why people prefer to receive payment sooner rather than later?",
+      "options": [
+        "The Law of Supply and Demand",
+        "Time preference",
+        "Diminishing marginal utility",
+        "Opportunity cost"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Time preference is the economic principle that people generally prefer to receive goods and services sooner rather than later, which is why interest rates exist.",
+      "difficulty": "medium",
+      "category": "economics"
+    },
+    {
+      "id": "q19",
+      "type": "multiple-choice",
+      "text": "What is the primary function of Bitcoin's public key cryptography?",
+      "options": [
+        "To encrypt transaction data",
+        "To create digital signatures",
+        "To increase mining efficiency",
+        "To reduce block size"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Bitcoin uses public key cryptography to create digital signatures, which prove ownership of Bitcoin addresses and authorize transactions.",
+      "difficulty": "medium",
+      "category": "cryptography"
+    },
+    {
+      "id": "q20",
+      "type": "essay",
+      "text": "How does Bitcoin's decentralized nature align with Austrian economic principles of spontaneous order?",
+      "wordLimit": 120,
+      "minWords": 40,
+      "explanation": "Bitcoin's decentralized network emerges spontaneously without central planning, demonstrating how complex systems can self-organize through voluntary cooperation and market forces.",
+      "difficulty": "hard",
+      "category": "austrian-economics"
+    },
+    {
+      "id": "q21",
+      "type": "multiple-choice",
+      "text": "What economic concept describes the cost of the next best alternative when making a decision?",
+      "options": [
+        "Sunk cost",
+        "Opportunity cost",
+        "Marginal cost",
+        "Fixed cost"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Opportunity cost is the value of the next best alternative that must be forgone when making a choice, a fundamental concept in economic decision-making.",
+      "difficulty": "easy",
+      "category": "economics"
+    },
+    {
+      "id": "q22",
+      "type": "true-false",
+      "text": "Bitcoin's blockchain is immutable, meaning that once a transaction is confirmed, it cannot be reversed.",
+      "correctAnswer": true,
+      "explanation": "Bitcoin's blockchain is immutable due to cryptographic linking of blocks and proof-of-work consensus. Once confirmed, transactions become part of an unchangeable historical record.",
+      "difficulty": "easy",
+      "category": "bitcoin-fundamentals"
+    },
+    {
+      "id": "q23",
+      "type": "multiple-choice",
+      "text": "What economic principle explains why voluntary exchange benefits both parties?",
+      "options": [
+        "The Law of Diminishing Returns",
+        "Comparative advantage",
+        "Mutual benefit from trade",
+        "Zero-sum game theory"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Voluntary exchange occurs because both parties expect to benefit. If either party didn't expect to gain, they wouldn't agree to the trade.",
+      "difficulty": "medium",
+      "category": "economics"
+    },
+    {
+      "id": "q24",
+      "type": "multiple-choice",
+      "text": "What is the primary purpose of Bitcoin's mempool?",
+      "options": [
+        "To store private keys",
+        "To hold unconfirmed transactions",
+        "To increase block rewards",
+        "To reduce network fees"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The mempool (memory pool) holds unconfirmed transactions waiting to be included in the next block by miners.",
+      "difficulty": "medium",
+      "category": "bitcoin-fundamentals"
+    },
+    {
+      "id": "q25",
+      "type": "multiple-select",
+      "maxSelections": 3,
+      "text": "Which of the following are problems that Bitcoin solves?",
+      "options": [
+        "Double-spending",
+        "Inflation",
+        "Government control of money",
+        "Transaction privacy",
+        "Central bank manipulation",
+        "Network scalability"
+      ],
+      "correctAnswer": [0, 1, 2, 4],
+      "explanation": "Bitcoin solves double-spending, inflation, government control, and central bank manipulation. Transaction privacy and network scalability remain challenges.",
+      "difficulty": "hard",
+      "category": "bitcoin-fundamentals"
+    },
+    {
+      "id": "q26",
+      "type": "true-false",
+      "text": "Austrian economists generally support government intervention in markets to correct market failures.",
+      "correctAnswer": false,
+      "explanation": "Austrian economists generally oppose government intervention, arguing that markets are self-correcting and that government intervention often creates more problems than it solves.",
+      "difficulty": "medium",
+      "category": "austrian-economics"
+    },
+    {
+      "id": "q27",
+      "type": "multiple-choice",
+      "text": "What economic principle explains why people are willing to pay more for goods in high demand?",
+      "options": [
+        "The Law of Supply",
+        "The Law of Demand",
+        "Diminishing marginal utility",
+        "Price elasticity"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The Law of Demand states that as demand for a good increases, people are willing to pay higher prices for it, all else being equal.",
+      "difficulty": "easy",
+      "category": "economics"
+    },
+    {
+      "id": "q28",
+      "type": "multiple-choice",
+      "text": "What cryptographic concept ensures that Bitcoin addresses cannot be easily guessed?",
+      "options": [
+        "Public key encryption",
+        "Hash function collision resistance",
+        "Elliptic curve mathematics",
+        "All of the above"
+      ],
+      "correctAnswer": 3,
+      "explanation": "Bitcoin addresses are secure due to the combination of public key encryption, hash function collision resistance, and the mathematical properties of elliptic curves.",
+      "difficulty": "hard",
+      "category": "cryptography"
+    },
+    {
+      "id": "q29",
+      "type": "essay",
+      "text": "Explain how Bitcoin's proof-of-work mechanism creates economic incentives for network security.",
+      "wordLimit": 100,
+      "minWords": 30,
+      "explanation": "Proof-of-work requires real computational effort and energy expenditure, making attacks expensive. Miners are incentivized to maintain network security to protect their investment.",
+      "difficulty": "hard",
+      "category": "bitcoin-fundamentals"
+    },
+    {
+      "id": "q30",
+      "type": "multiple-choice",
+      "text": "What economic principle does Bitcoin's deflationary monetary policy demonstrate?",
+      "options": [
+        "The quantity theory of money",
+        "Gresham's Law",
+        "The Law of Diminishing Returns",
+        "Say's Law"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Bitcoin demonstrates the quantity theory of money: as the supply of money grows more slowly than the economy, the value of each unit increases, creating deflationary pressure.",
+      "difficulty": "hard",
+      "category": "economics"
+    }
+  ],
+  "metadata": {
+    "created": "2024-01-01",
+    "version": "1.0",
+    "author": "BlockZone Academy",
+    "topics": ["bitcoin", "austrian-economics", "cryptography", "economics"],
+    "estimatedTime": "30 minutes",
+    "targetAudience": "Intermediate learners"
+  }
+} 

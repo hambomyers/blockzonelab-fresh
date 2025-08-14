@@ -2,45 +2,175 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlockZone Lab Academy - Clean Architecture</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>BlockZone Lab - Academy</title>
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="BlockZone Lab Academy - Master blockchain technology through interactive learning and hands-on experience">
-    <meta name="keywords" content="blockchain academy, crypto education, Web3 learning, smart contracts, DeFi, Sonic Labs">
+    <meta name="keywords" content="blockchain academy, crypto education, Web3 learning, smart contracts, DeFi">
     
-    <!-- Your Proven Design System -->
-    <link rel="stylesheet" href="../shared/navigation-styles.css">
-    <link rel="stylesheet" href="../shared/responsive-framework.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Open+Sans&display=swap" rel="stylesheet">
     
-    <!-- Academy-Specific Styles -->
+    <!-- Favicon -->
+    <link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+    
+    <!-- Professional Design System CSS -->
+    <link rel="stylesheet" href="../assets/css/design-system.css">
+    <link rel="stylesheet" href="../shared/hero-shared.css">
+    <!-- REMOVED: page-template.css no longer exists -->
+    
+    <!-- EXACT GAMES PAGE STYLES - NO OVERRIDES NEEDED -->
+    
     <style>
-        /* Academy Layout - Your Proven Design */
-        .academy-hero {
-            background: var(--bg-primary);
-            padding: 6rem 0 4rem;
-            text-align: center;
+        /* CRITICAL RENDERING PATH - Minimal styles for instant visual feedback */
+        :root {
+            --primary: #00ff41;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            
+            /* Neon Drop Color Palette */
+            --neon-cyan: #00d4ff;
+            --neon-green: #00ff00;
+            --neon-red: #ff6b6b;
+            --neon-gold: #ffd700;
         }
         
-        .academy-title {
-            font-size: 3rem;
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            text-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        /* CRITICAL NAVIGATION - EXACT same as games page */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .academy-subtitle {
-            font-size: 1.2rem;
+        .navbar.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .navbar-container {
+            width: 100%;
+            margin: 0;
+            padding: 0 2rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 32px;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            transform: translateY(-10px);
+        }
+        
+        .nav-link {
             color: var(--text-secondary);
-            margin-bottom: 3rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--neon-green);
+        }
+        
+        .nav-link::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: var(--neon-green);
+            transition: width 0.3s ease;
+            margin-top: 2px;
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* HERO SECTION - USES SHARED CSS */
+        .hero-section.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+
+        
+        /* NEW ACADEMY LAYOUT - MATCHING MAIN LANDING PAGE STYLE */
+        .main-content {
+            background: #0a0a0a;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* CENTRAL HUB CARD - ACADEMY INTRODUCTION */
+        .central-hub {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--neon-gold);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem 0;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .central-hub:hover {
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.4);
+            transform: translateY(-5px);
+        }
+        
+        .central-hub h2 {
+            color: var(--neon-gold);
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 25px rgba(255, 215, 0, 0.625);
+        }
+        
+        .central-hub p {
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .academy-stats {
             display: flex;
             justify-content: center;
             gap: 3rem;
-            margin: 3rem 0;
+            margin-top: 2rem;
             flex-wrap: wrap;
         }
         
@@ -57,27 +187,37 @@
         
         .stat-label {
             color: var(--text-secondary);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
+            font-size: 1rem;
+            margin-top: 0.5rem;
         }
         
-        /* Curriculum Grid - Your Proven Layout */
+        /* CURRICULUM CARDS GRID - MATCHING MAIN LANDING PAGE STYLE WITH GOLD EDGES */
         .curriculum-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
             margin: 4rem 0;
+            max-width: 75%;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .curriculum-card {
-            position: relative;
-            background: rgba(26, 26, 46, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--neon-gold);
+            border-radius: 16px;
+            padding: 2rem 1rem;
+            text-align: center;
             transition: all 0.3s ease;
+            position: relative;
             overflow: hidden;
+            backdrop-filter: blur(10px);
+            aspect-ratio: 2/3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-decoration: none;
+            color: inherit;
         }
         
         .curriculum-card::before {
@@ -87,7 +227,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
             transition: left 0.5s ease;
         }
         
@@ -96,63 +236,50 @@
         }
         
         .curriculum-card:hover {
+            border-color: var(--neon-gold);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
             transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.2);
-        }
-        
-        .lesson-number {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--primary);
-            color: var(--bg-primary);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.9rem;
         }
         
         .curriculum-card h3 {
-            color: var(--text-primary);
-            font-size: 1.5rem;
+            color: var(--neon-gold);
+            font-size: 1.8rem;
             margin-bottom: 1rem;
+            font-weight: 600;
         }
         
         .curriculum-card p {
             color: var(--text-secondary);
-            line-height: 1.6;
+            font-size: 1rem;
+            line-height: 1.5;
             margin-bottom: 1.5rem;
         }
         
-        .lesson-meta {
+        .curriculum-meta {
             display: flex;
+            justify-content: center;
             gap: 1rem;
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
         }
         
-        .difficulty, .duration {
+        .duration, .difficulty {
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
         }
         
-        .difficulty.beginner {
-            background: rgba(0, 255, 0, 0.1);
-            color: var(--neon-green);
-            border: 1px solid rgba(0, 255, 0, 0.3);
-        }
-        
-        .difficulty.intermediate {
+        .duration {
             background: rgba(255, 215, 0, 0.1);
             color: var(--neon-gold);
             border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .difficulty {
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--neon-green);
+            border: 1px solid rgba(0, 255, 0, 0.3);
         }
         
         .difficulty.advanced {
@@ -161,45 +288,98 @@
             border: 1px solid rgba(255, 107, 107, 0.3);
         }
         
-        .duration {
+        .difficulty.intermediate {
             background: rgba(0, 212, 255, 0.1);
             color: var(--neon-cyan);
             border: 1px solid rgba(0, 212, 255, 0.3);
         }
         
-        .card-button {
+        .btn-primary {
             display: inline-block;
-            padding: 0.75rem 1.5rem;
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
+            background: linear-gradient(135deg, var(--neon-gold), #ffed4e);
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 8px;
             text-decoration: none;
-            border-radius: 6px;
-            font-weight: 600;
+            font-weight: bold;
+            font-size: 1rem;
             transition: all 0.3s ease;
+            border: 2px solid var(--neon-gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
         }
         
-        .card-button:hover {
-            background: var(--primary);
-            color: var(--bg-primary);
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
         }
         
-        /* Featured Cards */
-        .curriculum-card.featured {
-            border-color: var(--neon-gold);
-            background: rgba(255, 215, 0, 0.05);
+        /* MINI LOGO AT BOTTOM - 1/10th size of main logo */
+        .mini-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 0;
+            background: transparent;
         }
         
-        .curriculum-card.featured .lesson-number {
-            background: var(--neon-gold);
-            color: var(--bg-primary);
+        .mini-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.9px; /* 3x bigger (was 0.3px) */
         }
         
-        /* Mobile Responsive */
+        .mini-logo-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px; /* 3x bigger (was 6px) */
+            height: 18px; /* 3x bigger (was 6px) */
+            border-radius: 0.9px; /* 3x bigger (was 0.3px) */
+            font-size: 23.4px; /* 3x bigger (was 7.8px) */
+            font-weight: bold;
+            color: #000;
+            background: #00ff41;
+            border: 0.6px solid #ff4444; /* 3x bigger (was 0.2px) */
+            box-shadow: none;
+            transition: all 0.3s ease;
+            font-family: 'Minion Pro', 'Minion Pro Bold', 'Times New Roman', serif;
+        }
+        
+        .mini-logo-letter:nth-child(6) {
+            /* The "Z" - make it look like the favicon */
+            background: #FFFF00;
+            border: 0.6px solid #ff4444;
+            color: #ff4444;
+            box-shadow: none;
+            font-size: 25.2px; /* 3x bigger (was 8.4px) */
+        }
+        
+        .mini-logo-letter:nth-child(10) {
+            /* The space - make it green like the others */
+            background: #00ff41;
+            border: 0.6px solid #ff4444;
+            box-shadow: none;
+            width: 18px; /* 3x bigger (was 6px) */
+        }
+        
+        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .academy-title {
+            .curriculum-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+                max-width: 90%;
+            }
+            
+            .curriculum-card {
+                padding: 1.5rem 0.8rem;
+            }
+            
+            .central-hub {
+                padding: 2rem;
+            }
+            
+            .central-hub h2 {
                 font-size: 2.2rem;
             }
             
@@ -210,189 +390,277 @@
             .stat-number {
                 font-size: 2rem;
             }
-            
+        }
+        
+        @media (max-width: 480px) {
             .curriculum-grid {
                 grid-template-columns: 1fr;
-                gap: 1.5rem;
+                gap: 1rem;
+                max-width: 95%;
             }
             
             .curriculum-card {
+                padding: 1.2rem 0.6rem;
+            }
+            
+            .central-hub {
                 padding: 1.5rem;
+            }
+            
+            .central-hub h2 {
+                font-size: 1.8rem;
+            }
+            
+            .academy-stats {
+                gap: 1.5rem;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
             }
         }
     </style>
 </head>
-<body>
-    <!-- Your Navigation -->
-    <div id="navigation-placeholder"></div>
-    
-    <!-- Academy Hero Section -->
-    <div class="viewport-container">
-        <div class="academy-hero">
-            <div class="container">
-                <h1 class="academy-title">BlockZone Lab Academy</h1>
-                <p class="academy-subtitle">Master blockchain technology through interactive learning and hands-on experience</p>
-                
-                <!-- Academy Stats - Your Proven Metrics -->
+
+<body class="academy-page">
+    <!-- Navigation - Fixed and Optimized -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <ul class="navbar-nav">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/games/" class="nav-link">Games</a></li>
+                <li><a href="/academy/" class="nav-link active">Academy</a></li>
+                <li><a href="/pages/business-model.html" class="nav-link">Business</a></li>
+                <li><a href="/pages/whitepaper.html" class="nav-link">Whitepaper</a></li>
+                <li><a href="/pages/user-profile.html" class="nav-link">Support</a></li>
+                <li><a href="/pages/profile.html" class="nav-link">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Critical Content First -->
+    <section class="hero-section" id="heroSection">
+        <div class="hero-content">
+            <!-- Large Hero Brand -->
+            <div class="hero-brand">
+                <span class="hero-brand-letter">B</span>
+                <span class="hero-brand-letter">l</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">c</span>
+                <span class="hero-brand-letter">k</span>
+                <span class="hero-brand-letter">Z</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">n</span>
+                <span class="hero-brand-letter">e</span>
+                <span class="hero-brand-letter"> </span>
+                <span class="hero-brand-letter">L</span>
+                <span class="hero-brand-letter">a</span>
+                <span class="hero-brand-letter">b</span>
+            </div>
+            <div class="hero-subtitle" data-text="ACADEMY">
+                <span>ACADEMY</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Academy Content - New Beautiful Layout -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Central Hub Card - Academy Introduction -->
+            <section class="central-hub">
+                <h2>Master the Future of Blockchain</h2>
+                <p>Welcome to BlockZone Academy, where theoretical knowledge meets hands-on practice. Our comprehensive curriculum guides you from blockchain fundamentals to advanced Web3 development, preparing you for the rapidly evolving world of decentralized technology.</p>
                 <div class="academy-stats">
                     <div class="stat-item">
-                        <span class="stat-number">48</span>
+                        <span class="stat-number">54</span>
                         <span class="stat-label">Total Lessons</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">12</span>
-                        <span class="stat-label">Interactive Demos</span>
-                    </div>
-                    <div class="stat-item">
                         <span class="stat-number">3</span>
-                        <span class="stat-label">Certifications</span>
+                        <span class="stat-label">Program Levels</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-number">100%</span>
                         <span class="stat-label">Hands-On</span>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Curriculum Content -->
-        <div class="content-area">
-            <div class="container">
-                <div class="curriculum-grid">
-                    <!-- Foundation Course -->
-                    <div class="curriculum-card">
-                        <div class="lesson-number">F1</div>
-                        <h3>Blockchain Fundamentals</h3>
-                        <p>Start your blockchain journey with core concepts, cryptography, and distributed systems.</p>
+            </section>
+
+            <!-- Professional BlockZone Cards Grid -->
+            <div class="blockzone-grid">
+                <!-- Lesson 1: Blockchain Basics -->
+                <div class="blockzone-card education">
+                    <div class="lesson-number">1</div>
+                    <div class="card-content">
+                        <h3>Blockchain Basics</h3>
+                        <p>Understanding distributed ledgers, cryptographic hashing, and the fundamentals of blockchain technology.</p>
                         <div class="lesson-meta">
                             <span class="difficulty beginner">Beginner</span>
-                            <span class="duration">2-3 hours</span>
+                            <span class="demos">3 Demos</span>
                         </div>
-                        <a href="foundation/blockchain-fundamentals/" class="card-button">Start Learning</a>
+                        <a href="lessons/lesson-1/" class="card-button">Start Learning</a>
                     </div>
-                    
-                    <!-- Smart Contracts -->
-                    <div class="curriculum-card">
-                        <div class="lesson-number">F2</div>
+                </div>
+
+                <!-- Lesson 2: Bitcoin & Wallets -->
+                <div class="blockzone-card featured">
+                    <div class="lesson-number">2</div>
+                    <div class="card-content">
+                        <h3>Bitcoin & Wallets</h3>
+                        <p>Explore Bitcoin's architecture, wallet creation, and transaction mechanics with interactive demos.</p>
+                        <div class="lesson-meta">
+                            <span class="difficulty beginner">Beginner</span>
+                            <span class="demos">7 Demos</span>
+                        </div>
+                        <a href="lessons/lesson-2/" class="card-button">Explore Bitcoin</a>
+                    </div>
+                </div>
+
+                <!-- Lesson 3: Smart Contracts -->
+                <div class="blockzone-card technology">
+                    <div class="lesson-number">3</div>
+                    <div class="card-content">
                         <h3>Smart Contracts</h3>
-                        <p>Learn to write, deploy, and interact with smart contracts on Sonic Labs network.</p>
+                        <p>Learn Solidity programming, contract deployment, and building decentralized applications.</p>
                         <div class="lesson-meta">
                             <span class="difficulty intermediate">Intermediate</span>
-                            <span class="duration">3-4 hours</span>
+                            <span class="demos">5 Demos</span>
                         </div>
-                        <a href="foundation/smart-contracts/" class="card-button">Start Learning</a>
+                        <a href="lessons/lesson-3/" class="card-button">Build Contracts</a>
                     </div>
-                    
-                    <!-- DeFi Essentials -->
-                    <div class="curriculum-card">
-                        <div class="lesson-number">F3</div>
-                        <h3>DeFi Essentials</h3>
-                        <p>Understand decentralized finance protocols, yield farming, and liquidity provision.</p>
+                </div>
+
+                <!-- Lesson 4: DeFi Protocols -->
+                <div class="blockzone-card rewards">
+                    <div class="lesson-number">4</div>
+                    <div class="card-content">
+                        <h3>DeFi Protocols</h3>
+                        <p>Decentralized finance, liquidity pools, yield farming, and automated market makers.</p>
                         <div class="lesson-meta">
                             <span class="difficulty intermediate">Intermediate</span>
-                            <span class="duration">4-5 hours</span>
+                            <span class="demos">4 Demos</span>
                         </div>
-                        <a href="foundation/defi-essentials/" class="card-button">Start Learning</a>
+                        <a href="lessons/lesson-4/" class="card-button">Explore DeFi</a>
                     </div>
-                    
-                    <!-- Web3 Development -->
-                    <div class="curriculum-card">
-                        <div class="lesson-number">F4</div>
+                </div>
+
+                <!-- Lesson 5: Web3 Development -->
+                <div class="blockzone-card decentralized">
+                    <div class="lesson-number">5</div>
+                    <div class="card-content">
                         <h3>Web3 Development</h3>
-                        <p>Build decentralized applications with modern Web3 tools and frameworks.</p>
+                        <p>Frontend integration with blockchain, Web3.js, MetaMask, and dApp architecture.</p>
                         <div class="lesson-meta">
                             <span class="difficulty advanced">Advanced</span>
-                            <span class="duration">5-6 hours</span>
+                            <span class="demos">6 Demos</span>
                         </div>
-                        <a href="foundation/web3-development/" class="card-button">Start Learning</a>
+                        <a href="lessons/lesson-5/" class="card-button">Build dApps</a>
                     </div>
-                    
-                    <!-- Sonic Labs Integration -->
-                    <div class="curriculum-card featured">
-                        <div class="lesson-number">SL</div>
-                        <h3>Sonic Labs Mastery</h3>
-                        <p>Deep dive into Sonic Labs network, its unique features, and development ecosystem.</p>
+                </div>
+
+                <!-- Lesson 6: Sonic Labs -->
+                <div class="blockzone-card community">
+                    <div class="lesson-number">6</div>
+                    <div class="card-content">
+                        <h3>Sonic Labs</h3>
+                        <p>High-performance blockchain, Sonic integration, and advanced scaling solutions.</p>
                         <div class="lesson-meta">
-                            <span class="difficulty intermediate">Intermediate</span>
-                            <span class="duration">6-8 hours</span>
+                            <span class="difficulty advanced">Advanced</span>
+                            <span class="demos">5 Demos</span>
                         </div>
-                        <a href="sonic-labs/" class="card-button">Start Learning</a>
+                        <a href="lessons/lesson-6/" class="card-button">Master Sonic</a>
                     </div>
-                    
-                    <!-- Year 1 Program -->
-                    <div class="curriculum-card featured">
-                        <div class="lesson-number">Y1</div>
+                </div>
+
+                <!-- Year 1 Program -->
+                <div class="blockzone-card featured">
+                    <div class="lesson-number">Y1</div>
+                    <div class="card-content">
                         <h3>Year 1 Program</h3>
                         <p>Complete blockchain development curriculum with 24 lessons, projects, and certifications.</p>
                         <div class="lesson-meta">
                             <span class="difficulty intermediate">24 Lessons</span>
-                            <span class="duration">Certificate</span>
+                            <span class="demos">Certificate</span>
                         </div>
                         <a href="year-1/" class="card-button">Start Year 1</a>
                     </div>
-                    
-                    <!-- Year 2 Program -->
-                    <div class="curriculum-card">
-                        <div class="lesson-number">Y2</div>
+                </div>
+
+                <!-- Year 2 Program -->
+                <div class="blockzone-card technology">
+                    <div class="lesson-number">Y2</div>
+                    <div class="card-content">
                         <h3>Year 2 Program</h3>
                         <p>Enterprise blockchain solutions, AI integration, and advanced project development.</p>
                         <div class="lesson-meta">
                             <span class="difficulty advanced">24 Lessons</span>
-                            <span class="duration">Certificate</span>
+                            <span class="demos">Certificate</span>
                         </div>
                         <a href="year-2/" class="card-button">Start Year 2</a>
-                    </div>
-                    
-                    <!-- Interactive Demos -->
-                    <div class="curriculum-card">
-                        <div class="lesson-number">ID</div>
-                        <h3>Interactive Demos</h3>
-                        <p>Hands-on demonstrations of blockchain concepts with real-time examples.</p>
-                        <div class="lesson-meta">
-                            <span class="difficulty beginner">All Levels</span>
-                            <span class="duration">Interactive</span>
-                        </div>
-                        <a href="demos/" class="card-button">Try Demos</a>
                     </div>
                 </div>
             </div>
         </div>
+    </main>
+
+    <!-- Mini Logo at Bottom - 1/10th size of main logo -->
+    <div class="mini-logo-container">
+        <div class="mini-logo">
+            <span class="mini-logo-letter">B</span>
+            <span class="mini-logo-letter">l</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">c</span>
+            <span class="mini-logo-letter">k</span>
+            <span class="mini-logo-letter">Z</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">n</span>
+            <span class="mini-logo-letter">e</span>
+            <span class="mini-logo-letter"> </span>
+            <span class="mini-logo-letter">L</span>
+            <span class="mini-logo-letter">a</span>
+            <span class="mini-logo-letter">b</span>
+        </div>
     </div>
-    
+
     <script>
-        // Load navigation
-        fetch('../shared/navigation-template.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('navigation-placeholder').innerHTML = html;
-                setTimeout(() => {
-                    document.getElementById('navbar').classList.add('loaded');
-                    // Set Academy as active
-                    document.querySelectorAll('.nav-link').forEach(link => {
-                        if (link.href.includes('/academy/')) {
-                            link.classList.add('active');
-                        }
-                    });
-                }, 100);
-            });
+        // Navbar animation
+        const navbar = document.getElementById('navbar');
+        setTimeout(() => navbar.classList.add('loaded'), 100);
         
-        // Academy progress tracking
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🎓 Academy loaded - Your proven educational system');
+        // Hero section animation
+        const heroSection = document.getElementById('heroSection');
+        setTimeout(() => heroSection.classList.add('loaded'), 300);
+        
+        // Academy Navigation System
+        const academySections = [
+            { name: 'Foundation', url: '/academy/' },
+            { name: 'Year 1', url: '/academy/year-1/' },
+            { name: 'Year 2', url: '/academy/year-2/' }
+        ];
+        
+        let currentSectionIndex = 0; // Homepage = Foundation
+        
+        function navigateAcademy(direction) {
+            if (direction === 'prev') {
+                currentSectionIndex = Math.max(0, currentSectionIndex - 1);
+            } else if (direction === 'next') {
+                currentSectionIndex = Math.min(academySections.length - 1, currentSectionIndex + 1);
+            }
             
-            // Track course engagement
-            document.querySelectorAll('.card-button').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const courseName = e.target.closest('.curriculum-card').querySelector('h3').textContent;
-                    console.log(`📚 Starting course: ${courseName}`);
-                    
-                    // This would integrate with your progress tracking
-                    if (window.identitySystem) {
-                        // Track course start in player profile
-                    }
-                });
-            });
-        });
+            const targetSection = academySections[currentSectionIndex];
+            
+            // Smooth transition effect
+            document.body.style.opacity = '0.8';
+            setTimeout(() => {
+                window.location.href = targetSection.url;
+            }, 200);
+        }
+        
+        // Hero subtitle animation with arrows
+        setTimeout(() => {
+            const arrows = document.querySelectorAll('.academy-nav-arrow');
+            arrows.forEach(arrow => arrow.classList.add('loaded'));
+        }, 500);
     </script>
 </body>
 </html>

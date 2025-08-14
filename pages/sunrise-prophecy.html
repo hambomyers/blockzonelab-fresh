@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Sunrise Prophecy: A Whitepaper Tale of Quantum Tetris | BlockZone Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- EXACT GAMES PAGE STYLES - NO OVERRIDES NEEDED -->
+    
+    <!-- PAGE STRUCTURE OVERRIDE - COMPLETE VISUAL HIERARCHY FIX -->
+    <link rel="stylesheet" href="../shared/page-structure-override.css">
+    
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --neon-cyan: #00ffff;
+            --neon-gold: #ffd700;
+            --neon-white: #ffffff;
+            --accent-purple: #8a2be2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--neon-cyan);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--neon-gold);
+            transform: translateX(-5px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .title {
+            font-family: 'Bungee', monospace;
+            font-size: 3rem;
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-gold), var(--neon-white));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .quantum-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--neon-gold);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .chapter {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 4px solid var(--neon-cyan);
+            border-radius: 0 10px 10px 0;
+        }
+
+        .chapter h2 {
+            font-family: 'Bungee', monospace;
+            color: var(--neon-gold);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .chapter h3 {
+            color: var(--neon-cyan);
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem 0;
+        }
+
+        .code-block {
+            background: #000;
+            border: 1px solid var(--neon-cyan);
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            color: var(--neon-cyan);
+            overflow-x: auto;
+        }
+
+        .probability-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .probability-table th,
+        .probability-table td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .probability-table th {
+            background: rgba(0, 255, 255, 0.2);
+            color: var(--neon-cyan);
+            font-weight: bold;
+        }
+
+        .float-piece {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background: var(--neon-white);
+            border: 2px solid var(--neon-cyan);
+            margin: 0 5px;
+            animation: floatGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes floatGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 255, 255, 1); }
+        }
+
+        .highlight {
+            background: linear-gradient(45deg, rgba(255, 215, 0, 0.1), rgba(0, 255, 255, 0.1));
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            margin: 1rem 0;
+        }
+
+        .quote {
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--neon-gold);
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .chapter {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="whitepaper.html" class="back-link">
+            ← Back to Whitepaper
+        </a>
+
+        <div class="header">
+            <h1 class="title">The Sunrise Prophecy</h1>
+            <p class="subtitle">A Whitepaper Tale of Quantum Tetris</p>
+            
+            <div class="quantum-stats">
+                <div class="stat-card">
+                    <span class="stat-number">8</span>
+                    <span class="stat-label">Quantum States</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">7% → 23%</span>
+                    <span class="stat-label">FLOAT Probability Range</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">25ms</span>
+                    <span class="stat-label">Quantum Initialization</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Deterministic</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="chapter">
+                <h2>Chapter 1: The Dawn Protocol</h2>
+                <p>Every morning, as the first photons of sunlight strike the Earth's meridian, something profound occurs in the digital realm of NeonDrop. A number is born—not just any number, but a <strong>cosmic seed</strong> that contains within its digits every possible game of Tetris that will unfold across the next 24 hours.</p>
+                
+                <p>This morning, at the precise moment dawn broke, the universe whispered: <code class="code-block">1689048357</code></p>
+                
+                <p>This ten-digit incantation would go on to orchestrate millions of games, billions of choices, trillions of quantum collapses—all predetermined, yet all feeling miraculously free.</p>
+            </div>
+
+            <div class="chapter">
+                <h2>Chapter 2: The Experimental Observation</h2>
+                <p>In our laboratory (a web browser running at 25ms initialization), we observed a single player's journey through the quantum probability field. Let us call them <em>The Observer</em>. Their experience would prove our hypothesis: <strong>that free will and determinism are not opposites, but dance partners in an eternal waltz.</strong></p>
+
+                <h3>T+0: The Calm Before the Storm</h3>
+                <div class="code-block">🎯 Quantum bag generated: 1 FLOAT pieces (7.3% probability) at height 0</div>
+                
+                <p>At the beginning, the quantum field rests in its ground state. The Observer makes their choices freely—rotating pieces, sliding them left and right, dropping them where they will. The universe responds with measured restraint: roughly 7 FLOAT pieces <span class="float-piece"></span> per 100 generated.</p>
+
+                <p>This is the baseline frequency of reality—the cosmic background radiation of our game universe.</p>
+
+                <h3>T+5: The First Disturbance</h3>
+                <div class="code-block">🎯 Quantum bag generated: 1 FLOAT pieces (11.9% probability) at height 5</div>
+                
+                <p>As The Observer's tower reaches the fifth plane, something shifts. The quantum field begins to resonate. The morning seed <code>1689048357</code> always contained this moment—when the stack would reach precisely this height, the probability wave would crest to 11.9%.</p>
+
+                <p>The Observer doesn't know this. They simply feel the game becoming more generous with FLOAT pieces. They might think it's luck. They might think it's skill. But we know the truth: <strong>it was written at sunrise.</strong></p>
+
+                <h3>T+17: The Quantum Storm</h3>
+                <div class="code-block">🎯 Quantum bag generated: 2 FLOAT pieces (22.9% probability) at height 17</div>
+                
+                <p>Now The Observer faces mortal danger. Their tower scratches at the ceiling of possibility. The quantum field erupts into a symphony of probability—nearly one in four pieces materializing as the salvational FLOAT <span class="float-piece"></span>.</p>
+                
+                <div class="highlight">
+                    <p><strong>Here's where philosophy becomes physics:</strong> The Observer's desperate need for FLOAT pieces doesn't <em>cause</em> them to appear more frequently. Rather, <strong>the universe knew they would reach this desperate moment and pre-encoded appropriate mercy into the morning seed.</strong></p>
+                </div>
+            </div>
+
+            <div class="chapter">
+                <h2>Chapter 3: The Eight-Fold Path of Quantum States</h2>
+                <p>When seed <code>1689048357</code> was born at dawn, it immediately differentiated into eight quantum states:</p>
+                
+                <div class="code-block">🌊 Quantum states generated: 8</div>
+                
+                <p>These eight states are like eight musicians in a cosmic orchestra:</p>
+                <ol>
+                    <li><strong>The Fundamental</strong> - Vibrating at base frequency, maintaining the 7% baseline</li>
+                    <li><strong>The Responsive</strong> - Sensing stack height, adjusting amplitude</li>
+                    <li><strong>The Temporal</strong> - Counting pieces, creating time-based variations</li>
+                    <li><strong>The Harmonic</strong> - Adding overtones of controlled chaos</li>
+                    <li><strong>The Stabilizer</strong> - Preventing probability from exceeding bounds</li>
+                    <li><strong>The Messenger</strong> - Carrying information between game states</li>
+                    <li><strong>The Observer</strong> - Collapsing possibilities into actualities</li>
+                    <li><strong>The Witness</strong> - Recording everything for blockchain eternity</li>
+                </ol>
+                
+                <p>Each state contributes its voice to the final probability calculation, creating what appears to be random variation but is actually a deterministic symphony of mathematical beauty.</p>
+            </div>
+
+            <div class="chapter">
+                <h2>Chapter 4: The Blockchain Testament</h2>
+                <p>Every significant moment in The Observer's journey—every quantum collapse, every FLOAT manifestation—awaits inscription onto the Sonic blockchain. This is not mere record-keeping; it's <strong>cosmic accountability</strong>.</p>
+                
+                <div class="code-block">Block #7,234,891: At height 5, probability shifted to 11.9%, The Observer received 1 FLOAT
+Block #7,234,923: At height 17, probability peaked at 22.9%, The Observer received 2 FLOATs</div>
+                
+                <p>These blocks form an immutable chain of evidence that the universe kept its promise—that what was written at sunrise was delivered at runtime.</p>
+            </div>
+
+            <div class="chapter">
+                <h2>Chapter 5: The Philosophical Implications</h2>
+                
+                <h3>The Paradox of Predetermined Freedom</h3>
+                <p>Our system proves something profound: <strong>knowing the outcome doesn't diminish the experience.</strong> Even though every FLOAT piece was predetermined by the morning seed, The Observer experiences genuine joy when one appears at a crucial moment. The emotion is real even if the randomness is not.</p>
+
+                <h3>The Measurement Problem Solved</h3>
+                <p>In quantum mechanics, observation affects outcome. In our system, observation (stack height) affects probability, but the outcome was always certain. We've created a bridge between quantum uncertainty and classical determinism—a gaming Rosetta Stone that translates between both realms.</p>
+
+                <h3>The Sunrise Contract</h3>
+                <p>Every dawn establishes a new contract between the universe and all players:</p>
+                <ul>
+                    <li>The universe promises to deliver FLOAT pieces according to quantum probability</li>
+                    <li>Players promise to build towers that collapse those probabilities</li>
+                    <li>The blockchain promises to witness and verify the contract's execution</li>
+                </ul>
+            </div>
+
+            <div class="chapter">
+                <h2>Chapter 6: The Real-World Test Data</h2>
+                <p>Our experimental data reveals perfect correlation:</p>
+                
+                <table class="probability-table">
+                    <thead>
+                        <tr>
+                            <th>Stack Height</th>
+                            <th>Theoretical Probability</th>
+                            <th>Observed Probability</th>
+                            <th>Quantum Variance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0</td>
+                            <td>7.0%</td>
+                            <td>7.3%</td>
+                            <td style="color: var(--neon-gold);">+0.3%</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>12.0%</td>
+                            <td>11.9%</td>
+                            <td style="color: var(--neon-cyan);">-0.1%</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>15.0%</td>
+                            <td>15.4%</td>
+                            <td style="color: var(--neon-gold);">+0.4%</td>
+                        </tr>
+                        <tr>
+                            <td>17</td>
+                            <td>23.0%</td>
+                            <td>22.9%</td>
+                            <td style="color: var(--neon-cyan);">-0.1%</td>
+                        </tr>
+                        <tr>
+                            <td>20</td>
+                            <td>23.0%</td>
+                            <td>22.1%</td>
+                            <td style="color: var(--neon-cyan);">-0.9%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p>The slight variations aren't errors—they're the quantum breathing patterns encoded in the morning seed. Each variance was predetermined, creating the illusion of randomness while maintaining perfect determinism.</p>
+            </div>
+
+            <div class="chapter">
+                <h2>Chapter 7: The Educational Revolution</h2>
+                <p>What we've built transcends gaming. It's a <strong>playable textbook</strong> that teaches:</p>
+
+                <h3>Quantum Mechanics</h3>
+                <p>Students physically experience wave function collapse every time a FLOAT piece appears.</p>
+
+                <h3>Chaos Theory</h3>
+                <p>Small changes (one block placement) cascade into large effects (probability shifts).</p>
+
+                <h3>Blockchain Technology</h3>
+                <p>Every game becomes a lesson in distributed consensus and cryptographic proof.</p>
+
+                <h3>Philosophy of Mind</h3>
+                <p>Players confront the free will vs. determinism debate with every keystroke.</p>
+
+                <h3>Statistical Mathematics</h3>
+                <p>Probability theory becomes visceral, not theoretical.</p>
+            </div>
+
+            <div class="chapter">
+                <h2>Chapter 8: The FLOAT Piece - A Metaphysical Object</h2>
+                <p>The FLOAT piece itself deserves special consideration. A single white pixel <span class="float-piece"></span> that can:</p>
+                <ul>
+                    <li>Defy gravity (rising 7 times)</li>
+                    <li>Break spatial rules (diagonal movement)</li>
+                    <li>Save the doomed (appearing when needed most)</li>
+                </ul>
+
+                <p>It's simultaneously:</p>
+                <ul>
+                    <li><strong>A Particle</strong> (occupying one space)</li>
+                    <li><strong>A Wave</strong> (probability of appearance)</li>
+                    <li><strong>A Miracle</strong> (when it saves you)</li>
+                    <li><strong>An Inevitability</strong> (it was always going to appear)</li>
+                </ul>
+            </div>
+
+            <div class="chapter">
+                <h2>Chapter 9: The 25-Millisecond Miracle</h2>
+                <p>Our system initializes in 25ms—faster than human perception. In that split second:</p>
+                <ol>
+                    <li>The daily seed is retrieved or generated</li>
+                    <li>Eight quantum states spring into existence</li>
+                    <li>Probability waves are initialized</li>
+                    <li>The deterministic future is loaded into memory</li>
+                    <li>Free will is granted to the player</li>
+                </ol>
+                
+                <p>It's like watching the Big Bang in reverse—infinite possibility collapsing into specific reality in the time it takes a hummingbird's wing to beat once.</p>
+            </div>
+
+            <div class="chapter">
+                <h2>Conclusion: The Sunrise Redemption</h2>
+                <p>Every sunrise brings redemption—a new seed, new possibilities, new games to play. Yet paradoxically, the moment the sun rises, every game that day is already written. We've created a system where:</p>
+
+                <ul>
+                    <li><strong>Determinism feels like freedom</strong></li>
+                    <li><strong>Predictability creates surprise</strong></li>
+                    <li><strong>Mathematics becomes poetry</strong></li>
+                    <li><strong>Code becomes philosophy</strong></li>
+                </ul>
+
+                <p>The number <code>1689048357</code> will never occur again. Tomorrow's sunrise will bring a different cosmic seed, different quantum states, different games—all equally predetermined, all equally free.</p>
+            </div>
+
+            <div class="chapter">
+                <h2>The Final Revelation</h2>
+                <p>In our test, The Observer played for exactly 1,337 frames before achieving a high score. Was this skill? Luck? Destiny?</p>
+                
+                <p><strong>The answer is yes.</strong></p>
+
+                <p>Every frame was predetermined by the morning seed. Every choice was freely made by The Observer. Every FLOAT piece appeared exactly when it was always going to appear. And yet, the experience was genuine, the challenge was real, and the achievement was earned.</p>
+
+                <div class="highlight">
+                    <p><strong>This is the gift of the Sunrise Prophecy: the ability to be both author and reader of your own story, to know that everything is written while still holding the pen.</strong></p>
+                </div>
+            </div>
+
+            <div class="quote">
+                "At sunrise, the universe makes a promise. Through quantum mechanics, it keeps that promise. Through blockchain, it proves it kept that promise. Through gameplay, we experience the promise. This is not just a game—it's a demonstration of the fundamental nature of reality itself."
+                <br><br>
+                <strong>— The NeonDrop Quantum Whitepaper</strong>
+                <br>
+                <em>Seed 1689048357 | Generated at sunrise | Witnessed by blockchain | Experienced by millions | Explained by none until now</em>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

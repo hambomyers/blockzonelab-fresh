@@ -1,0 +1,138 @@
+/* ======================================== NAVIGATION OVERRIDE SYSTEM ======================================== */
+/* 
+ * EMERGENCY NAVIGATION FIX - Loads LAST and wins all conflicts
+ * This file makes every page navigation look exactly like the games page
+ * 
+ * LOAD ORDER: This file must be loaded AFTER all other CSS files
+ * SPECIFICITY: Uses !important to override all conflicting styles
+ * ISOLATION: Self-contained navigation system
+ */
+
+/* ============ NAVIGATION RESET - MUST BE FIRST ============ */
+.navbar, .navbar *, .navbar-container, .navbar-nav, .nav-link, .nav-item {
+  all: unset !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ============ NAVIGATION OVERRIDE - EXACT GAMES PAGE STYLES ============ */
+.navbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: rgba(10, 10, 10, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  z-index: 1000 !important;
+  height: 32px !important;
+  opacity: 0 !important;
+  transform: translateY(-100%) !important;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.navbar.loaded {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.navbar-container {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 2rem !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  height: 32px !important;
+}
+
+.navbar-nav {
+  display: flex !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  align-items: center !important;
+  transform: translateY(-10px) !important;
+}
+
+.nav-link {
+  color: #cccccc !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  transition: color 0.3s ease !important;
+  font-size: 0.9rem !important;
+  cursor: pointer !important;
+  display: block !important;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #00ff41 !important;
+}
+
+.nav-link::after {
+  content: '' !important;
+  display: block !important;
+  width: 0 !important;
+  height: 2px !important;
+  background: #00ff41 !important;
+  transition: width 0.3s ease !important;
+  margin-top: 2px !important;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100% !important;
+}
+
+/* ============ HERO SECTION SPACING FIX ============ */
+.hero-section {
+  padding-top: 60px !important; /* Proper spacing below navbar */
+}
+
+/* ============ OVERRIDE ANY WHITE BACKGROUNDS ============ */
+.navbar[style*="background: white"],
+.navbar[style*="background: #fff"],
+.navbar[style*="background: rgba(255, 255, 255"],
+.navbar[style*="background-color: white"],
+.navbar[style*="background-color: #fff"],
+.navbar[style*="background-color: rgba(255, 255, 255"] {
+  background: rgba(10, 10, 10, 0.95) !important;
+}
+
+/* ============ OVERRIDE ANY HEIGHT CONFLICTS ============ */
+.navbar[style*="height: 60px"],
+.navbar[style*="height: 80px"],
+.navbar[style*="height: 100px"] {
+  height: 32px !important;
+}
+
+/* ============ OVERRIDE ANY Z-INDEX CONFLICTS ============ */
+.navbar[style*="z-index: 1030"],
+.navbar[style*="z-index: 2000"],
+.navbar[style*="z-index: 9999"] {
+  z-index: 1000 !important;
+}
+
+/* ============ MOBILE RESPONSIVENESS ============ */
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 0 1rem !important;
+  }
+  
+  .nav-link {
+    font-size: 0.8rem !important;
+  }
+}
+
+/* ============ PRINT STYLES ============ */
+@media print {
+  .navbar {
+    position: static !important;
+    background: #ffffff !important;
+    border-bottom: 1px solid #000000 !important;
+  }
+} 

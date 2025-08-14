@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlockZone Academy - Lesson</title>
+    
+    <!-- Academy Styling -->
+    <link rel="stylesheet" href="academy.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../public/favicon.svg">
+</head>
+<body class="lesson-2">
+    <!-- Navigation -->
+    <nav class="academy-nav">
+        <div class="nav-container">
+            <a href="index.html" class="academy-logo">
+                <span class="logo-icon">🎓</span>
+                BlockZone Academy
+            </a>
+            
+            <div class="nav-links">
+                <a href="index.html">Lessons</a>
+                <a href="year-1/index.html">Year 1</a>
+                <a href="year-2/index.html">Year 2</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="lesson-content" class="lesson-container">
+        <div class="loading-message">
+            <h2>Loading lesson...</h2>
+            <p>Please wait while we prepare your content.</p>
+        </div>
+    </main>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 0%"></div>
+        </div>
+        <div class="progress-text">0% Complete</div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="lesson-controls">
+        <button id="prev-lesson" class="control-btn">← Previous</button>
+        <button id="next-lesson" class="control-btn">Next →</button>
+    </div>
+
+    <!-- Academy Core -->
+    <script type="module" src="academy.js"></script>
+    <script type="module">
+        // Load lesson based on URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const lessonId = urlParams.get('lesson') || 'lesson-1';
+        
+        // Load the lesson
+        window.academyCore.loadLesson(lessonId);
+    </script>
+</body>
+</html>

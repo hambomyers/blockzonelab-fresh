@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Electric blue background -->
+  <rect x="0" y="0" width="512" height="512" rx="48" fill="#00FFFF"/>
+  
+  <!-- Red wooden-style frame -->
+  <rect x="32" y="32" width="448" height="448" rx="32" fill="#ff4444" stroke="#cc0000" stroke-width="8"/>
+  
+  <!-- Inner recessed area (electric blue) -->
+  <rect x="64" y="64" width="384" height="384" rx="16" fill="#00FFFF" stroke="#ff4444" stroke-width="8"/>
+  
+  <!-- Red wooden-style Z letter -->
+  <path d="M128 128 L384 128 L384 160 L192 160 L192 192 L352 192 L352 224 L192 224 L192 256 L384 256 L384 288 L128 288 Z" 
+        fill="#ff4444" stroke="#cc0000" stroke-width="8"/>
+</svg>

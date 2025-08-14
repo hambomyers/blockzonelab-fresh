@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 5: Blockchain Security - BlockZone Academy</title>
+    <link rel="stylesheet" href="../../../assets/css/design-system.css">
+    <link rel="stylesheet" href="../../shared/academy-main.css">
+    <link rel="stylesheet" href="../../shared/academy-curriculum.css">
+    <link rel="stylesheet" href="../../shared/academy-assessments.css">
+</head>
+<body>
+    <div class="academy-container">
+        <header class="academy-header">
+            <div class="academy-logo">
+                <h1>Lesson 5: Blockchain Security</h1>
+                <p>Security Best Practices & Threat Mitigation</p>
+            </div>
+            <nav class="academy-nav">
+                <a href="../../pre-course/" class="nav-link">← Back to Pre-Course</a>
+            </nav>
+        </header>
+
+        <main class="academy-main">
+            <section class="academy-section">
+                <div class="lesson-header">
+                    <h2>Understanding Blockchain Security</h2>
+                    <div class="lesson-meta">
+                        <span class="difficulty intermediate">Intermediate</span>
+                        <span class="duration">80 minutes</span>
+                        <span class="progress">0% Complete</span>
+                    </div>
+                </div>
+                
+                <div class="lesson-content">
+                    <p><strong>Key Learning Objectives:</strong></p>
+                    <ul>
+                        <li>Understand common blockchain security threats and vulnerabilities</li>
+                        <li>Learn smart contract security best practices</li>
+                        <li>Explore wallet security and key management</li>
+                        <li>Understand DeFi security considerations</li>
+                    </ul>
+
+                    <h3>Why Blockchain Security Matters</h3>
+                    <p>While blockchain technology is inherently secure, the applications built on top of it can have 
+                    vulnerabilities that lead to significant financial losses. Understanding security is crucial for both 
+                    developers and users.</p>
+
+                    <div class="concept-box">
+                        <h4>Key Concept: Immutability is a Double-Edged Sword</h4>
+                        <p>Once deployed, smart contracts cannot be changed. This means bugs and vulnerabilities 
+                        become permanent unless the contract has upgrade mechanisms built in.</p>
+                    </div>
+
+                    <h3>Common Smart Contract Vulnerabilities</h3>
+                    <p>Understanding these vulnerabilities is essential for both developers and users:</p>
+
+                    <div class="vulnerabilities-grid">
+                        <div class="vulnerability-card">
+                            <h4>Reentrancy Attacks</h4>
+                            <p>Attackers can call back into a contract before the first call completes, potentially 
+                            draining funds or manipulating state.</p>
+                        </div>
+                        <div class="vulnerability-card">
+                            <h4>Integer Overflow/Underflow</h4>
+                            <p>Mathematical operations that exceed data type limits can cause unexpected behavior 
+                            and potential exploits.</p>
+                        </div>
+                        <div class="vulnerability-card">
+                            <h4>Access Control Issues</h4>
+                            <p>Improper permission checks can allow unauthorized users to execute privileged functions.</p>
+                        </div>
+                        <div class="vulnerability-card">
+                            <h4>Oracle Manipulation</h4>
+                            <p>Attackers can manipulate external data sources that smart contracts rely on for 
+                            critical decisions.</p>
+                        </div>
+                    </div>
+
+                    <h3>Famous Security Incidents</h3>
+                    <p>Learning from past incidents helps understand the importance of security:</p>
+
+                    <div class="incident-timeline">
+                        <div class="incident-item">
+                            <h4>The DAO Hack (2016)</h4>
+                            <p>A reentrancy vulnerability in The DAO smart contract led to the theft of 3.6 million ETH, 
+                            worth approximately $60 million at the time.</p>
+                        </div>
+                        <div class="incident-item">
+                            <h4>Parity Wallet Bug (2017)</h4>
+                            <p>A vulnerability in the Parity multi-sig wallet library resulted in the permanent 
+                            freezing of over 500,000 ETH.</p>
+                        </div>
+                        <div class="incident-item">
+                            <h4>Poly Network Attack (2021)</h4>
+                            <p>An attacker exploited a vulnerability to steal over $600 million in various cryptocurrencies, 
+                            though most was eventually returned.</p>
+                        </div>
+                    </div>
+
+                    <h3>Smart Contract Security Best Practices</h3>
+                    <p>Developers must follow these practices to create secure smart contracts:</p>
+
+                    <div class="best-practices-grid">
+                        <div class="practice-card">
+                            <h4>Use Established Libraries</h4>
+                            <p>Leverage well-tested libraries like OpenZeppelin for common functionality</p>
+                        </div>
+                        <div class="practice-card">
+                            <h4>Implement Access Controls</h4>
+                            <p>Use modifiers and role-based access control for sensitive functions</p>
+                        </div>
+                        <div class="practice-card">
+                            <h4>Validate All Inputs</h4>
+                            <p>Check all external inputs for validity and expected ranges</p>
+                        </div>
+                        <div class="practice-card">
+                            <h4>Use Safe Math Operations</h4>
+                            <p>Implement checks for overflow/underflow in mathematical operations</p>
+                        </div>
+                    </div>
+
+                    <div class="code-example">
+                        <h4>Secure Smart Contract Example</h4>
+                        <pre><code>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+
+contract SecureVault is ReentrancyGuard, Ownable {
+    using SafeMath for uint256;
+    
+    mapping(address => uint256) public balances;
+    
+    event Deposit(address indexed user, uint256 amount);
+    event Withdrawal(address indexed user, uint256 amount);
+    
+    function deposit() external payable nonReentrant {
+        require(msg.value > 0, "Amount must be greater than 0");
+        balances[msg.sender] = balances[msg.sender].add(msg.value);
+        emit Deposit(msg.sender, msg.value);
+    }
+    
+    function withdraw(uint256 amount) external nonReentrant {
+        require(amount > 0, "Amount must be greater than 0");
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        
+        balances[msg.sender] = balances[msg.sender].sub(amount);
+        (bool success, ) = msg.sender.call{value: amount}("");
+        require(success, "Transfer failed");
+        
+        emit Withdrawal(msg.sender, amount);
+    }
+}</code></pre>
+                    </div>
+
+                    <h3>Wallet Security</h3>
+                    <p>Users must protect their private keys and understand wallet security:</p>
+
+                    <div class="comparison-table">
+                        <h4>Wallet Security Comparison</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Security Aspect</th>
+                                    <th>Hot Wallet</th>
+                                    <th>Cold Wallet</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Internet Connection</td>
+                                    <td>Always connected</td>
+                                    <td>Never connected</td>
+                                </tr>
+                                <tr>
+                                    <td>Convenience</td>
+                                    <td>High</td>
+                                    <td>Low</td>
+                                </tr>
+                                <tr>
+                                    <td>Security Level</td>
+                                    <td>Medium</td>
+                                    <td>Very High</td>
+                                </tr>
+                                <tr>
+                                    <td>Best For</td>
+                                    <td>Small amounts, trading</td>
+                                    <td>Large amounts, long-term storage</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>DeFi Security Considerations</h3>
+                    <p>DeFi protocols introduce additional security considerations:</p>
+                    
+                    <div class="defi-security-grid">
+                        <div class="security-card">
+                            <h4>Impermanent Loss</h4>
+                            <p>Liquidity providers may lose value due to price volatility in their provided assets</p>
+                        </div>
+                        <div class="security-card">
+                            <h4>Flash Loan Attacks</h4>
+                            <p>Attackers can borrow large amounts without collateral to manipulate protocols</p>
+                        </div>
+                        <div class="security-card">
+                            <h4>MEV (Miner Extractable Value)</h4>
+                            <p>Miners can front-run or sandwich transactions for profit</p>
+                        </div>
+                        <div class="security-card">
+                            <h4>Protocol Risk</h4>
+                            <p>Smart contract vulnerabilities can affect entire protocols and all users</p>
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <h4>Real-World Example: Yearn Finance Security</h4>
+                        <p>Yearn Finance has implemented extensive security measures including multiple audits, 
+                        bug bounties, and a security-first development approach to protect user funds.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>Lesson Quiz</h2>
+                <p>Test your understanding of blockchain security.</p>
+                
+                <div class="quiz-container">
+                    <div class="quiz-header">
+                        <h3 class="quiz-title">Blockchain Security Quiz</h3>
+                        <div class="quiz-meta">
+                            <div class="quiz-meta-item">
+                                <span>📝 10 Questions</span>
+                            </div>
+                            <div class="quiz-meta-item">
+                                <span>⏱️ 15 Minutes</span>
+                            </div>
+                            <div class="quiz-meta-item">
+                                <span>🎯 80% to Pass</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">1</div>
+                            <div class="question-text">
+                                What is a reentrancy attack in smart contracts?
+                            </div>
+                        </div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="A">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">A type of phishing attack</div>
+                            </div>
+                            <div class="answer-option" data-answer="B">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">An attacker calling back into a contract before the first call completes</div>
+                            </div>
+                            <div class="answer-option" data-answer="C">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">A denial of service attack</div>
+                            </div>
+                            <div class="answer-option" data-answer="D">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">A social engineering attack</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">2</div>
+                            <div class="question-text">
+                                Which type of wallet offers the highest security for storing large amounts of cryptocurrency?
+                            </div>
+                        </div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="A">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Exchange wallet</div>
+                            </div>
+                            <div class="answer-option" data-answer="B">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Software wallet</div>
+                            </div>
+                            <div class="answer-option" data-answer="C">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Cold wallet (hardware wallet)</div>
+                            </div>
+                            <div class="answer-option" data-answer="D">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Mobile wallet</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-navigation">
+                        <div class="quiz-progress">Question 2 of 10</div>
+                        <div class="quiz-buttons">
+                            <button class="quiz-btn quiz-btn-secondary">Previous</button>
+                            <button class="quiz-btn quiz-btn-primary">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>Additional Resources</h2>
+                <p>Deepen your understanding of blockchain security.</p>
+                
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <h3>📚 Reading Materials</h3>
+                        <p>Security audits, vulnerability reports, and best practices guides</p>
+                        <a href="#" class="btn-secondary">Browse Articles</a>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>🎥 Video Tutorials</h3>
+                        <p>Visual explanations of security concepts and vulnerability analysis</p>
+                        <a href="#" class="btn-secondary">Watch Videos</a>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>💻 Interactive Exercises</h3>
+                        <p>Practice identifying vulnerabilities and implementing security measures</p>
+                        <a href="#" class="btn-secondary">Start Exercises</a>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>🤝 Discussion Forum</h3>
+                        <p>Discuss security concerns and best practices with other students</p>
+                        <a href="#" class="btn-secondary">Join Discussion</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>Next Steps</h2>
+                <p>After completing this lesson, you'll be ready to explore the future of blockchain.</p>
+                
+                <div class="lesson-navigation">
+                    <a href="../lesson-6/" class="btn-primary">Continue to Lesson 6: Future of Blockchain →</a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="academy-footer">
+            <p>&copy; 2024 BlockZone Academy. Understanding blockchain security and threat mitigation.</p>
+        </footer>
+    </div>
+
+    <script src="../../shared/academy-main.js"></script>
+    <script>
+        // Simple quiz functionality for demonstration
+        document.addEventListener('DOMContentLoaded', function() {
+            const answerOptions = document.querySelectorAll('.answer-option');
+            
+            answerOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from other options in same question
+                    const question = this.closest('.question');
+                    question.querySelectorAll('.answer-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

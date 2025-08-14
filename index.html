@@ -9,6 +9,13 @@
     <meta name="description" content="BlockZone Lab - Professional gaming tournaments with real USDC prizes and comprehensive blockchain education. FREE first game daily, $0.25 per game or $2.50 day pass until 11pm EST.">
     <meta name="keywords" content="blockchain gaming, USDC prizes, crypto education, skill-based games, neon drop, tournaments">
     
+    <!-- Professional Design System CSS -->
+    <link rel="stylesheet" href="assets/css/design-system.css">
+    <link rel="stylesheet" href="shared/hero-shared.css">
+    <!-- REMOVED: page-template.css no longer exists -->
+    
+    <!-- EXACT GAMES PAGE STYLES - NO OVERRIDES NEEDED -->
+    
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
     
@@ -19,34 +26,101 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     
     <style>
-        /* EXACT LEGACY STYLES - EMBEDDED TO AVOID PATH ISSUES */
+        /* CRITICAL RENDERING PATH - Minimal styles for instant visual feedback */
         :root {
             --primary: #00ff41;
             --bg-primary: #0a0a0a;
             --bg-secondary: #0a0a0a;
             --text-primary: #ffffff;
             --text-secondary: #cccccc;
+            
+            /* Neon Drop Color Palette */
             --neon-cyan: #00d4ff;
             --neon-green: #00ff00;
             --neon-red: #ff6b6b;
             --neon-gold: #ffd700;
-        }
-
-        /* GLOBAL STYLES */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            --dark-blue-1: #1a1a2e;
+            --dark-blue-2: #16213e;
+            --dark-blue-3: #0f3460;
+            
+            /* Neutral Grays */
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+            
+            /* Unified Card System Dimensions */
+            --card-min-width: 280px;
+            --card-max-width: 320px;
+            --card-min-height: 400px;
+            --card-max-height: 450px;
+            --card-aspect-ratio: 2/3;
         }
         
+        /* CRITICAL NAVIGATION */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1030; /* Using unified z-index system */
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .navbar.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .navbar-container {
+            width: 100%;
+            margin: 0;
+            padding: 0 2rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 32px;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            transform: translateY(-10px);
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+        
+        /* NEW CARD-BASED LAYOUT */
         .main-content {
-            padding-top: 60px; /* Account for fixed navbar */
+            background: #0a0a0a;
+            min-height: 100vh;
+            padding: 2rem 0;
         }
         
         .container {
@@ -55,196 +129,260 @@
             padding: 0 2rem;
         }
         
-        .cta-section {
-            text-align: center;
-            padding: 4rem 0;
-        }
-        
-        .cta-buttons {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 2rem;
-        }
-        
-        .cta-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem 2rem;
-            border: 2px solid var(--primary);
-            background: transparent;
-            color: var(--primary);
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            min-width: 200px;
-        }
-        
-        .cta-btn:hover {
-            background: var(--primary);
-            color: var(--bg-primary);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
-            transform: translateY(-2px);
-        }
-        
-        .cta-btn.primary {
-            background: var(--primary);
-            color: var(--bg-primary);
-        }
-        
-        .cta-btn.primary:hover {
-            background: transparent;
-            color: var(--primary);
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 4rem 0;
-        }
-        
-        .feature-card {
-            background: rgba(26, 26, 46, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        /* YELLOW BANNER - Moved up and restyled */
+        .yellow-banner {
+            background: linear-gradient(135deg, var(--neon-gold) 0%, #ffed4e 100%);
             border-radius: 12px;
             padding: 2rem;
+            margin: 2rem 0 4rem 0;
             text-align: center;
-            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3);
+            border: 2px solid var(--neon-gold);
         }
         
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.2);
-        }
-        
-        .feature-icon {
-            font-size: 3rem;
+        .yellow-banner h2 {
+            color: #000;
+            font-size: 2.5rem;
             margin-bottom: 1rem;
+            font-weight: 700;
         }
         
-        .feature-card h3 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-        
-        .feature-card p {
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-        
-        /* Hero Section Styles */
-        .hero-section {
-            min-height: 60vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-primary);
-            padding: 4rem 0;
-        }
-        
-        .hero-content {
-            text-align: center;
-        }
-        
-        .hero-brand {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 3px;
+        .yellow-banner p {
+            color: #333;
+            font-size: 1.2rem;
             margin-bottom: 2rem;
+        }
+        
+        .banner-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
             flex-wrap: wrap;
         }
         
-        .hero-brand-letter {
+        .banner-btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .banner-btn.primary {
+            background: #000;
+            color: var(--neon-gold);
+            border-color: #000;
+        }
+        
+        .banner-btn.primary:hover {
+            background: transparent;
+            color: #000;
+        }
+        
+        .banner-btn.secondary {
+            background: transparent;
+            color: #000;
+            border-color: #000;
+        }
+        
+        .banner-btn.secondary:hover {
+            background: #000;
+            color: var(--neon-gold);
+        }
+        
+        /* CENTRAL HUB CARD */
+        .central-hub {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 20px;
+            padding: 3rem;
+            padding-top: 5rem; /* Increased top padding to prevent navbar blending */
+            margin: 4rem 0;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .central-hub:hover {
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.4);
+            transform: translateY(-5px);
+        }
+        
+        .central-hub h2 {
+            color: var(--neon-cyan);
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+        
+        .central-hub p {
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .telegram-link {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--neon-cyan), #0099cc);
+            color: #000;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        
+        .telegram-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+        
+        /* UNIFIED BLOCKZONE CARD SYSTEM - NOW INHERITED FROM page-template.css */
+        /* All card styling is now managed by the enterprise-grade unified system */
+        /* Only keeping card-specific color overrides for visual distinction */
+        
+        /* PROPER SPACING FOR UNIFIED SYSTEM */
+        .blockzone-grid {
+            margin-top: 6rem !important; /* Increased top margin to prevent navbar blending */
+        }
+        
+        /* CARD-SPECIFIC NEON COLORS - ALL BLUE FOR MAIN LANDING */
+        .card-gaming,
+        .card-technology,
+        .card-education,
+        .card-rewards,
+        .card-decentralized,
+        .card-community {
+            border-color: var(--neon-cyan) !important;
+        }
+        
+        .card-gaming:hover,
+        .card-technology:hover,
+        .card-education:hover,
+        .card-rewards:hover,
+        .card-decentralized:hover,
+        .card-community:hover {
+            border-color: var(--neon-cyan) !important;
+            box-shadow: 0 12px 40px rgba(0, 212, 255, 0.2), 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+        }
+        
+        .card-gaming h3,
+        .card-technology h3,
+        .card-education h3,
+        .card-rewards h3,
+        .card-decentralized h3,
+        .card-community h3 {
+            color: var(--neon-cyan) !important;
+        }
+        
+        /* MINI LOGO AT BOTTOM - 1/10th size of main logo */
+        .mini-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 0;
+            background: transparent;
+        }
+        
+        .mini-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.9px; /* 3x bigger (was 0.3px) */
+        }
+        
+        .mini-logo-letter {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 60px;
-            height: 60px;
-            border-radius: 3px;
-            font-size: 48px;
+            width: 18px; /* 3x bigger (was 6px) */
+            height: 18px; /* 3x bigger (was 6px) */
+            border-radius: 0.9px; /* 3x bigger (was 0.3px) */
+            font-size: 23.4px; /* 3x bigger (was 7.8px) */
             font-weight: bold;
             color: #000;
-            background: var(--primary);
-            border: 2px solid #ff4444;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+            background: #00ff41;
+            border: 0.6px solid #ff4444; /* 3x bigger (was 0.2px) */
+            box-shadow: none;
             transition: all 0.3s ease;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Minion Pro', 'Minion Pro Bold', 'Times New Roman', serif;
         }
         
-        .hero-brand-letter:nth-child(6) {
-            /* The "Z" - make it yellow like favicon */
+        .mini-logo-letter:nth-child(6) {
+            /* The "Z" - make it look like the favicon */
             background: #FFFF00;
-            border: 2px solid #ff4444;
+            border: 0.6px solid #ff4444;
             color: #ff4444;
-            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+            box-shadow: none;
+            font-size: 25.2px; /* 3x bigger (was 8.4px) */
         }
         
-        .hero-brand-letter:nth-child(10) {
-            /* The space */
-            background: var(--primary);
-            border: 2px solid #ff4444;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
-            width: 60px;
+        .mini-logo-letter:nth-child(10) {
+            /* The space - make it green like the others */
+            background: #00ff41;
+            border: 0.6px solid #ff4444;
+            box-shadow: none;
+            width: 18px; /* 3x bigger (was 6px) */
         }
         
-        .hero-subtitle {
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-            font-weight: 300;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            margin-bottom: 2rem;
-        }
-        
-        .hero-subtitle span {
-            display: inline-block;
-            margin: 0 0.5rem;
-        }
-        
+        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .hero-brand-letter {
-                width: 40px;
-                height: 40px;
-                font-size: 32px;
+            .central-hub {
+                padding: 2rem;
             }
             
-            .hero-subtitle {
-                font-size: 1rem;
+            .central-hub h2 {
+                font-size: 2.2rem;
             }
             
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
+            .yellow-banner h2 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .central-hub {
+                padding: 1.5rem;
             }
             
-            .features-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
+            .central-hub h2 {
+                font-size: 1.8rem;
+            }
+            
+            .yellow-banner h2 {
+                font-size: 1.6rem;
             }
         }
     </style>
 </head>
-<body>
-    <!-- YOUR PERFECTED NAVIGATION BAR -->
-    <nav class="navbar loaded" id="navbar">
+
+<body class="landing-page">
+    <!-- Navigation - Fixed and Optimized -->
+    <nav class="navbar" id="navbar">
         <div class="navbar-container">
             <ul class="navbar-nav">
                 <li><a href="/" class="nav-link active">Home</a></li>
-                <li><a href="gaming/" class="nav-link">Games</a></li>
-                <li><a href="academy/" class="nav-link">Academy</a></li>
-                <li><a href="pages/business-model.html" class="nav-link">Business</a></li>
+                <li><a href="/games/" class="nav-link">Games</a></li>
+                <li><a href="/academy/" class="nav-link">Academy</a></li>
+                <li><a href="/pages/business-model.html" class="nav-link">Business</a></li>
+                <li><a href="/pages/whitepaper.html" class="nav-link">Whitepaper</a></li>
+                <li><a href="/pages/user-profile.html" class="nav-link">Support</a></li>
+                <li><a href="/pages/profile.html" class="nav-link">Profile</a></li>
             </ul>
         </div>
     </nav>
-    
-    <!-- YOUR BEAUTIFUL HERO BRANDING -->
+
+    <!-- Hero Section - Critical Content First -->
     <section class="hero-section" id="heroSection">
         <div class="hero-content">
             <!-- Large Hero Brand with Proper Word Spacing -->
@@ -270,27 +408,29 @@
             </div>
         </div>
     </section>
-    
-    <!-- Main Content -->
+
+    <!-- Main Content - New Card-Based Layout -->
     <main class="main-content">
         <div class="container">
-            <!-- Call to Action Section -->
-            <section class="cta-section">
-                <h2 style="font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary);">Ready to Play & Learn?</h2>
-                <p style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 2rem;">
-                    Start with a FREE game daily, then compete for real USDC prizes in our skill-based tournaments.
-                </p>
-                
-                <div class="cta-buttons">
-                    <a href="/games/neondrop.html" class="cta-btn primary">
-                        🎮 Play NeonDrop - FREE Game
-                    </a>
-                    <a href="academy/" class="cta-btn">
-                        🎓 Start Learning - Academy
-                    </a>
+            <!-- Yellow Banner - Moved up and restyled -->
+            <section class="yellow-banner">
+                <h2>🎮 Ready to Play?</h2>
+                <p>Start with a FREE game daily, then compete for real USDC prizes in our skill-based tournaments.</p>
+                <div class="banner-buttons">
+                    <a href="/games/" class="banner-btn primary">🎯 Play Now - FREE Game</a>
+                    <a href="/academy/" class="banner-btn secondary">📚 Learn Blockchain</a>
                 </div>
             </section>
-            
+
+            <!-- Central Hub Card -->
+            <section class="central-hub">
+                <h2>Welcome to Black Zone Labs</h2>
+                <p>Where Classic Gaming Meets Web3 Innovation</p>
+                <p>At Black Zone Labs, we're building more than just a gaming platform – we're creating a decentralized community where nostalgic arcade classics come alive with cutting-edge blockchain technology.</p>
+                <a href="https://t.me/blockzonelab" target="_blank" class="telegram-link">💬 Chat with us</a>
+            </section>
+
+                        <!-- Unified Blockzone Cards Grid -->
             <div class="blockzone-grid">
                 <!-- Gaming Card -->
                 <div class="blockzone-card card-gaming">
@@ -362,14 +502,12 @@
         </div>
     </div>
 
+    <!-- Scripts -->
+    <script type="module" src="shared/core/event-bus.js"></script>
     <script>
         // Navbar animation
         const navbar = document.getElementById('navbar');
         setTimeout(() => navbar.classList.add('loaded'), 100);
-        
-        // Hero section animation
-        const heroSection = document.getElementById('heroSection');
-        setTimeout(() => heroSection.classList.add('loaded'), 200);
         
         // Auto-set data-text for hero-subtitle with multiple spans
         document.addEventListener('DOMContentLoaded', function() {
@@ -382,6 +520,10 @@
                 }
             }
         });
+        
+        // Hero section animation
+        const heroSection = document.getElementById('heroSection');
+        setTimeout(() => heroSection.classList.add('loaded'), 300);
     </script>
 </body>
 </html>

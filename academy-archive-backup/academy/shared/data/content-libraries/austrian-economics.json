@@ -1,0 +1,163 @@
+{
+  "title": "Austrian Economics Content Library",
+  "description": "Core concepts and thinkers from Austrian economics that explain Bitcoin's value proposition",
+  "version": "1.0",
+  "lastUpdated": "2024-01-15",
+  "categories": {
+    "core_principles": {
+      "title": "Core Austrian Principles",
+      "concepts": [
+        {
+          "id": "subjective_value",
+          "title": "Subjective Theory of Value",
+          "description": "Value is not inherent in objects but determined by individual preferences and circumstances",
+          "explanation": "Unlike classical economics which suggests value comes from labor or production costs, Austrian economics recognizes that value is subjective. A bottle of water has different value to someone in a desert versus someone by a lake.",
+          "bitcoin_connection": "Bitcoin's value is purely subjective - it has no intrinsic value but derives worth from what people are willing to trade for it.",
+          "key_thinker": "Carl Menger",
+          "quote": "Value is not inherent in goods, but rather in the relationship between goods and the human beings who use them."
+        },
+        {
+          "id": "marginal_utility",
+          "title": "Marginal Utility",
+          "description": "The value of each additional unit of a good decreases as supply increases",
+          "explanation": "The first unit of a good provides the highest satisfaction, with each additional unit providing less satisfaction. This explains why prices fall as supply increases.",
+          "bitcoin_connection": "Bitcoin's fixed supply of 21 million means each additional Bitcoin becomes more valuable as adoption grows, creating deflationary pressure.",
+          "key_thinker": "William Stanley Jevons",
+          "quote": "The degree of utility varies with the quantity of commodity, and ultimately decreases as that quantity increases."
+        },
+        {
+          "id": "time_preference",
+          "title": "Time Preference",
+          "description": "People prefer present goods over future goods, requiring interest as compensation for waiting",
+          "explanation": "Individuals naturally prefer to consume now rather than later. Interest rates reflect this time preference and coordinate savings with investment.",
+          "bitcoin_connection": "Bitcoin's deflationary nature rewards those with low time preference who save rather than spend, aligning with Austrian principles of sound money.",
+          "key_thinker": "Eugen von Böhm-Bawerk",
+          "quote": "Present goods are worth more than future goods of the same kind and quantity."
+        },
+        {
+          "id": "entrepreneurship",
+          "title": "Entrepreneurial Discovery",
+          "description": "Entrepreneurs discover and exploit profit opportunities through alertness to market conditions",
+          "explanation": "Entrepreneurs don't just respond to existing demand but create new value by discovering unmet needs and coordinating resources.",
+          "bitcoin_connection": "Satoshi Nakamoto was the ultimate entrepreneur, discovering the opportunity for decentralized digital money and coordinating the development of Bitcoin.",
+          "key_thinker": "Israel Kirzner",
+          "quote": "Entrepreneurship is the alertness to hitherto unnoticed opportunities."
+        }
+      ]
+    },
+    "monetary_theory": {
+      "title": "Monetary Theory",
+      "concepts": [
+        {
+          "id": "sound_money",
+          "title": "Sound Money Principles",
+          "description": "Money should be scarce, divisible, portable, durable, and resistant to political manipulation",
+          "explanation": "Sound money maintains its purchasing power over time and serves as a reliable medium of exchange, unit of account, and store of value.",
+          "bitcoin_connection": "Bitcoin embodies sound money principles: scarce (21M cap), divisible (to 8 decimal places), portable (digital), durable (immutable), and resistant to manipulation.",
+          "key_thinker": "Ludwig von Mises",
+          "quote": "The sound-money principle has two aspects. It is affirmative in approving the market's choice of a commonly used medium of exchange. It is negative in disapproving the government's propensity to meddle with the currency system."
+        },
+        {
+          "id": "inflation_tax",
+          "title": "Inflation as Hidden Taxation",
+          "description": "Money printing transfers wealth from savers to debtors and the government without explicit legislation",
+          "explanation": "When central banks create new money, they dilute the purchasing power of existing money, effectively taxing those who hold cash while benefiting those who can access new money first.",
+          "bitcoin_connection": "Bitcoin's fixed supply eliminates the possibility of inflation tax, protecting savers and ensuring fair distribution of monetary rewards.",
+          "key_thinker": "Milton Friedman",
+          "quote": "Inflation is always and everywhere a monetary phenomenon in the sense that it is and can be produced only by a more rapid increase in the quantity of money than in output."
+        },
+        {
+          "id": "business_cycle",
+          "title": "Austrian Business Cycle Theory",
+          "description": "Artificially low interest rates create unsustainable booms followed by inevitable busts",
+          "explanation": "When central banks suppress interest rates below market levels, they encourage malinvestment in long-term projects that aren't economically viable, leading to economic cycles.",
+          "bitcoin_connection": "Bitcoin's predictable monetary policy eliminates artificial interest rate manipulation, potentially reducing economic volatility and business cycles.",
+          "key_thinker": "Friedrich Hayek",
+          "quote": "The boom which leads to the crisis is not the result of too much saving, but of too much investment."
+        }
+      ]
+    },
+    "key_thinkers": {
+      "title": "Key Austrian Thinkers",
+      "thinkers": [
+        {
+          "id": "mises",
+          "name": "Ludwig von Mises",
+          "years": "1881-1973",
+          "key_works": ["Human Action", "The Theory of Money and Credit"],
+          "contributions": [
+            "Developed the Austrian theory of money and credit",
+            "Explained how government intervention leads to economic calculation problems",
+            "Founded the modern Austrian school revival"
+          ],
+          "bitcoin_relevance": "Mises' work on sound money and economic calculation directly supports Bitcoin's value proposition as apolitical, predictable money."
+        },
+        {
+          "id": "hayek",
+          "name": "Friedrich Hayek",
+          "years": "1899-1992",
+          "key_works": ["The Road to Serfdom", "Denationalisation of Money"],
+          "contributions": [
+            "Explained how knowledge is dispersed throughout society",
+            "Advocated for competing currencies and monetary competition",
+            "Warned about the dangers of central planning"
+          ],
+          "bitcoin_relevance": "Hayek's vision of competing currencies is realized through Bitcoin, which competes with government fiat money."
+        },
+        {
+          "id": "rothbard",
+          "name": "Murray Rothbard",
+          "years": "1926-1995",
+          "key_works": ["Man, Economy, and State", "What Has Government Done to Our Money?"],
+          "contributions": [
+            "Synthesized Austrian economics with libertarian political theory",
+            "Exposed the history of government money manipulation",
+            "Advocated for complete separation of money and state"
+          ],
+          "bitcoin_relevance": "Rothbard's critique of government money perfectly describes the problems Bitcoin solves."
+        }
+      ]
+    },
+    "historical_examples": {
+      "title": "Historical Examples",
+      "examples": [
+        {
+          "id": "german_hyperinflation",
+          "title": "German Hyperinflation (1923)",
+          "description": "The Weimar Republic's money printing led to complete currency collapse",
+          "details": "Germany printed money to pay war reparations, causing prices to double every few days. People needed wheelbarrows of cash to buy bread.",
+          "lesson": "Shows how government control of money can lead to complete economic destruction",
+          "bitcoin_connection": "Bitcoin's fixed supply prevents any government from inflating the currency"
+        },
+        {
+          "id": "gold_standard",
+          "title": "Classical Gold Standard (1819-1914)",
+          "description": "The most stable monetary period in modern history",
+          "details": "During the gold standard, prices were remarkably stable, with inflation averaging less than 1% per year over nearly a century.",
+          "lesson": "Sound money with natural scarcity provides economic stability",
+          "bitcoin_connection": "Bitcoin replicates gold's scarcity but with digital advantages"
+        },
+        {
+          "id": "bretton_woods",
+          "title": "Bretton Woods Collapse (1971)",
+          "description": "Nixon ended dollar convertibility to gold, ushering in fiat era",
+          "details": "When the US abandoned gold backing for the dollar, it began a period of persistent inflation and currency devaluation.",
+          "lesson": "Fiat money systems inevitably lead to inflation and wealth transfer",
+          "bitcoin_connection": "Bitcoin offers an alternative to the fiat system that began in 1971"
+        }
+      ]
+    }
+  },
+  "bitcoin_integration": {
+    "title": "How Austrian Economics Explains Bitcoin",
+    "summary": "Bitcoin is the natural evolution of Austrian economic principles into the digital age",
+    "key_points": [
+      "Bitcoin's fixed supply embodies the Austrian principle of sound money",
+      "Decentralization prevents government manipulation and inflation",
+      "Market discovery determines Bitcoin's value, not central planning",
+      "Bitcoin rewards low time preference and saving",
+      "The network effect creates natural monopoly without government coercion"
+    ],
+    "conclusion": "Bitcoin represents the culmination of Austrian economic thought - sound money that emerges from voluntary market processes rather than government decree."
+  }
+} 

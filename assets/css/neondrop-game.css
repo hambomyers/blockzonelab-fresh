@@ -1,0 +1,823 @@
+/**
+ * NEON DROP - GAME SPECIFIC STYLES
+ * Cleaned and optimized version - removed duplicates and dead code
+ */
+
+/* ============ GAME CANVAS RENDERING ============ */
+#game {
+    filter: brightness(1.03) contrast(1.01);
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+}
+
+#bg {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+}
+
+/* ============ GAME LAYOUT ============ */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Inter', Arial, sans-serif;
+    color: #fff;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#gameContainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+    padding-bottom: 80px;
+    box-sizing: border-box;
+}
+
+#bg, #game {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+#bg {
+    z-index: 1;
+}
+
+#game {
+    z-index: 2;
+}
+
+#ui {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* ============ PROFESSIONAL UI PANELS ============ */
+.panel-base {
+    position: absolute;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    backdrop-filter: none;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Orbitron', monospace;
+    text-shadow: none;
+    max-width: 280px;
+    z-index: 100;
+    box-shadow: none;
+    transition: all 0.3s ease;
+    text-align: center;
+    line-height: 1;
+}
+
+.panel-base:hover {
+    background: rgba(40, 44, 52, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 16px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    font-size: 14px;
+    text-shadow: none;
+    text-align: left;
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.3);
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.panel-notification {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    color: #00d4ff;
+    font-size: 13px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.panel-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============ GAME OVER SCREEN ============ */
+.game-over-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.90);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.game-over-card {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+    animation: cardSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.game-over-title {
+    color: #00d4ff;
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-shadow: 0 0 15px #00d4ff, 0 0 25px #00d4ff;
+    animation: neonGlow 2s ease-in-out infinite;
+    font-family: 'Bungee', monospace;
+}
+
+.game-over-subtitle {
+    color: #cccccc;
+    font-size: 18px;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.game-over-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+    margin: 30px 0;
+    border-radius: 1px;
+}
+
+.game-over-stats {
+    margin: 30px 0;
+}
+
+.hero-section {
+    margin-bottom: 30px;
+}
+
+.netflix-chiclet-title {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.chiclet-word {
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.chiclet-spacer {
+    display: inline-block;
+    width: 15px;
+}
+
+.chiclet {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 5px;
+    background: linear-gradient(135deg, #00d4ff, #0099cc);
+    border: 2px solid #00d4ff;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.5);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+    transition: all 0.3s ease;
+    animation: gameChicletEntrance 0.6s ease-out;
+}
+
+.chiclet:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.6);
+}
+
+.chiclet.neon {
+    background: linear-gradient(135deg, #00ff00, #00cc00);
+    border-color: #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+.chiclet.drop {
+    background: linear-gradient(135deg, #ff6b6b, #cc5555);
+    border-color: #ff6b6b;
+    box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
+}
+
+.game-over-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.game-over-btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-over-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.game-over-btn:hover::before {
+    left: 100%;
+}
+
+.game-over-btn.primary {
+    background: linear-gradient(135deg, #00d4ff, #0099cc);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+.game-over-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.6);
+}
+
+.game-over-btn.secondary {
+    background: transparent;
+    color: #00d4ff;
+    border: 2px solid #00d4ff;
+}
+
+.game-over-btn.secondary:hover {
+    background: rgba(0, 212, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.game-over-btn:active {
+    transform: translateY(0);
+}
+
+/* ============ CHALLENGE SYSTEM ============ */
+.challenge-creator {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 20px;
+    padding: 30px;
+    margin: 20px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.challenge-creator::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(0, 212, 255, 0.1) 50%, transparent 70%);
+    animation: rotate 3s linear infinite;
+    pointer-events: none;
+}
+
+.challenge-creator-header {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 1;
+}
+
+.challenge-creator-header h3 {
+    color: #00d4ff;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-shadow: 0 0 15px #00d4ff;
+}
+
+.challenge-creator-header p {
+    color: #cccccc;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.challenge-tiers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.challenge-tier {
+    background: rgba(0, 212, 255, 0.1);
+    border: 2px solid #00d4ff;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.challenge-tier::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.challenge-tier:hover::before,
+.challenge-tier:hover {
+    left: 100%;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+}
+
+.tier-header {
+    margin-bottom: 20px;
+}
+
+.tier-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.tier-header h4 {
+    color: #00d4ff;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.tier-details {
+    margin-bottom: 20px;
+}
+
+.tier-description {
+    color: #cccccc;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.tier-prize {
+    color: #ffd700;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.tier-time {
+    color: #888;
+    font-size: 12px;
+}
+
+.tier-button {
+    background: linear-gradient(135deg, #00d4ff, #0099cc);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.tier-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.tier-button:hover::before {
+    left: 100%;
+}
+
+.tier-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+}
+
+.tier-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ============ ANIMATIONS ============ */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes cardSlideIn {
+    from { 
+        transform: translateY(30px); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateY(0); 
+        opacity: 1; 
+    }
+}
+
+@keyframes neonGlow {
+    0%, 100% { 
+        text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor; 
+    }
+    50% { 
+        text-shadow: 0 0 20px currentColor, 0 0 30px currentColor, 0 0 40px currentColor; 
+    }
+}
+
+@keyframes gameChicletEntrance {
+    0% { 
+        transform: translateY(-30px) scale(0.3) rotate(10deg); 
+        opacity: 0; 
+    }
+    60% { 
+        transform: translateY(2px) scale(1.1) rotate(-3deg); 
+        opacity: 0.8; 
+    }
+    100% { 
+        transform: translateY(0) scale(1) rotate(0deg); 
+        opacity: 1; 
+    }
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ============ RESPONSIVE DESIGN ============ */
+@media (max-width: 768px) {
+    .game-over-card {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+    
+    .game-over-title {
+        font-size: 28px;
+    }
+    
+    .challenge-tiers {
+        grid-template-columns: 1fr;
+    }
+    
+    .game-over-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .game-over-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-over-title {
+        font-size: 24px;
+    }
+    
+    .chiclet {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+    
+    .challenge-creator-header h3 {
+        font-size: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .game-over-card,
+    .chiclet,
+    .challenge-tier {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* ============ MOBILE RESPONSIVE & TOUCH CONTROLS ============ */
+
+/* Modern Swipe Controls - Clean iPhone Interface */
+#touch-controls {
+    display: none !important; /* Completely hide old touch controls */
+}
+
+/* Space Bar Simulation for Game Start */
+.space-bar-simulator {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.1));
+    border: 2px solid #00d4ff;
+    border-radius: 25px;
+    padding: 15px 30px;
+    color: #00d4ff;
+    font-family: 'Bungee', monospace;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 200px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.space-bar-simulator:hover {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 212, 255, 0.2));
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+    transform: translateX(-50%) scale(1.05);
+}
+
+.space-bar-simulator:active {
+    transform: translateX(-50%) scale(0.95);
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.4), rgba(0, 212, 255, 0.3));
+}
+
+/* Game Controls Indicator */
+#space-indicator {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Swipe Gesture Visual Feedback */
+.swipe-feedback {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 212, 255, 0.2);
+    border: 2px solid #00d4ff;
+    border-radius: 15px;
+    padding: 10px 20px;
+    color: #00d4ff;
+    font-family: 'Bungee', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 9999;
+    pointer-events: none;
+    animation: swipeFeedback 0.5s ease-out;
+}
+
+@keyframes swipeFeedback {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    #gameContainer {
+        padding-bottom: 120px; /* Space for touch controls */
+    }
+    
+    .panel-base {
+        max-width: 90%;
+        font-size: 14px;
+        padding: 12px;
+    }
+    
+    .game-over-card {
+        max-width: 95% !important;
+        padding: 30px 20px !important;
+        margin: 20px !important;
+    }
+    
+    .game-over-title {
+        font-size: 28px !important;
+    }
+    
+    .score-display {
+        font-size: 48px !important;
+    }
+    
+    .welcome-container {
+        padding: 30px 20px;
+        margin: 20px;
+        max-width: 95%;
+    }
+    
+    .welcome-title {
+        font-size: 28px;
+    }
+    
+    .welcome-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .welcome-actions .btn {
+        width: 100%;
+        padding: 15px 20px;
+        font-size: 16px;
+    }
+    
+    /* Show touch controls on mobile */
+    #touch-controls {
+        display: block;
+        pointer-events: all;
+    }
+    
+    /* Adjust game canvas for mobile */
+    #game, #bg {
+        width: 100vw;
+        height: calc(100vh - 120px);
+    }
+}
+
+@media (max-width: 480px) {
+    .game-over-card {
+        padding: 20px 15px !important;
+    }
+    
+    .game-over-title {
+        font-size: 24px !important;
+    }
+    
+    .score-display {
+        font-size: 36px !important;
+    }
+    
+    .welcome-container {
+        padding: 20px 15px;
+    }
+    
+    .welcome-title {
+        font-size: 24px;
+    }
+    
+    .touch-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+    }
+    
+    .touch-btn[data-action="drop"],
+    .touch-btn[data-action="hold"] {
+        width: 70px;
+        height: 50px;
+        font-size: 14px;
+    }
+    
+    .touch-left, .touch-right {
+        bottom: 80px;
+    }
+    
+    .touch-center {
+        bottom: 15px;
+    }
+    
+    .touch-bottom {
+        bottom: 50px;
+    }
+}
+
+/* Touch-specific improvements */
+@media (hover: none) and (pointer: coarse) {
+    /* Disable hover effects on touch devices */
+    .touch-btn:hover {
+        transform: none;
+        background: rgba(0, 212, 255, 0.1);
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+    }
+    
+    .welcome-actions .btn:hover {
+        transform: none;
+    }
+    
+    /* Increase touch targets */
+    .welcome-actions .btn {
+        min-height: 44px; /* Apple's recommended minimum */
+    }
+    
+    .touch-btn {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+    /* Prevent zoom on input focus */
+    input, textarea, select {
+        font-size: 16px;
+    }
+    
+    /* Fix for iOS Safari viewport issues */
+    body {
+        -webkit-text-size-adjust: 100%;
+        -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Fix for iOS Safari position: fixed issues */
+    #touch-controls {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+}
+
+/* Android Chrome specific fixes */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    /* Fix for Android Chrome touch issues */
+    .touch-btn {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+}
+

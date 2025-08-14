@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support & Community - BlockZone Lab</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="BlockZone Lab Support & Community Hub - Get help, join discussions, and connect with fellow gamers and developers">
+    <meta name="keywords" content="support, community, telegram, discord, help, blockzone lab">
+    
+    <!-- Professional Design System CSS -->
+    <link rel="stylesheet" href="../assets/css/design-system.css">
+    <link rel="stylesheet" href="../shared/hero-shared.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+    
+    <style>
+        /* CRITICAL RENDERING PATH - Minimal styles for instant visual feedback */
+        :root {
+            --primary: #00ff41;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            
+            /* Neon Drop Color Palette */
+            --neon-cyan: #00d4ff;
+            --neon-green: #00ff00;
+            --neon-red: #ff6b6b;
+            --neon-gold: #ffd700;
+            --dark-blue-1: #1a1a2e;
+            --dark-blue-2: #16213e;
+            --dark-blue-3: #0f3460;
+            
+            /* Neutral Grays */
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+        }
+        
+        /* CRITICAL NAVIGATION - STANDARDIZED */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .navbar.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .navbar-container {
+            width: 100%;
+            margin: 0;
+            padding: 0 2rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 32px;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            transform: translateY(-10px);
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+        
+        /* HERO SECTION - USES SHARED CSS */
+        .hero-section.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+
+        
+        /* NEW SUPPORT LAYOUT - COOL COMMUNITY VIBE */
+        .main-content {
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 2rem 0;
+            color: var(--text-primary);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* CENTRAL HUB CARD - SUPPORT INTRODUCTION */
+        .central-hub {
+            background: linear-gradient(135deg, var(--dark-blue-1), var(--dark-blue-2));
+            border: 2px solid var(--neon-cyan);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem 0;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .central-hub:hover {
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.4);
+            transform: translateY(-5px);
+        }
+        
+        .central-hub h2 {
+            color: var(--neon-cyan);
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .central-hub p {
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .support-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            color: var(--neon-cyan);
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* COMMUNITY CARDS GRID */
+        .community-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 4rem 0;
+            max-width: 75%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .community-card {
+            background: linear-gradient(135deg, var(--dark-blue-2), var(--dark-blue-3));
+            border: 2px solid var(--neon-green);
+            border-radius: 16px;
+            padding: 2rem 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            aspect-ratio: 2/3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .community-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .community-card:hover::before {
+            left: 100%;
+        }
+        
+        .community-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+            transform: translateY(-5px);
+        }
+        
+        .community-card h3 {
+            color: var(--neon-green);
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .community-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+        
+        .community-meta {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .community-tag {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+        }
+        
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
+            color: var(--bg-primary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+        }
+        
+        .btn-secondary {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-gold));
+            color: var(--bg-primary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+        
+        .btn-tertiary {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--neon-gold), var(--neon-red));
+            color: var(--bg-primary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid var(--neon-gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn-tertiary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+        
+        /* MINI LOGO AT BOTTOM - 1/10th size of main logo */
+        .mini-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 0;
+            background: transparent;
+        }
+        
+        .mini-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.9px; /* 3x bigger (was 0.3px) */
+        }
+        
+        .mini-logo-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px; /* 3x bigger (was 6px) */
+            height: 18px; /* 3x bigger (was 6px) */
+            border-radius: 0.9px; /* 3x bigger (was 0.3px) */
+            font-size: 23.4px; /* 3x bigger (was 7.8px) */
+            font-weight: bold;
+            color: #000;
+            background: #00ff41;
+            border: 0.6px solid #ff4444; /* 3x bigger (was 0.2px) */
+            box-shadow: none;
+            transition: all 0.3s ease;
+            font-family: 'Minion Pro', 'Minion Pro Bold', 'Times New Roman', serif;
+        }
+        
+        .mini-logo-letter:nth-child(6) {
+            /* The "Z" - make it look like the favicon */
+            background: #FFFF00;
+            border: 0.6px solid #ff4444;
+            color: #ff4444;
+            box-shadow: none;
+            font-size: 25.2px; /* 3x bigger (was 8.4px) */
+        }
+        
+        .mini-logo-letter:nth-child(10) {
+            /* The space - make it green like the others */
+            background: #00ff41;
+            border: 0.6px solid #ff4444;
+            box-shadow: none;
+            width: 18px; /* 3x bigger (was 6px) */
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .community-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+                max-width: 90%;
+            }
+            
+            .community-card {
+                padding: 1.5rem 0.8rem;
+            }
+            
+            .central-hub {
+                padding: 2rem;
+            }
+            
+            .central-hub h2 {
+                font-size: 2.2rem;
+            }
+            
+            .support-stats {
+                gap: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .community-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                max-width: 95%;
+            }
+            
+            .community-card {
+                padding: 1.2rem 0.6rem;
+            }
+            
+            .central-hub {
+                padding: 1.5rem;
+            }
+            
+            .central-hub h2 {
+                font-size: 1.8rem;
+            }
+            
+            .support-stats {
+                gap: 1.5rem;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="support-page">
+    <!-- Navigation - Fixed and Optimized -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <ul class="navbar-nav">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/games/" class="nav-link">Games</a></li>
+                <li><a href="/academy/" class="nav-link">Academy</a></li>
+                <li><a href="/pages/business-model.html" class="nav-link">Business</a></li>
+                <li><a href="/pages/whitepaper.html" class="nav-link">Whitepaper</a></li>
+                <li><a href="/pages/user-profile.html" class="nav-link active">Support</a></li>
+                <li><a href="/pages/profile.html" class="nav-link">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Critical Content First -->
+    <section class="hero-section" id="heroSection">
+        <div class="hero-content">
+            <!-- Large Hero Brand -->
+            <div class="hero-brand">
+                <span class="hero-brand-letter">B</span>
+                <span class="hero-brand-letter">l</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">c</span>
+                <span class="hero-brand-letter">k</span>
+                <span class="hero-brand-letter">Z</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">n</span>
+                <span class="hero-brand-letter">e</span>
+                <span class="hero-brand-letter"> </span>
+                <span class="hero-brand-letter">L</span>
+                <span class="hero-brand-letter">a</span>
+                <span class="hero-brand-letter">b</span>
+            </div>
+            <div class="hero-subtitle" data-text="SUPPORT">
+                <span>SUPPORT</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Content - New Beautiful Layout -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Central Hub Card - Support Introduction -->
+            <section class="central-hub">
+                <h2>Community & Support Hub</h2>
+                <p>Join the BlockZone Lab community! Get help, share strategies, connect with fellow gamers, and stay updated on the latest developments in our Web3 gaming ecosystem.</p>
+                <div class="support-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Community Support</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">1000+</span>
+                        <span class="stat-label">Active Members</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">Instant</span>
+                        <span class="stat-label">Response Time</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Community Cards Grid -->
+            <div class="community-grid">
+                <!-- Card 1 - Telegram -->
+                <a href="https://t.me/blockzonelab" target="_blank" class="community-card">
+                    <h3>💬 Telegram</h3>
+                    <p>Join our main community chat! Get instant support, share gaming strategies, and connect with fellow BlockZone Lab enthusiasts.</p>
+                    <div class="community-meta">
+                        <span class="community-tag">Live Chat</span>
+                        <span class="community-tag">24/7</span>
+                    </div>
+                    <div class="btn-primary">Join Chat</div>
+                </a>
+
+                <!-- Card 2 - DEV Blockzonelab.com -->
+                <a href="https://dev.blockzonelab.com" target="_blank" class="community-card">
+                    <h3>🔧 DEV Portal</h3>
+                    <p>Access our developer portal for technical documentation, API references, and integration guides for building on BlockZone Lab.</p>
+                    <div class="community-meta">
+                        <span class="community-tag">Dev Docs</span>
+                        <span class="community-tag">API</span>
+                    </div>
+                    <div class="btn-secondary">Visit Portal</div>
+                </a>
+
+                <!-- Card 3 - Discord -->
+                <a href="#" class="community-card">
+                    <h3>🎮 Discord</h3>
+                    <p>Join our Discord server for organized discussions, tournament announcements, and dedicated channels for different topics.</p>
+                    <div class="community-meta">
+                        <span class="community-tag">Organized</span>
+                        <span class="community-tag">Channels</span>
+                    </div>
+                    <div class="btn-tertiary">Coming Soon</div>
+                </a>
+
+                <!-- Card 4 - GitHub -->
+                <a href="https://github.com/hambomyers/Blockzonelab-vs3" target="_blank" class="community-card">
+                    <h3>📚 GitHub</h3>
+                    <p>Explore our open-source codebase, contribute to development, and stay updated on the latest features and improvements.</p>
+                    <div class="community-meta">
+                        <span class="community-tag">Open Source</span>
+                        <span class="community-tag">Contributions</span>
+                    </div>
+                    <div class="btn-primary">View Code</div>
+                </a>
+
+                <!-- Card 5 - Documentation -->
+                <a href="/pages/whitepaper.html" class="community-card">
+                    <h3>📖 Documentation</h3>
+                    <p>Access comprehensive technical documentation, whitepapers, and detailed guides about our platform architecture.</p>
+                    <div class="community-meta">
+                        <span class="community-tag">Technical</span>
+                        <span class="community-tag">Guides</span>
+                    </div>
+                    <div class="btn-secondary">Read Docs</div>
+                </a>
+
+                <!-- Card 6 - Support Ticket -->
+                <a href="mailto:support@blockzonelab.com" class="community-card">
+                    <h3>🎫 Support</h3>
+                    <p>Need direct help? Submit a support ticket for personalized assistance with any issues or questions you might have.</p>
+                    <div class="community-meta">
+                        <span class="community-tag">Direct Help</span>
+                        <span class="community-tag">Priority</span>
+                    </div>
+                    <div class="btn-tertiary">Contact Us</div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mini Logo at Bottom - 1/10th size of main logo -->
+    <div class="mini-logo-container">
+        <div class="mini-logo">
+            <span class="mini-logo-letter">B</span>
+            <span class="mini-logo-letter">l</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">c</span>
+            <span class="mini-logo-letter">k</span>
+            <span class="mini-logo-letter">Z</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">n</span>
+            <span class="mini-logo-letter">e</span>
+            <span class="mini-logo-letter"> </span>
+            <span class="mini-logo-letter">L</span>
+            <span class="mini-logo-letter">a</span>
+            <span class="mini-logo-letter">b</span>
+        </div>
+    </div>
+
+    <script>
+        // Navbar animation
+        const navbar = document.getElementById('navbar');
+        setTimeout(() => navbar.classList.add('loaded'), 100);
+
+        // Hero section animation
+        const heroSection = document.getElementById('heroSection');
+        setTimeout(() => heroSection.classList.add('loaded'), 300);
+        
+        // Auto-set data-text for hero-subtitle
+        document.addEventListener('DOMContentLoaded', function() {
+            const heroSubtitle = document.querySelector('.hero-subtitle');
+            if (heroSubtitle && !heroSubtitle.getAttribute('data-text')) {
+                const spans = heroSubtitle.querySelectorAll('span');
+                if (spans.length > 1) {
+                    const text = Array.from(spans).map(span => span.textContent).join(' ');
+                    heroSubtitle.setAttribute('data-text', text);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
