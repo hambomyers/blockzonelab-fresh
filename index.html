@@ -7,15 +7,19 @@
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="BlockZone Lab - Professional gaming tournaments with real USDC prizes and comprehensive blockchain education. FREE first game daily, $0.25 per game or $2.50 day pass until 11pm EST.">
-    <meta name="keywords" content="blockchain gaming, USDC prizes, crypto education, skill-based games, neon drop, tournaments, Sonic Labs">
+    <meta name="keywords" content="blockchain gaming, USDC prizes, crypto education, skill-based games, neon drop, tournaments">
     
-    <!-- Your Perfected Navigation & Branding Styles -->
-    <link rel="stylesheet" href="./shared/navigation-styles.css">
-    <link rel="stylesheet" href="./shared/responsive-framework.css">
+    <!-- EXACT LEGACY STYLES -->
+    <link rel="stylesheet" href="assets/css/legacy-exact.css">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#00ff41">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     
     <style>
         /* Landing Page Specific Styles */
@@ -222,15 +226,36 @@
                 <li><a href="gaming/" class="nav-link">Games</a></li>
                 <li><a href="academy/" class="nav-link">Academy</a></li>
                 <li><a href="pages/business-model.html" class="nav-link">Business</a></li>
-                <li><a href="pages/whitepaper.html" class="nav-link">Whitepaper</a></li>
-                <li><a href="pages/user-profile.html" class="nav-link">Support</a></li>
-                <li><a href="pages/profile.html" class="nav-link">Profile</a></li>
             </ul>
         </div>
     </nav>
     
     <!-- YOUR BEAUTIFUL HERO BRANDING -->
-    <div id="hero-placeholder"></div>
+    <section class="hero-section" id="heroSection">
+        <div class="hero-content">
+            <!-- Large Hero Brand with Proper Word Spacing -->
+            <div class="hero-brand">
+                <span class="hero-brand-letter">B</span>
+                <span class="hero-brand-letter">l</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">c</span>
+                <span class="hero-brand-letter">k</span>
+                <span class="hero-brand-letter">Z</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">n</span>
+                <span class="hero-brand-letter">e</span>
+                <span class="hero-brand-letter"> </span>
+                <span class="hero-brand-letter">L</span>
+                <span class="hero-brand-letter">a</span>
+                <span class="hero-brand-letter">b</span>
+            </div>
+            <div class="hero-subtitle" data-text="PREMIUM CRYPTO EDUTAINMENT">
+                <span>PREMIUM</span>
+                <span>CRYPTO</span>
+                <span>EDUTAINMENT</span>
+            </div>
+        </div>
+    </section>
     
     <!-- Main Content -->
     <main class="main-content">
@@ -243,7 +268,7 @@
                 </p>
                 
                 <div class="cta-buttons">
-                    <a href="gaming/neondrop.html" class="cta-btn primary">
+                    <a href="/games/neondrop.html" class="cta-btn primary">
                         🎮 Play NeonDrop - FREE Game
                     </a>
                     <a href="academy/" class="cta-btn">
@@ -252,99 +277,96 @@
                 </div>
             </section>
             
-            <!-- Features Grid -->
-            <section class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🎮</div>
-                    <h3>Skill-Based Gaming</h3>
-                    <p>Play NeonDrop and compete for real USDC prizes. FREE first game daily, then $0.25 per game or $2.50 unlimited day pass.</p>
+            <div class="blockzone-grid">
+                <!-- Gaming Card -->
+                <div class="blockzone-card card-gaming">
+                    <div class="card-content">
+                        <h3>🎮 Gaming</h3>
+                        <p>Daily Tournaments, Real Rewards. Step into beautifully crafted arcade game tournaments that run every day. For $0.25 per game, compete for prize pools where champions take home 30% of the pot.</p>
+                    </div>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🏆</div>
-                    <h3>Daily Leaderboards</h3>
-                    <p>Compete against players worldwide on our daily leaderboards. Rankings reset at 11pm EST with fresh opportunities to win.</p>
+
+                <!-- Technology Card -->
+                <div class="blockzone-card card-technology">
+                    <div class="card-content">
+                        <h3>⚡ Technology</h3>
+                        <p>Built on Lightning-Fast Sonic Labs – Andrei Cronje's revolutionary upgrade to Fantom – delivering over 10,000 transactions per second with sub-second finality. That's over 500 times faster than Ethereum.</p>
+                    </div>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🎓</div>
-                    <h3>Blockchain Academy</h3>
-                    <p>Master blockchain technology with 48 interactive lessons, hands-on demos, and professional certifications.</p>
+
+                <!-- Education Card -->
+                <div class="blockzone-card card-education">
+                    <div class="card-content">
+                        <h3>📚 Education</h3>
+                        <p>Learn While You Play. Beyond the competition lies a comprehensive pathway to Web3 mastery. Our self-paced curriculum guides you from blockchain fundamentals through advanced programming.</p>
+                    </div>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🔗</div>
-                    <h3>Sonic Labs Integration</h3>
-                    <p>Built on Sonic Labs network with seamless wallet integration, Apple Pay support, and instant transactions.</p>
+
+                <!-- Rewards Card -->
+                <div class="blockzone-card card-rewards">
+                    <div class="card-content">
+                        <h3>💰 Rewards</h3>
+                        <p>Every quarter spent has the potential to 2X minimum. The economics speak for themselves: while Ethereum transactions cost around $0.35-$0.65, Sonic transactions run approximately $0.0004.</p>
+                    </div>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">💰</div>
-                    <h3>Real USDC Prizes</h3>
-                    <p>Win actual cryptocurrency prizes in our tournaments. All payments processed securely through Sonic Labs blockchain.</p>
+
+                <!-- Decentralized Card -->
+                <div class="blockzone-card card-decentralized">
+                    <div class="card-content">
+                        <h3>🔗 Decentralized</h3>
+                        <p>Experience Web3 as it was intended: community-owned, transparently operated, built on principles of digital sovereignty. Every tournament, every lesson demonstrates decentralized gaming and education in harmony.</p>
+                    </div>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <h3>Mobile Optimized</h3>
-                    <p>Perfect gaming and learning experience on any device. Responsive design that works flawlessly on phones and desktops.</p>
+
+                <!-- Community Card -->
+                <div class="blockzone-card card-community">
+                    <div class="card-content">
+                        <h3>🌟 Community</h3>
+                        <p>See what's happening in our vibrant community. Join the conversation, share strategies, and connect with fellow gamers. Play and learn about what's under the hood together!</p>
+                    </div>
                 </div>
-            </section>
+            </div>
         </div>
     </main>
-    
+
+    <!-- Mini Logo at Bottom - 1/10th size of main logo -->
+    <div class="mini-logo-container">
+        <div class="mini-logo">
+            <span class="mini-logo-letter">B</span>
+            <span class="mini-logo-letter">l</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">c</span>
+            <span class="mini-logo-letter">k</span>
+            <span class="mini-logo-letter">Z</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">n</span>
+            <span class="mini-logo-letter">e</span>
+            <span class="mini-logo-letter"> </span>
+            <span class="mini-logo-letter">L</span>
+            <span class="mini-logo-letter">a</span>
+            <span class="mini-logo-letter">b</span>
+        </div>
+    </div>
+
     <script>
-        // Embed navigation directly to avoid loading issues
-        document.getElementById('navigation-placeholder').innerHTML = `
-            <nav class="navbar loaded" id="navbar">
-                <div class="navbar-container">
-                    <ul class="navbar-nav">
-                        <li><a href="./" class="nav-link active">Home</a></li>
-                        <li><a href="./gaming/" class="nav-link">Games</a></li>
-                        <li><a href="./academy/" class="nav-link">Academy</a></li>
-                        <li><a href="./pages/business-model.html" class="nav-link">Business</a></li>
-                        <li><a href="./pages/whitepaper.html" class="nav-link">Whitepaper</a></li>
-                        <li><a href="./pages/user-profile.html" class="nav-link">Support</a></li>
-                        <li><a href="./pages/profile.html" class="nav-link">Profile</a></li>
-                    </ul>
-                </div>
-            </nav>
-        `;
+        // Navbar animation
+        const navbar = document.getElementById('navbar');
+        setTimeout(() => navbar.classList.add('loaded'), 100);
         
-        // Embed hero branding directly
-        document.getElementById('hero-placeholder').innerHTML = `
-            <section class="hero-section" id="heroSection">
-                <div class="hero-content">
-                    <div class="hero-brand">
-                        <span class="hero-brand-letter">B</span>
-                        <span class="hero-brand-letter">l</span>
-                        <span class="hero-brand-letter">o</span>
-                        <span class="hero-brand-letter">c</span>
-                        <span class="hero-brand-letter">k</span>
-                        <span class="hero-brand-letter">Z</span>
-                        <span class="hero-brand-letter">o</span>
-                        <span class="hero-brand-letter">n</span>
-                        <span class="hero-brand-letter">e</span>
-                        <span class="hero-brand-letter"> </span>
-                        <span class="hero-brand-letter">L</span>
-                        <span class="hero-brand-letter">a</span>
-                        <span class="hero-brand-letter">b</span>
-                    </div>
-                    <div class="hero-subtitle" data-text="PREMIUM CRYPTO EDUTAINMENT">
-                        <span>PREMIUM</span>
-                        <span>CRYPTO</span>
-                        <span>EDUTAINMENT</span>
-                    </div>
-                </div>
-            </section>
-        `;
+        // Hero section animation
+        const heroSection = document.getElementById('heroSection');
+        setTimeout(() => heroSection.classList.add('loaded'), 200);
         
-        // Initialize identity system on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 BlockZone Lab Fresh - Loading...');
-            
-            console.log('✅ BlockZone Lab Fresh - Ready!');
-            // Core systems will be loaded when needed
+        // Auto-set data-text for hero-subtitle with multiple spans
+        document.addEventListener('DOMContentLoaded', function() {
+            const heroSubtitle = document.querySelector('.hero-subtitle');
+            if (heroSubtitle && !heroSubtitle.getAttribute('data-text')) {
+                const spans = heroSubtitle.querySelectorAll('span');
+                if (spans.length > 1) {
+                    const text = Array.from(spans).map(span => span.textContent).join(' ');
+                    heroSubtitle.setAttribute('data-text', text);
+                }
+            }
         });
     </script>
 </body>
