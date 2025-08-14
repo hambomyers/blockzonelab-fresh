@@ -1,0 +1,20 @@
+/*
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+/*.css
+  Content-Type: text/css
+
+/*.js
+  Content-Type: application/javascript
+
+/*.json
+  Content-Type: application/json
+
+/assets/*
+  Cache-Control: public, max-age=31536000
+
+/public/*
+  Cache-Control: public, max-age=31536000
