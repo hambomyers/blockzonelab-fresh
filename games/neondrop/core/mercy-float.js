@@ -15,19 +15,42 @@ class MercyCurveFloat {
     this.logDistribution();
   }
   
-  // Simply check the predetermined sequence
+  // Hybrid system: Base sequence + Real-time stack height mercy
   shouldBeFloat(stackHeight = 0) {
     const index = this.pieceCount++;
-    const decision = this.sequence[index % 1000] === 1;
+    const baseDecision = this.sequence[index % 1000] === 1;
     
-    if (decision) {
-      this.totalFloatsGiven++;
-      console.log(`✨ FLOAT #${this.totalFloatsGiven} at piece ${index + 1} (height: ${stackHeight})`);
-    } else {
-      console.log(`🔹 Normal piece #${index + 1} (height: ${stackHeight})`);
+    // Calculate real-time mercy percentage based on actual stack height
+    let mercyPercent = 5; // Base 5%
+    if (stackHeight >= 3) {
+      // Progressive scaling: 8% at height 3, up to 25% at height 20
+      const heightFactor = Math.min((stackHeight - 3) / 17, 1); // 0 to 1 scale
+      mercyPercent = 8 + (heightFactor * 17); // 8% to 25%
     }
     
-    return decision;
+    // Use daily seed for deterministic real-time rolls
+    const heightSeed = this.seed + index + stackHeight;
+    const heightRoll = this.quickRandom(heightSeed) * 100;
+    
+    // Check both base sequence AND real-time mercy
+    const realTimeMercy = heightRoll < mercyPercent;
+    const finalDecision = baseDecision || realTimeMercy;
+    
+    if (finalDecision) {
+      this.totalFloatsGiven++;
+      const reason = baseDecision ? 'sequence' : `mercy@${stackHeight}`;
+      console.log(`✨ FLOAT #${this.totalFloatsGiven} at piece ${index + 1} (height: ${stackHeight}, ${mercyPercent.toFixed(1)}%, ${reason})`);
+    } else {
+      console.log(`🔹 Normal piece #${index + 1} (height: ${stackHeight}, mercy: ${mercyPercent.toFixed(1)}%)`);
+    }
+    
+    return finalDecision;
+  }
+  
+  // Fast deterministic random for real-time mercy checks
+  quickRandom(seed) {
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
   }
   
   // Get current stats
