@@ -422,6 +422,47 @@
             }
         }
         
+        // Pre-generate daily seed for instant game startup
+        function preGenerateDailySeed() {
+            const today = new Date().toISOString().split('T')[0];
+            const cachedKey = `dailySeed_${today}`;
+            
+            // Check if already cached
+            try {
+                const cached = localStorage.getItem(cachedKey);
+                if (cached) {
+                    console.log('⚡ Daily seed already cached - game startup will be instant!');
+                    return;
+                }
+            } catch (error) {
+                // Continue to generate
+            }
+            
+            // Generate seed in background for instant game startup
+            console.log('🎲 Pre-generating daily seed for instant startup...');
+            let hash = 0;
+            const seedStr = `neondrop_${today}`;
+            for (let i = 0; i < seedStr.length; i++) {
+                hash = ((hash << 5) - hash) + seedStr.charCodeAt(i);
+                hash = hash & hash;
+            }
+            const seed = Math.abs(hash);
+            const processed = seed * 1689048361;
+            
+            // Cache for instant game startup
+            try {
+                localStorage.setItem(cachedKey, JSON.stringify({ 
+                    seed, 
+                    processed, 
+                    date: today,
+                    preGenerated: true 
+                }));
+                console.log('✅ Daily seed pre-generated - game startup will be blazing fast!');
+            } catch (error) {
+                console.warn('⚠️ Could not cache seed, game will generate on startup');
+            }
+        }
+
         // Initialize hybrid system when DOM is ready
         document.addEventListener('DOMContentLoaded', async () => {
             // Set log level based on environment
@@ -432,6 +473,9 @@
             } else {
                 console.log('🌟 NeonDrop - Hybrid Instant Play + Persistent Player Architecture');
             }
+            
+            // PRE-GENERATE DAILY SEED for instant game startup (0ms lookup!)
+            preGenerateDailySeed();
             
             const hybridSystem = new NeonDropHybridInstantPlay();
             window.neonDropHybridSystem = hybridSystem;

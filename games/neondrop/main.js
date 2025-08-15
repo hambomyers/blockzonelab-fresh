@@ -13,6 +13,7 @@ import { Config, GAME_CONFIG } from './config.js';
 import { GameOverSystem } from './game-over.js';
 import { ViewportManager } from './core/viewport-manager.js';
 import { ProfessionalRNG } from './core/game-engine.js';
+import './core/mercy-float.js'; // Import MercyCurveFloat class
 // Performance optimized - console.log removed
 
 // LAZY LOAD: Non-critical modules will be loaded on-demand
@@ -25,6 +26,7 @@ import { GameContext } from '/shared/core/game-context.js';
 import { OverlayManager } from '/shared/core/overlay-manager.js';
 import { GameStateMachine, GameState } from '/shared/core/game-states.js';
 import { BlockchainManager } from '/shared/wrapper/BlockchainManager.js';
+import { PaywallManager } from '/shared/components/PaywallManager.js';
 // Inline EventBus for performance optimization
 class EventBus {
   constructor() { this.listeners = {}; }
@@ -358,6 +360,10 @@ class NeonDrop {
                 this.dailySeed = seedData.seed;
                 this.seedDate = today;
                 this.engine.rng = new ProfessionalRNG(seedData.processed);
+                
+                // Initialize Mercy Curve FLOAT system with cached seed
+                this.floatSystem = new MercyCurveFloat(seedData.seed);
+                console.log('🎮 Mercy Curve FLOAT system initialized (cached)');
                 return seedData;
             }
         } catch (error) {
@@ -378,7 +384,11 @@ class NeonDrop {
         this.dailySeed = seed;
         this.seedDate = today;
         this.engine.rng = new ProfessionalRNG(processed);
+        
+        // Initialize Mercy Curve FLOAT system with daily seed
+        this.floatSystem = new MercyCurveFloat(seed);
         console.log('✅ Daily seed generated and cached');
+        console.log('🎮 Mercy Curve FLOAT system initialized');
         return { seed, processed };
     }
     
