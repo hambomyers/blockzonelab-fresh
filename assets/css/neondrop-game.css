@@ -91,6 +91,12 @@ html, body {
     transition: all 0.3s ease;
     text-align: center;
     line-height: 1;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    color: #00d4ff;
+    font-size: 13px;
+    opacity: 0;
 }
 
 .panel-base:hover {

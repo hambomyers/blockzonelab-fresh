@@ -151,17 +151,37 @@ export class ChicletRenderer {
             const pulse = Math.sin(this.floatPulse) * 0.15 + 0.85;
 
             // Arrow with number
-            this.drawFloatArrowWithNumber(ctx, centerX, centerY, movesRemaining, pulse);            // Edge glow for unused FLOAT
-            const glowRadius = Math.max(1, this.blockSize * 0.7);
+            this.drawFloatArrowWithNumber(ctx, centerX, centerY, movesRemaining, pulse);
+
+            // Enhanced beautiful glow for unused FLOAT pieces
+            const glowRadius = Math.max(1, this.blockSize * 1.2); // Larger glow radius
             if (Number.isFinite(centerX) && Number.isFinite(centerY) && Number.isFinite(glowRadius)) {
                 try {
-                    const glow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, glowRadius);
-                    glow.addColorStop(0, 'rgba(255, 255, 255, 0)');
-                    glow.addColorStop(0.7, `rgba(255, 255, 255, ${0.1 * pulse})`);
-                    glow.addColorStop(1, `rgba(255, 255, 255, ${0.2 * pulse})`);
+                    // Outer glow (larger, softer)
+                    const outerGlow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, glowRadius);
+                    outerGlow.addColorStop(0, `rgba(255, 255, 255, ${0.4 * pulse})`);
+                    outerGlow.addColorStop(0.3, `rgba(255, 255, 255, ${0.3 * pulse})`);
+                    outerGlow.addColorStop(0.7, `rgba(255, 255, 255, ${0.15 * pulse})`);
+                    outerGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
-                    ctx.fillStyle = glow;
+                    ctx.fillStyle = outerGlow;
+                    ctx.fillRect(x - this.blockSize * 0.2, y - this.blockSize * 0.2, 
+                               this.blockSize * 1.4, this.blockSize * 1.4);
+
+                    // Inner bright glow (smaller, more intense)
+                    const innerGlow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, this.blockSize * 0.6);
+                    innerGlow.addColorStop(0, `rgba(255, 255, 255, ${0.6 * pulse})`);
+                    innerGlow.addColorStop(0.5, `rgba(255, 255, 255, ${0.3 * pulse})`);
+                    innerGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                    ctx.fillStyle = innerGlow;
                     ctx.fillRect(x, y, this.blockSize, this.blockSize);
+
+                    // Pulsing border highlight
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.8 * pulse})`;
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x + 1, y + 1, this.blockSize - 2, this.blockSize - 2);
+
                 } catch (error) {
                     // Skip glow effect on render error
                 }
