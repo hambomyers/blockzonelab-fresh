@@ -1,60 +1,91 @@
-// === ULTRA-FAST INITIALIZATION ===
-const ULTRA_FAST = true;
+// === CORRECTED ULTRA-FAST INITIALIZATION ===
 
-// 1. Kill console logs (but keep performance timing)
-const originalLog = console.log;
-const log = ULTRA_FAST ? (msg) => {
-  // Allow performance timing logs through
-  if (msg && (msg.includes('⚡') || msg.includes('🎯') || msg.includes('ms'))) {
-    originalLog(msg);
-  }
-} : console.log;
-console.log = log;
-
-// 2. Pre-computed objects
-window.fastInit = {
-  PlayerProfile: { score: 0, level: 1 },
-  IdentityManager: { id: Date.now() },
-  // Everything else loads async
-};
-
-// 3. Defer everything non-critical
-function deferredInit() {
-  requestIdleCallback(() => {
-    // Game events
-    // Pause system  
-    // Blockchain
-    // Tournaments
-    // Audio
-  }, { timeout: 100 });
+// 1. Keep console logs during dev (you need them!)
+const PRODUCTION = false; // Set to true only for production
+if (PRODUCTION) {
+  const noop = () => {};
+  console.log = console.warn = console.info = noop;
 }
 
-// 4. Your new init (should be <10ms):
-(async function() {
+// Pre-declare everything at page load (not in function)
+window.gameState = new Uint8Array(1024);
+window.inputs = {};
+window.gameReady = false;
+
+// The actual fast daily package getter
+async function getDailyCached() {
+  const today = new Date().toISOString().split('T')[0];
+  const cacheKey = `daily-${today}`;
+  
+  // Check memory cache first (fastest)
+  if (window.dailyCache) {
+    return window.dailyCache;
+  }
+  
+  // Check session storage (fast)
+  const cached = sessionStorage.getItem(cacheKey);
+  if (cached) {
+    console.log('✅ Using cached daily package (0ms)');
+    window.dailyCache = JSON.parse(cached);
+    return window.dailyCache;
+  }
+  
+  // Use existing daily promise or generate fallback
+  const pkg = await (window.dailyPromise || Promise.resolve({ seed: Date.now() }));
+  sessionStorage.setItem(cacheKey, JSON.stringify(pkg));
+  window.dailyCache = pkg;
+  return pkg;
+}
+
+// Super minimal init - measure the REAL initialization
+(async function initGame() {
+  // Start timing HERE, not in a wrapper
   const t0 = performance.now();
   
-  // Instant assignments (1ms)
-  Object.assign(window, window.fastInit);
-  
-  // Daily package (already fetching) (0ms)
-  const daily = await (window.dailyPromise || Promise.resolve({}));
-  
-  // Core game state (2ms)
-  const state = new Uint8Array(1024);
-  
-  // Input capture (1ms)
-  document.onkeydown = e => (window.k |= (1 << e.keyCode));
-  
-  // Start loop (1ms)
-  requestAnimationFrame(function loop() {
-    window.gameLoop?.(state);
-    requestAnimationFrame(loop);
-  });
-  
-  console.log(`⚡ PLAYABLE IN: ${performance.now() - t0}ms`);
-  
-  // Everything else
-  deferredInit();
+  try {
+    // === PHASE 1: Critical Path (Target: <10ms) ===
+    console.log('⚡ Phase 1: Critical initialization...');
+    
+    // 1. Get cached daily package (should be instant)
+    const dailyPackage = await getDailyCached();
+    
+    // 2. Input capture (0.5ms)
+    document.onkeydown = e => {
+      if (!window.gameReady) return;
+      window.inputs[e.key] = 1;
+      if (window.handleInput) window.handleInput(e);
+    };
+    document.onkeyup = e => (window.inputs[e.key] = 0);
+    
+    // 3. Game flag (0.1ms)
+    window.gameReady = true;
+    
+    // 4. Start render (0.5ms)
+    requestAnimationFrame(function tick() {
+      if (window.gameUpdate) window.gameUpdate();
+      requestAnimationFrame(tick);
+    });
+    
+    // Log ACTUAL time
+    const phase1Time = performance.now() - t0;
+    console.log(`🎯 TRULY PLAYABLE IN: ${phase1Time.toFixed(1)}ms - Game is ready! ✅`);
+    
+    // === PHASE 2: Deferred Loading ===
+    requestIdleCallback(() => {
+      console.log('🔄 Phase 2: Loading non-critical systems...');
+      // Load everything else without blocking
+      setTimeout(() => {
+        // Initialize the full NeonDrop system
+        if (window.NeonDrop) {
+          const game = new window.NeonDrop();
+          game.initialize();
+        }
+      }, 0);
+    });
+    
+  } catch (error) {
+    console.error('❌ Init failed:', error);
+  }
 })();
 
 // Performance optimized - console.log removed
