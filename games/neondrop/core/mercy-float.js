@@ -47,21 +47,27 @@ class MercyCurveFloat {
     const index = this.pieceCount++;
     const baseDecision = this.sequence[index % 1000];
     
+    console.log(`🎮 FLOAT Check #${this.pieceCount}: height=${stackHeight}, baseDecision=${baseDecision}, lastFloat=${this.lastFloatAt}`);
+    
     // Dynamic adjustment based on actual stack height
     if (stackHeight >= 16 && baseDecision === 0) {
       // Emergency mercy: 30% chance override at danger zone
       const emergency = this.quickRandom(index + stackHeight) < 0.3;
+      console.log(`🚨 Emergency mercy check: height=${stackHeight}, emergency=${emergency}, gap=${this.pieceCount - this.lastFloatAt}`);
       if (emergency && this.pieceCount - this.lastFloatAt > 5) {
         this.lastFloatAt = this.pieceCount;
+        console.log(`✨ EMERGENCY FLOAT GRANTED! Piece #${this.pieceCount}`);
         return true;
       }
     }
     
     if (baseDecision === 1) {
       this.lastFloatAt = this.pieceCount;
+      console.log(`✨ FLOAT PIECE GENERATED! Piece #${this.pieceCount} (mercy curve)`);
       return true;
     }
     
+    console.log(`🔹 Normal piece #${this.pieceCount}`);
     return false;
   }
   

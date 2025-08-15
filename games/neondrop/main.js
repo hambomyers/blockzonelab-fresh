@@ -363,7 +363,17 @@ class NeonDrop {
                 
                 // Initialize Mercy Curve FLOAT system with cached seed
                 this.floatSystem = new MercyCurveFloat(seedData.seed);
+                window.floatSystem = this.floatSystem; // Make globally accessible for testing
                 console.log('🎮 Mercy Curve FLOAT system initialized (cached)');
+                
+                // Test the FLOAT system with a few calls
+                console.log('🧪 Testing FLOAT system:');
+                for (let i = 0; i < 5; i++) {
+                  const testHeight = i * 4; // Simulate increasing stack height
+                  const isFloat = this.floatSystem.shouldBeFloat(testHeight);
+                  console.log(`  Test ${i+1}: height=${testHeight}, isFloat=${isFloat}`);
+                }
+                
                 return seedData;
             }
         } catch (error) {
@@ -387,8 +397,17 @@ class NeonDrop {
         
         // Initialize Mercy Curve FLOAT system with daily seed
         this.floatSystem = new MercyCurveFloat(seed);
+        window.floatSystem = this.floatSystem; // Make globally accessible for testing
         console.log('✅ Daily seed generated and cached');
         console.log('🎮 Mercy Curve FLOAT system initialized');
+        
+        // Test the FLOAT system with a few calls
+        console.log('🧪 Testing FLOAT system:');
+        for (let i = 0; i < 5; i++) {
+          const testHeight = i * 4; // Simulate increasing stack height
+          const isFloat = this.floatSystem.shouldBeFloat(testHeight);
+          console.log(`  Test ${i+1}: height=${testHeight}, isFloat=${isFloat}`);
+        }
         return { seed, processed };
     }
     
