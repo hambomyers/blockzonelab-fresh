@@ -1,9 +1,15 @@
 // === ULTRA-FAST INITIALIZATION ===
 const ULTRA_FAST = true;
 
-// 1. Kill console logs
-const log = ULTRA_FAST ? () => {} : console.log;
-console.log = console.warn = console.info = log;
+// 1. Kill console logs (but keep performance timing)
+const originalLog = console.log;
+const log = ULTRA_FAST ? (msg) => {
+  // Allow performance timing logs through
+  if (msg && (msg.includes('⚡') || msg.includes('🎯') || msg.includes('ms'))) {
+    originalLog(msg);
+  }
+} : console.log;
+console.log = log;
 
 // 2. Pre-computed objects
 window.fastInit = {
