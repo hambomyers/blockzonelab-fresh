@@ -26,6 +26,7 @@ import { GameContext } from '/shared/core/game-context.js';
 import { OverlayManager } from '/shared/core/overlay-manager.js';
 import { GameStateMachine, GameState } from '/shared/core/game-states.js';
 import { BlockchainManager } from '/shared/wrapper/BlockchainManager.js';
+import { PaywallManager } from '/shared/components/PaywallManager.js';
 // Inline EventBus for performance optimization
 class EventBus {
   constructor() { this.listeners = {}; }
@@ -454,6 +455,7 @@ class NeonDrop {
         // PRIORITY 2: Load other non-critical systems
         const backgroundTasks = [
             this.loadAdvancedSystemsInBackground?.(), // Audio and state machine
+            this.initializePaywallManager(),      // Payment system (critical for monetization)
             this.setupGamepadSupport?.(),         // Controller support
             this.preloadAssets?.(),               // Asset preloading
             this.initializeAnalytics?.(),         // Performance tracking
@@ -473,6 +475,19 @@ class NeonDrop {
         return this.loadInputController();
     }
     
+    // Initialize PaywallManager for payment processing
+    async initializePaywallManager() {
+        try {
+            console.log('💳 Initializing PaywallManager...');
+            this.paywallManager = new PaywallManager();
+            console.log('✅ PaywallManager initialized successfully');
+            return this.paywallManager;
+        } catch (error) {
+            console.error('❌ Failed to initialize PaywallManager:', error);
+            return null;
+        }
+    }
+
     setupGamepadSupport() {
         
         // Gamepad support implementation
