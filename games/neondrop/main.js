@@ -31,7 +31,7 @@ function deferredInit() {
   Object.assign(window, window.fastInit);
   
   // Daily package (already fetching) (0ms)
-  const daily = await (window.dailyPromise || generateLocal());
+  const daily = await (window.dailyPromise || Promise.resolve({}));
   
   // Core game state (2ms)
   const state = new Uint8Array(1024);
