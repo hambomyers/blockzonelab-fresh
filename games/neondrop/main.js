@@ -480,7 +480,9 @@ class NeonDrop {
         try {
             console.log('💳 Initializing PaywallManager...');
             this.paywallManager = new PaywallManager();
-            console.log('✅ PaywallManager initialized successfully');
+            // CRITICAL: Make PaywallManager globally accessible for HTML onclick handlers
+            window.paywallManager = this.paywallManager;
+            console.log('✅ PaywallManager initialized successfully and assigned to window');
             return this.paywallManager;
         } catch (error) {
             console.error('❌ Failed to initialize PaywallManager:', error);
