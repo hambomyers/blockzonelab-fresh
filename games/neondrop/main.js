@@ -371,6 +371,10 @@ class NeonDrop {
                     this.floatSystem = new MercyCurveFloat(seedData);
                     window.floatSystem = this.floatSystem;
                     this.engine.floatSystem = this.floatSystem;
+                    
+                    // Clean Architecture: Install FLOAT-aware piece generation wrapper
+                    this.createFloatAwarePieceGenerator();
+                    
                     console.log(`✅ Daily seed ${seedData.seed} loaded with ${seedData.floatSequence.length} predetermined FLOATs`);
                     
                     return seedData;
@@ -414,6 +418,8 @@ class NeonDrop {
         window.floatSystem = this.floatSystem;
         this.engine.floatSystem = this.floatSystem;
         
+        // Clean architecture: FLOAT system will be integrated via proper interface
+        
         console.log(`✅ Daily seed ${seed} generated with ${floatSequence.length} predetermined FLOATs`);
         return dailyPackage;
     }
@@ -453,6 +459,60 @@ class NeonDrop {
         console.log(`📊 Daily FLOAT distribution: ${totalFloats}/1000 (${(totalFloats/10).toFixed(1)}%)`);
         
         return sequence;
+    }
+    
+    // Clean Architecture: FLOAT-aware piece generation wrapper
+    createFloatAwarePieceGenerator() {
+        if (!this.engine || !this.floatSystem) {
+            console.error('❌ Cannot create FLOAT wrapper - engine or floatSystem missing');
+            return;
+        }
+
+        // Store original methods
+        const originalGeneratePiece = this.engine.generatePiece.bind(this.engine);
+        const originalCreatePiece = this.engine.createPiece.bind(this.engine);
+
+        // Create clean wrapper that preserves original functionality
+        this.engine.generatePiece = () => {
+            // Get current stack height for mercy calculation
+            const stackHeight = this.calculateStackHeight();
+            
+            // Check if this piece should be a FLOAT using our clean system
+            const shouldBeFloat = this.floatSystem.shouldBeFloat(stackHeight);
+            
+            if (shouldBeFloat) {
+                // Generate FLOAT piece using original createPiece method
+                console.log(`🎯 GENERATING FLOAT PIECE at stack height ${stackHeight}`);
+                return originalCreatePiece('FLOAT');
+            } else {
+                // Use original piece generation logic
+                return originalGeneratePiece();
+            }
+        };
+
+        console.log('🏗️ Clean FLOAT-aware piece generation wrapper installed');
+    }
+
+    // Clean method to calculate current stack height
+    calculateStackHeight() {
+        if (!this.engine || !this.engine.state || !this.engine.state.board) {
+            return 0;
+        }
+
+        const board = this.engine.state.board;
+        let maxHeight = 0;
+
+        // Find the highest occupied cell
+        for (let row = 0; row < board.length; row++) {
+            for (let col = 0; col < board[row].length; col++) {
+                if (board[row][col] !== null) {
+                    const height = board.length - row;
+                    maxHeight = Math.max(maxHeight, height);
+                }
+            }
+        }
+
+        return maxHeight;
     }
     
     // Helper method for fast string hashing
