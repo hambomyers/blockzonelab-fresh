@@ -356,21 +356,28 @@ class NeonDrop {
             const cached = localStorage.getItem(cachedKey);
             if (cached) {
                 const seedData = JSON.parse(cached);
-                console.log('✅ Using cached daily seed (0ms lookup)');
-                this.dailySeed = seedData.seed;
-                this.seedDate = today;
-                this.engine.rng = new ProfessionalRNG(seedData.processed);
                 
-                // Initialize Mercy Curve FLOAT system with daily package
-                this.floatSystem = new MercyCurveFloat(seedData);
-                window.floatSystem = this.floatSystem;
-                this.engine.floatSystem = this.floatSystem;
-                console.log(`✅ Daily seed ${seedData.seed} loaded with ${seedData.floatSequence ? seedData.floatSequence.length : 0} predetermined FLOATs`);
-                
-                return seedData;
+                // Validate that cached data has FLOAT sequence (new format)
+                if (!seedData.floatSequence || seedData.floatSequence.length === 0) {
+                    console.warn('🔄 Cached data missing FLOAT sequence - regenerating daily package');
+                    localStorage.removeItem(cachedKey); // Clear old cache
+                } else {
+                    console.log('✅ Using cached daily package (0ms lookup)');
+                    this.dailySeed = seedData.seed;
+                    this.seedDate = today;
+                    this.engine.rng = new ProfessionalRNG(seedData.processed);
+                    
+                    // Initialize Mercy Curve FLOAT system with daily package
+                    this.floatSystem = new MercyCurveFloat(seedData);
+                    window.floatSystem = this.floatSystem;
+                    this.engine.floatSystem = this.floatSystem;
+                    console.log(`✅ Daily seed ${seedData.seed} loaded with ${seedData.floatSequence.length} predetermined FLOATs`);
+                    
+                    return seedData;
+                }
             }
         } catch (error) {
-            console.warn('Cache read failed, generating fresh seed');
+            console.warn('Cache read failed, generating fresh daily package');
         }
         
         // Generate new daily package with FLOAT sequence
