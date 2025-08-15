@@ -13,6 +13,7 @@ import { Config, GAME_CONFIG } from './config.js';
 import { GameOverSystem } from './game-over.js';
 import { ViewportManager } from './core/viewport-manager.js';
 import { ProfessionalRNG } from './core/game-engine.js';
+import { MidnightProphecy } from './core/midnight-prophecy.js';
 // Performance optimized - console.log removed
 
 // LAZY LOAD: Non-critical modules will be loaded on-demand
