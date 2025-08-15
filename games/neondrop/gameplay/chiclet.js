@@ -60,8 +60,8 @@ export class ChicletRenderer {
             return; // Skip invalid draw calls
         }
 
-        // Update animation state
-        this.floatPulse = (this.floatPulse + 0.02) % (Math.PI * 2);
+        // Update animation state - slower, more zen pulse (1 second intervals)
+        this.floatPulse = (this.floatPulse + 0.006) % (Math.PI * 2);
 
         // Determine variant
         let variant;
@@ -153,34 +153,20 @@ export class ChicletRenderer {
             // Arrow with number
             this.drawFloatArrowWithNumber(ctx, centerX, centerY, movesRemaining, pulse);
 
-            // Enhanced beautiful glow for unused FLOAT pieces
-            const glowRadius = Math.max(1, this.blockSize * 1.2); // Larger glow radius
+            // Zen-like soft blur glow for unused FLOAT pieces
+            const glowRadius = Math.max(1, this.blockSize * 0.8); // Moderate glow radius
             if (Number.isFinite(centerX) && Number.isFinite(centerY) && Number.isFinite(glowRadius)) {
                 try {
-                    // Outer glow (larger, softer)
-                    const outerGlow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, glowRadius);
-                    outerGlow.addColorStop(0, `rgba(255, 255, 255, ${0.4 * pulse})`);
-                    outerGlow.addColorStop(0.3, `rgba(255, 255, 255, ${0.3 * pulse})`);
-                    outerGlow.addColorStop(0.7, `rgba(255, 255, 255, ${0.15 * pulse})`);
-                    outerGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                    // Soft, organic radial glow (no harsh edges)
+                    const softGlow = ctx.createRadialGradient(centerX, centerY, this.blockSize * 0.2, centerX, centerY, glowRadius);
+                    softGlow.addColorStop(0, `rgba(255, 255, 255, ${0.15 * pulse})`);
+                    softGlow.addColorStop(0.4, `rgba(255, 255, 255, ${0.08 * pulse})`);
+                    softGlow.addColorStop(0.8, `rgba(255, 255, 255, ${0.03 * pulse})`);
+                    softGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
-                    ctx.fillStyle = outerGlow;
-                    ctx.fillRect(x - this.blockSize * 0.2, y - this.blockSize * 0.2, 
-                               this.blockSize * 1.4, this.blockSize * 1.4);
-
-                    // Inner bright glow (smaller, more intense)
-                    const innerGlow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, this.blockSize * 0.6);
-                    innerGlow.addColorStop(0, `rgba(255, 255, 255, ${0.6 * pulse})`);
-                    innerGlow.addColorStop(0.5, `rgba(255, 255, 255, ${0.3 * pulse})`);
-                    innerGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
-
-                    ctx.fillStyle = innerGlow;
-                    ctx.fillRect(x, y, this.blockSize, this.blockSize);
-
-                    // Pulsing border highlight
-                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.8 * pulse})`;
-                    ctx.lineWidth = 2;
-                    ctx.strokeRect(x + 1, y + 1, this.blockSize - 2, this.blockSize - 2);
+                    ctx.fillStyle = softGlow;
+                    ctx.fillRect(x - this.blockSize * 0.3, y - this.blockSize * 0.3, 
+                               this.blockSize * 1.6, this.blockSize * 1.6);
 
                 } catch (error) {
                     // Skip glow effect on render error
