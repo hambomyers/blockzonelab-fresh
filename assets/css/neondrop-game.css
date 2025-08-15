@@ -821,3 +821,22 @@ html, body {
     }
 }
 
+/* ============ FLOAT PIECE VISUAL EFFECTS ============ */
+/* Make the FLOAT piece glow */
+.float-piece {
+  background: white;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  animation: float-pulse 1s infinite;
+}
+
+@keyframes float-pulse {
+  0%, 100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
