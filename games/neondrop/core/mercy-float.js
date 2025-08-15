@@ -6,7 +6,7 @@ class MercyCurveFloat {
   constructor(dailySeed = Date.now()) {
     this.seed = dailySeed;
     this.pieceCount = 0;
-    this.lastFloatAt = -999; // Prevent early FLOATs
+    this.lastFloatAt = 0; // Start fresh - no previous FLOATs
     
     // Pre-compute 1000 decisions for performance
     this.sequence = new Uint8Array(1000);
@@ -53,8 +53,9 @@ class MercyCurveFloat {
     if (stackHeight >= 16 && baseDecision === 0) {
       // Emergency mercy: 30% chance override at danger zone
       const emergency = this.quickRandom(index + stackHeight) < 0.3;
-      console.log(`🚨 Emergency mercy check: height=${stackHeight}, emergency=${emergency}, gap=${this.pieceCount - this.lastFloatAt}`);
-      if (emergency && this.pieceCount - this.lastFloatAt > 5) {
+      const gapSinceLastFloat = this.pieceCount - this.lastFloatAt;
+      console.log(`🚨 Emergency mercy check: height=${stackHeight}, emergency=${emergency}, gap=${gapSinceLastFloat}`);
+      if (emergency && gapSinceLastFloat >= 5) {
         this.lastFloatAt = this.pieceCount;
         console.log(`✨ EMERGENCY FLOAT GRANTED! Piece #${this.pieceCount}`);
         return true;
