@@ -27,7 +27,7 @@
     justify-content: center;
     align-items: center;
     gap: 3px; /* 3px gap between blocks */
-    margin-bottom: calc(2rem - 30px); /* Move backlit letters 30px closer to blocks - UNIFIED SPACING */
+    margin-bottom: calc(2rem - 15px); /* Move backlit letters 15px closer to blocks */
     width: 100%;
     max-width: 100vw;
     overflow: visible;
@@ -88,63 +88,12 @@
     margin-bottom: 60px;
     text-align: center;
     background: transparent;
+    text-shadow: 0 0 64px rgba(255, 255, 255, 0.8);
     font-family: 'Minion Pro', 'Minion Pro Bold', 'Times New Roman', serif;
     font-weight: 600;
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
-    position: relative;
-    z-index: 1;
-}
-
-/* NEW ELEGANT BACKLIGHT SYSTEM */
-.hero-subtitle::before {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    color: #ffffff;
-    filter: blur(8px) brightness(1.2);
-    opacity: 0.9;
-    z-index: -1;
-    transition: all 0.3s ease;
-    pointer-events: none;
-}
-
-.hero-subtitle::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    color: #ffffff;
-    filter: blur(16px) brightness(1.5);
-    opacity: 0.6;
-    z-index: -2;
-    transition: all 0.3s ease;
-    pointer-events: none;
-}
-
-/* HOVER EFFECTS - Interactive backlight */
-.hero-subtitle:hover::before {
-    filter: blur(6px) brightness(1.8);
-    opacity: 1;
-    transform: scale(1.05);
-}
-
-.hero-subtitle:hover::after {
-    filter: blur(12px) brightness(2.0);
-    opacity: 0.8;
-    transform: scale(1.1);
-}
-
-/* JavaScript will automatically set data-text for multi-span subtitles */
-.hero-subtitle[data-text]::before,
-.hero-subtitle[data-text]::after {
-    content: attr(data-text);
 }
 
 .hero-subtitle span {

@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1: The Mystery of the Digital Ledger - BlockZone Academy</title>
+    <link rel="stylesheet" href="../../../assets/css/design-system.css">
+    <link rel="stylesheet" href="../../shared/academy-main.css">
+    <link rel="stylesheet" href="../../shared/academy-curriculum.css">
+    <link rel="stylesheet" href="../../shared/academy-assessments.css">
+    <style>
+        .story-section {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 4px solid #00d4ff;
+        }
+        
+        .fun-fact {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid #ffd700;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+        
+        .fun-fact::before {
+            content: "💡";
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            background: #1a1a2e;
+            padding: 0 8px;
+            font-size: 1.2rem;
+        }
+        
+        .interactive-demo {
+            background: rgba(0, 212, 255, 0.05);
+            border: 2px solid #00d4ff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .demo-button {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        
+        .demo-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .code-snippet {
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            overflow-x: auto;
+        }
+        
+        .hot-link {
+            color: #00d4ff;
+            text-decoration: none;
+            border-bottom: 1px dotted #00d4ff;
+            cursor: pointer;
+        }
+        
+        .hot-link:hover {
+            color: #ffd700;
+            border-bottom-color: #ffd700;
+        }
+        
+        .hot-term {
+            color: #00d4ff;
+            cursor: pointer;
+            border-bottom: 1px dotted #00d4ff;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .hot-term:hover {
+            color: #ffd700;
+            border-bottom-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .term-popup {
+            position: absolute;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            padding: 1rem;
+            max-width: 300px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            display: none;
+        }
+        
+        .term-popup::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid #00d4ff;
+        }
+        
+        .term-popup h4 {
+            color: #00d4ff;
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+        }
+        
+        .term-popup p {
+            margin: 0;
+            color: #ffffff;
+        }
+        
+        .mystery-box {
+            background: linear-gradient(135deg, #2d1b69 0%, #11998e 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mystery-box::before {
+            content: "🔍";
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2rem;
+            opacity: 0.3;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #00d4ff, #ffd700);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin: 2rem 0;
+            padding-left: 2rem;
+        }
+        
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -0.5rem;
+            top: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            background: #00d4ff;
+            border-radius: 50%;
+            border: 3px solid #1a1a2e;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .comparison-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="academy-container">
+        <header class="academy-header">
+            <div class="academy-logo">
+                <h1>🔍 The Mystery of the Digital Ledger</h1>
+                <p>How a Nine-Page Document Changed Money Forever</p>
+            </div>
+        </header>
+
+        <main class="academy-main">
+            <section class="academy-section">
+                <h2>Bitcoin Explained: A Beginner's Guide</h2>
+                <p>Unless you've been living under a rock, you've probably heard that <span class="hot-term" data-term="bitcoin">BITCOIN</span> is fast becoming a viable <span class="hot-term" data-term="store-of-value">STORE OF VALUE</span> and <span class="hot-term" data-term="hedge">HEDGE AGAINST INFLATION</span> due to its built-in <span class="hot-term" data-term="scarcity">SCARCITY</span>. With only 21 million bitcoins that will ever exist, it's being called <span class="hot-term" data-term="digital-gold">"DIGITAL GOLD"</span> by investors worldwide.</p>
+                
+                <h3>What Is Bitcoin?</h3>
+                <p><span class="hot-term" data-term="bitcoin">BITCOIN</span> operates as a <span class="hot-term" data-term="decentralized">DECENTRALIZED NETWORK</span> - essentially a shared digital spreadsheet that everyone can access and verify, but no single entity controls. Think of it as a global accounting book that's completely transparent, secure, and impossible to manipulate.</p>
+                
+                <h3>The Foundation: Blockchain Technology</h3>
+                <p>At its core, Bitcoin runs on <span class="hot-term" data-term="blockchain">BLOCKCHAIN TECHNOLOGY</span> - a revolutionary system where transactions are grouped into "blocks" and chained together chronologically. Each block contains a <span class="hot-term" data-term="cryptographic-hash">CRYPTOGRAPHIC HASH</span> that links it to the previous block, creating an unbreakable chain of records.</p>
+                
+                <h3>Key Players in the Network</h3>
+                <p><span class="hot-term" data-term="nodes">NODES</span> are the backbone of Bitcoin - these are voluntary computers around the world that maintain the network. They're like digital librarians, each keeping a complete copy of every <span class="hot-term" data-term="transaction">TRANSACTION</span> ever made since Bitcoin's creation in 2009.</p>
+                
+                <p><span class="hot-term" data-term="miners">MINERS</span> are specialized computers that compete to solve complex mathematical puzzles through a process called <span class="hot-term" data-term="proof-of-work">PROOF OF WORK</span>. When they successfully validate a block of transactions, they earn new bitcoins as rewards - this is how new bitcoins enter circulation.</p>
+                
+                <h3>How It Actually Works</h3>
+                <p>When you send Bitcoin, the transaction is broadcast to the network of <span class="hot-term" data-term="peer-to-peer">PEER-TO-PEER NODES</span>. Multiple miners verify that you actually own the bitcoins you're trying to send by checking the <span class="hot-term" data-term="immutable">IMMUTABLE LEDGER</span>. Once verified, the transaction is permanently recorded in the blockchain.</p>
+                
+                <p>Your bitcoins are stored in a digital <span class="hot-term" data-term="wallet">WALLET</span> protected by <span class="hot-term" data-term="private-keys">PRIVATE KEYS</span> - essentially ultra-secure passwords that prove ownership. Lose your private key, and your bitcoins are gone forever.</p>
+                
+                <h3>Why Bitcoin Matters</h3>
+                <p><span class="hot-term" data-term="financial-sovereignty">FINANCIAL SOVEREIGNTY</span> is Bitcoin's ultimate promise. Unlike traditional currencies controlled by governments and banks, Bitcoin operates as a <span class="hot-term" data-term="trustless">TRUSTLESS SYSTEM</span> where mathematics and code replace the need for institutional trust.</p>
+                
+                <p>The <span class="hot-term" data-term="algorithmic-scarcity">ALGORITHMIC SCARCITY</span> built into Bitcoin's code means that unlike fiat currencies that can be printed endlessly, Bitcoin has a hard cap of 21 million coins. This <span class="hot-term" data-term="deflationary">DEFLATIONARY NATURE</span> is why many view it as protection against currency debasement and inflation.</p>
+                
+                <h3>The Revolutionary Impact</h3>
+                <p>Bitcoin enables <span class="hot-term" data-term="borderless">BORDERLESS TRANSACTIONS</span> without intermediaries, <span class="hot-term" data-term="censorship-resistance">CENSORSHIP RESISTANCE</span> where no authority can block your transactions, and <span class="hot-term" data-term="programmable-money">PROGRAMMABLE MONEY</span> through emerging <span class="hot-term" data-term="smart-contracts">SMART CONTRACT</span> capabilities on secondary layers.</p>
+                
+                <p>Created by the mysterious <span class="hot-term" data-term="satoshi">SATOSHI NAKAMOTO</span>, Bitcoin represents the first successful implementation of digital money that doesn't require trust in any central authority - a breakthrough that seemed impossible before 2009.</p>
+                
+                <p>This <span class="hot-term" data-term="cryptocurrency">CRYPTOCURRENCY</span> revolution has sparked the creation of thousands of other digital assets, but Bitcoin remains the gold standard - the original and most secure <span class="hot-term" data-term="decentralized-currency">DECENTRALIZED DIGITAL CURRENCY</span> in existence.</p>
+            </section>
+
+            <section class="story-section">
+                <h2>The Enigmatic Beginning</h2>
+                <p>On October 31, 2008, a mysterious figure known only as "Satoshi Nakamoto" published a nine-page document that would revolutionize money forever. No one knows if Satoshi was a single genius, a group of cryptographers, or perhaps someone we walk past every day.</p>
+                
+                <p>What we do know is that this phantom creator solved a problem that had stumped computer scientists for decades: <strong>how to create digital money without a central authority.</strong></p>
+                
+                <div class="fun-fact">
+                    <h4>🎭 The Name Game</h4>
+                    <p>"Satoshi Nakamoto" is a pseudonym. "Satoshi" means "clear thinking" in Japanese, while "Nakamoto" can mean "central origin" or "within the origin." Some believe this hints at the creator's philosophy about decentralized systems.</p>
+                </div>
+                
+                <div class="interactive-demo">
+                    <h3>🔗 Interactive: The Original Bitcoin Whitepaper</h3>
+                    <p>Click to explore the actual document that started it all</p>
+                    <button class="demo-button" onclick="showWhitepaper()">View Original Whitepaper</button>
+                    <button class="demo-button" onclick="showGenesisBlock()">See the First Block</button>
+                    <div id="demo-content" style="margin-top: 1rem; display: none;"></div>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>The Blueprint vs. The Reality</h2>
+                <p>Many people think Satoshi's famous nine-page white paper contains the actual Bitcoin code, but that's not true at all. The white paper was just the theoretical blueprint—like an architect's drawing of a house.</p>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h3>📄 The Whitepaper (Blueprint)</h3>
+                        <p>Published October 31, 2008</p>
+                        <ul>
+                            <li>9 pages of theory</li>
+                            <li>Mathematical concepts</li>
+                            <li>System architecture</li>
+                            <li>Security principles</li>
+                        </ul>
+                        <a href="https://bitcoin.org/bitcoin.pdf" class="hot-link" target="_blank">Read the Original →</a>
+                    </div>
+                    
+                    <div class="comparison-card">
+                        <h3>💻 The Code (Construction)</h3>
+                        <p>Released January 9, 2009</p>
+                        <ul>
+                            <li>Thousands of lines of code</li>
+                            <li>Practical implementation</li>
+                            <li>Network protocols</li>
+                            <li>Real-world solutions</li>
+                        </ul>
+                        <a href="https://github.com/bitcoin/bitcoin" class="hot-link" target="_blank">View the Code →</a>
+                    </div>
+                </div>
+                
+                <div class="fun-fact">
+                    <h4>⏰ The Hidden Timeline</h4>
+                    <p>Satoshi said the work of writing Bitcoin's code began in the second quarter of 2007—over a year before publishing the whitepaper. This means Satoshi was quietly programming while the world had no idea what was coming.</p>
+                </div>
+            </section>
+
+            <section class="mystery-box">
+                <h2>The Mathematical Black Box: Understanding SHA-256</h2>
+                <p>Bitcoin uses something called SHA-256, which is like a magical meat grinder for numbers and text. But this isn't just any mathematical function—it's one of the most important security tools ever created.</p>
+                
+                <h3>What SHA-256 Actually Is</h3>
+                <p>SHA stands for "Secure Hash Algorithm," and the "256" means it always produces exactly 256 bits (32 bytes) of output, no matter what you put into it. It was designed by the U.S. National Security Agency (NSA) and published in 2001.</p>
+                
+                <div class="interactive-demo">
+                    <h4>🔬 Interactive: SHA-256 Hash Generator</h4>
+                    <input type="text" id="hash-input" placeholder="Enter any text..." style="width: 100%; padding: 10px; margin: 10px 0; background: #1e1e1e; color: white; border: 1px solid #333; border-radius: 4px;">
+                    <button class="demo-button" onclick="generateHash()">Generate Hash</button>
+                    <div id="hash-result" class="code-snippet" style="display: none;"></div>
+                </div>
+                
+                <div class="fun-fact">
+                    <h4>🌊 The Avalanche Effect</h4>
+                    <p>If you change even one tiny thing about what you put in, the output becomes totally different. It's like having a recipe where adding one grain of salt completely changes the final dish from chocolate cake to fish soup.</p>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>The Organizational Tree: Merkle Trees Explained</h2>
+                <p>Before we get to the lottery itself, there's another crucial piece of Bitcoin's puzzle that most people never hear about: Merkle trees. Named after computer scientist Ralph Merkle who patented the concept in 1979.</p>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4>1979: The Original Patent</h4>
+                        <p>Ralph Merkle patents the concept of hash trees, not knowing they'd become the backbone of cryptocurrency 30 years later.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>2008: Satoshi's Innovation</h4>
+                        <p>Satoshi Nakamoto adapts Merkle trees for Bitcoin, creating an efficient way to verify transactions without downloading everything.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>Today: Global Impact</h4>
+                        <p>Every major blockchain uses Merkle trees, making lightweight cryptocurrency apps possible on your phone.</p>
+                    </div>
+                </div>
+                
+                <div class="interactive-demo">
+                    <h4>🌳 Interactive: Merkle Tree Visualization</h4>
+                    <p>Watch how transactions get organized into a tree structure</p>
+                    <button class="demo-button" onclick="showMerkleTree()">Build Merkle Tree</button>
+                    <div id="merkle-demo" style="margin-top: 1rem; display: none;"></div>
+                </div>
+            </section>
+
+            <section class="story-section">
+                <h2>The Most Expensive Pizza in History</h2>
+                <p>In May 2010, programmer Laszlo Hanyecz paid 10,000 bitcoins for two Papa John's pizzas. At the time, those bitcoins were worth about $41. Today, they'd be worth over $400 million.</p>
+                
+                <div class="fun-fact">
+                    <h4>🍕 Bitcoin Pizza Day</h4>
+                    <p>May 22nd is celebrated as "Bitcoin Pizza Day" in the crypto community. It's a reminder of how far Bitcoin has come—from pizza money to digital gold.</p>
+                </div>
+                
+                <div class="interactive-demo">
+                    <h4>💰 Interactive: Bitcoin Price Timeline</h4>
+                    <p>See how Bitcoin's value has changed over time</p>
+                    <button class="demo-button" onclick="showBitcoinTimeline()">View Price History</button>
+                    <div id="timeline-demo" style="margin-top: 1rem; display: none;"></div>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>Lesson Quiz: The Mystery Deepens</h2>
+                <p>Test your understanding of blockchain fundamentals with this interactive quiz.</p>
+                
+                <div class="quiz-container">
+                    <div class="quiz-header">
+                        <h3 class="quiz-title">🔍 Blockchain Mystery Quiz</h3>
+                        <div class="quiz-meta">
+                            <div class="quiz-meta-item">
+                                <span>📝 5 Questions</span>
+                            </div>
+                            <div class="quiz-meta-item">
+                                <span>⏱️ 10 Minutes</span>
+                            </div>
+                            <div class="quiz-meta-item">
+                                <span>🎯 80% to Pass</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">1</div>
+                            <div class="question-text">
+                                What is the primary characteristic that makes blockchain data immutable?
+                            </div>
+                        </div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="A">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Centralized storage</div>
+                            </div>
+                            <div class="answer-option" data-answer="B">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Cryptographic hashing and consensus</div>
+                            </div>
+                            <div class="answer-option" data-answer="C">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Single point of control</div>
+                            </div>
+                            <div class="answer-option" data-answer="D">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Regular backups</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">2</div>
+                            <div class="question-text">
+                                Which consensus mechanism is used by Bitcoin?
+                            </div>
+                        </div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="A">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Proof of Stake</div>
+                            </div>
+                            <div class="answer-option" data-answer="B">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Proof of Work</div>
+                            </div>
+                            <div class="answer-option" data-answer="C">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Proof of Authority</div>
+                            </div>
+                            <div class="answer-option" data-answer="D">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Proof of Space</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">3</div>
+                            <div class="question-text">
+                                What is the maximum number of bitcoins that will ever exist?
+                            </div>
+                        </div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="A">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">10 million</div>
+                            </div>
+                            <div class="answer-option" data-answer="B">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">21 million</div>
+                            </div>
+                            <div class="answer-option" data-answer="C">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">100 million</div>
+                            </div>
+                            <div class="answer-option" data-answer="D">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Unlimited</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">4</div>
+                            <div class="question-text">
+                                What is the purpose of a Merkle tree in blockchain?
+                            </div>
+                        </div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="A">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">To store user passwords</div>
+                            </div>
+                            <div class="answer-option" data-answer="B">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">To efficiently verify transactions without downloading the entire blockchain</div>
+                            </div>
+                            <div class="answer-option" data-answer="C">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">To mine new blocks</div>
+                            </div>
+                            <div class="answer-option" data-answer="D">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">To create new cryptocurrencies</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">5</div>
+                            <div class="question-text">
+                                What is the significance of the Bitcoin Pizza Day?
+                            </div>
+                        </div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="A">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">It was the first time Bitcoin was used for a real-world purchase</div>
+                            </div>
+                            <div class="answer-option" data-answer="B">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">It was when Bitcoin was created</div>
+                            </div>
+                            <div class="answer-option" data-answer="C">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">It was when Bitcoin reached $1</div>
+                            </div>
+                            <div class="answer-option" data-answer="D">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">It was when the first Bitcoin exchange opened</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-navigation">
+                        <div class="quiz-progress">Question 5 of 5</div>
+                        <div class="quiz-buttons">
+                            <button class="quiz-btn quiz-btn-secondary">Previous</button>
+                            <button class="quiz-btn quiz-btn-primary">Submit Quiz</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>🔗 Deep Dive Resources</h2>
+                <p>Continue your exploration with these curated resources.</p>
+                
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <h3>📚 The Original Documents</h3>
+                        <p>Read Satoshi's original whitepaper and early Bitcoin forum posts</p>
+                        <a href="https://bitcoin.org/bitcoin.pdf" class="btn-secondary" target="_blank">Read Whitepaper</a>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>🎥 The Bitcoin Documentary</h3>
+                        <p>Watch "The Rise and Rise of Bitcoin" - the story of Bitcoin's early days</p>
+                        <a href="#" class="btn-secondary">Watch Film</a>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>💻 Interactive Blockchain</h3>
+                        <p>Build your own simple blockchain in JavaScript</p>
+                        <a href="#" class="btn-secondary">Start Building</a>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>🤝 Community Discussion</h3>
+                        <p>Join the conversation about blockchain mysteries</p>
+                        <a href="#" class="btn-secondary">Join Discussion</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>Next Steps: The Digital Gold Rush</h2>
+                <p>Ready to explore how Bitcoin became digital gold? Let's dive into cryptocurrency fundamentals.</p>
+                
+                <div class="lesson-navigation">
+                    <a href="../lesson-2/" class="btn-primary">Continue to Lesson 2: From Pizza to Digital Gold →</a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="academy-footer">
+            <p>&copy; 2024 BlockZone Academy. Unraveling the mysteries of blockchain, one lesson at a time.</p>
+        </footer>
+    </div>
+
+    <script src="../../shared/academy-main.js"></script>
+    <script>
+        // Interactive demo functions
+        function showWhitepaper() {
+            const content = document.getElementById('demo-content');
+            content.innerHTML = `
+                <div style="background: #1e1e1e; padding: 1rem; border-radius: 8px; text-align: left;">
+                    <h4>📄 Bitcoin: A Peer-to-Peer Electronic Cash System</h4>
+                    <p><strong>Abstract:</strong> A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution...</p>
+                    <p><strong>Published:</strong> October 31, 2008</p>
+                    <p><strong>Author:</strong> Satoshi Nakamoto</p>
+                    <a href="https://bitcoin.org/bitcoin.pdf" class="hot-link" target="_blank">Read Full Document →</a>
+                </div>
+            `;
+            content.style.display = 'block';
+        }
+
+        function showGenesisBlock() {
+            const content = document.getElementById('demo-content');
+            content.innerHTML = `
+                <div style="background: #1e1e1e; padding: 1rem; border-radius: 8px; text-align: left;">
+                    <h4>🏗️ The Genesis Block</h4>
+                    <p><strong>Block Height:</strong> 0</p>
+                    <p><strong>Timestamp:</strong> January 3, 2009</p>
+                    <p><strong>Hidden Message:</strong> "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks"</p>
+                    <p><strong>Reward:</strong> 50 BTC (never spendable)</p>
+                    <div class="code-snippet">
+                        Block Hash: 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
+                    </div>
+                </div>
+            `;
+            content.style.display = 'block';
+        }
+
+        function generateHash() {
+            const input = document.getElementById('hash-input').value;
+            if (!input) return;
+            
+            // Simple SHA-256 simulation (in real implementation, use crypto-js)
+            const mockHash = 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3';
+            const result = document.getElementById('hash-result');
+            result.innerHTML = `
+                <strong>Input:</strong> "${input}"<br>
+                <strong>SHA-256 Hash:</strong> ${mockHash}<br>
+                <small>Note: This is a demonstration. Real SHA-256 would be different.</small>
+            `;
+            result.style.display = 'block';
+        }
+
+        function showMerkleTree() {
+            const demo = document.getElementById('merkle-demo');
+            demo.innerHTML = `
+                <div style="background: #1e1e1e; padding: 1rem; border-radius: 8px; text-align: left;">
+                    <h4>🌳 Merkle Tree Structure</h4>
+                    <p>Transactions → Paired Hashes → Combined Hashes → Merkle Root</p>
+                    <div style="font-family: monospace; font-size: 0.9rem;">
+                        <div style="color: #00ff00;">Root: abc123...</div>
+                        <div style="color: #ffff00;">├─ def456... ghi789...</div>
+                        <div style="color: #ff00ff;">│  ├─ tx1 tx2</div>
+                        <div style="color: #ff00ff;">│  └─ tx3 tx4</div>
+                    </div>
+                </div>
+            `;
+            demo.style.display = 'block';
+        }
+
+        function showBitcoinTimeline() {
+            const demo = document.getElementById('timeline-demo');
+            demo.innerHTML = `
+                <div style="background: #1e1e1e; padding: 1rem; border-radius: 8px; text-align: left;">
+                    <h4>📈 Bitcoin Price Journey</h4>
+                    <ul>
+                        <li><strong>2010:</strong> $0.08 (Pizza Day)</li>
+                        <li><strong>2013:</strong> $1,000 (First major peak)</li>
+                        <li><strong>2017:</strong> $20,000 (Crypto boom)</li>
+                        <li><strong>2021:</strong> $69,000 (All-time high)</li>
+                        <li><strong>2024:</strong> $40,000+ (Current)</li>
+                    </ul>
+                </div>
+            `;
+            demo.style.display = 'block';
+        }
+
+        // Term popup functionality
+        const termDefinitions = {
+            'bitcoin': {
+                title: 'Bitcoin',
+                description: 'The first and most valuable cryptocurrency, created by Satoshi Nakamoto in 2009. A decentralized digital currency that operates without a central bank or administrator.'
+            },
+            'store-of-value': {
+                title: 'Store of Value',
+                description: 'An asset that maintains its purchasing power over time. Unlike fiat currencies that lose value through inflation, Bitcoin\'s scarcity makes it a potential store of value.'
+            },
+            'hedge': {
+                title: 'Hedge Against Inflation',
+                description: 'An investment that protects against the loss of purchasing power. Bitcoin\'s fixed supply of 21 million makes it attractive during periods of high inflation.'
+            },
+            'scarcity': {
+                title: 'Scarcity',
+                description: 'Limited supply. Bitcoin\'s code enforces a maximum of 21 million coins, creating artificial scarcity that drives value.'
+            },
+            'digital-gold': {
+                title: 'Digital Gold',
+                description: 'A nickname for Bitcoin due to its scarcity, durability, and potential as a store of value - similar to physical gold but digital.'
+            },
+            'decentralized': {
+                title: 'Decentralized Network',
+                description: 'A system where control is distributed across many participants rather than concentrated in a single authority. No single entity controls Bitcoin.'
+            },
+            'blockchain': {
+                title: 'Blockchain Technology',
+                description: 'A distributed ledger technology where data is stored in blocks that are cryptographically linked together, creating an immutable chain of records.'
+            },
+            'cryptographic-hash': {
+                title: 'Cryptographic Hash',
+                description: 'A mathematical function that converts data into a fixed-size string of characters. Used to link blocks together and ensure data integrity.'
+            },
+            'nodes': {
+                title: 'Nodes',
+                description: 'Computers that maintain a copy of the Bitcoin blockchain and help validate transactions. They form the backbone of the decentralized network.'
+            },
+            'transaction': {
+                title: 'Transaction',
+                description: 'A transfer of Bitcoin from one address to another. Each transaction is recorded on the blockchain and verified by the network.'
+            },
+            'miners': {
+                title: 'Miners',
+                description: 'Specialized computers that compete to solve mathematical puzzles to validate transactions and earn rewards.'
+            },
+            'proof-of-work': {
+                title: 'Proof of Work',
+                description: 'A consensus mechanism where miners must solve complex mathematical problems to validate transactions and earn rewards.'
+            },
+            'peer-to-peer': {
+                title: 'Peer-to-Peer',
+                description: 'A network architecture where participants communicate directly with each other without intermediaries or central servers.'
+            },
+            'immutable': {
+                title: 'Immutable Ledger',
+                description: 'A record that cannot be altered once created. The Bitcoin blockchain is immutable - transactions cannot be changed or deleted.'
+            },
+            'wallet': {
+                title: 'Digital Wallet',
+                description: 'Software that stores your private keys and allows you to send and receive Bitcoin. Your wallet doesn\'t actually store bitcoins - it stores the keys to access them.'
+            },
+            'private-keys': {
+                title: 'Private Keys',
+                description: 'Secret cryptographic keys that prove ownership of Bitcoin addresses. Whoever controls the private key controls the bitcoins.'
+            },
+            'financial-sovereignty': {
+                title: 'Financial Sovereignty',
+                description: 'Complete control over your own money without relying on banks or governments. Bitcoin gives users full autonomy over their finances.'
+            },
+            'trustless': {
+                title: 'Trustless System',
+                description: 'A system that doesn\'t require trust in any third party. Bitcoin uses mathematics and cryptography instead of trust in institutions.'
+            },
+            'algorithmic-scarcity': {
+                title: 'Algorithmic Scarcity',
+                description: 'Scarcity that is enforced by computer code rather than physical limitations. Bitcoin\'s 21 million limit is written into its software.'
+            },
+            'deflationary': {
+                title: 'Deflationary Nature',
+                description: 'A characteristic where the supply decreases over time or remains fixed, potentially increasing value. Bitcoin becomes more scarce as adoption grows.'
+            },
+            'borderless': {
+                title: 'Borderless Transactions',
+                description: 'The ability to send value across international borders without traditional banking intermediaries or restrictions.'
+            },
+            'censorship-resistance': {
+                title: 'Censorship Resistance',
+                description: 'The ability to transact without being blocked by governments or other authorities. Bitcoin transactions cannot be censored.'
+            },
+            'programmable-money': {
+                title: 'Programmable Money',
+                description: 'Money that can execute automated functions through smart contracts and code, enabling complex financial applications.'
+            },
+            'smart-contracts': {
+                title: 'Smart Contracts',
+                description: 'Self-executing contracts with terms written in code. They automatically execute when conditions are met, without intermediaries.'
+            },
+            'satoshi': {
+                title: 'Satoshi Nakamoto',
+                description: 'The pseudonymous creator of Bitcoin. Their true identity remains unknown, and they disappeared from the project in 2011.'
+            },
+            'cryptocurrency': {
+                title: 'Cryptocurrency',
+                description: 'Digital or virtual currency that uses cryptography for security and operates on decentralized networks like blockchain.'
+            },
+            'decentralized-currency': {
+                title: 'Decentralized Digital Currency',
+                description: 'A form of money that operates without central control, using distributed networks and consensus mechanisms instead of banks or governments.'
+            }
+        };
+
+        // Create popup element
+        const popup = document.createElement('div');
+        popup.className = 'term-popup';
+        document.body.appendChild(popup);
+
+        // Add event listeners to hot terms
+        document.addEventListener('DOMContentLoaded', function() {
+            const hotTerms = document.querySelectorAll('.hot-term');
+            
+            hotTerms.forEach(term => {
+                term.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const termKey = this.getAttribute('data-term');
+                    const definition = termDefinitions[termKey];
+                    
+                    if (definition) {
+                        popup.innerHTML = `
+                            <h4>${definition.title}</h4>
+                            <p>${definition.description}</p>
+                        `;
+                        
+                        // Position popup
+                        const rect = this.getBoundingClientRect();
+                        popup.style.left = rect.left + 'px';
+                        popup.style.top = (rect.bottom + 10) + 'px';
+                        popup.style.display = 'block';
+                    }
+                });
+            });
+            
+            // Hide popup when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('hot-term')) {
+                    popup.style.display = 'none';
+                }
+            });
+        });
+
+        // Quiz functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const answerOptions = document.querySelectorAll('.answer-option');
+            
+            answerOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.closest('.question');
+                    question.querySelectorAll('.answer-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

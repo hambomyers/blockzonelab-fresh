@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Serve Neon Drop",
+			"type": "shell",
+			"command": "python -m http.server 8000",
+			"group": "serve",
+			"isBackground": true,
+			"args": []
+		}
+	]
+}

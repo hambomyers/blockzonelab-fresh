@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Course Foundation - BlockZone Academy</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="BlockZone Academy Foundation Course - Master essential blockchain concepts through 6 comprehensive lessons">
+    <meta name="keywords" content="blockchain foundation, crypto basics, DeFi introduction, smart contracts, Andre Cronje">
+    
+    <!-- Professional Design System CSS -->
+    <link rel="stylesheet" href="../../assets/css/design-system.css">
+    <link rel="stylesheet" href="../../shared/hero-shared.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="../../public/favicon.svg" type="image/svg+xml">
+    
+    <style>
+        /* CRITICAL RENDERING PATH - Minimal styles for instant visual feedback */
+        :root {
+            --primary: #00ff41;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            
+            /* Neon Drop Color Palette */
+            --neon-cyan: #00d4ff;
+            --neon-green: #00ff00;
+            --neon-red: #ff6b6b;
+            --neon-gold: #ffd700;
+        }
+        
+        /* CRITICAL NAVIGATION - STANDARDIZED */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .navbar.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .navbar-container {
+            width: 100%;
+            margin: 0;
+            padding: 0 2rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 32px;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            transform: translateY(-10px);
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+        
+        /* HERO SECTION - USES SHARED CSS */
+        .hero-section.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Foundation page specific - match landing page spacing */
+        .foundation-page .hero-brand {
+            margin-bottom: calc(2rem - 30px); /* Match landing page spacing exactly */
+        }
+        
+        /* NEW FOUNDATION LAYOUT - MATCHING MAIN LANDING PAGE STYLE */
+        .main-content {
+            background: #0a0a0a;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* CENTRAL HUB CARD - FOUNDATION INTRODUCTION */
+        .central-hub {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--neon-green);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem 0;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .central-hub:hover {
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.4);
+            transform: translateY(-5px);
+        }
+        
+        .central-hub h2 {
+            color: var(--neon-green);
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+        
+        .central-hub p {
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .foundation-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            color: var(--neon-green);
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* LESSON CARDS GRID - MATCHING MAIN LANDING PAGE STYLE WITH GREEN EDGES */
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 4rem 0;
+            max-width: 75%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .lesson-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--neon-green);
+            border-radius: 16px;
+            padding: 2rem 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            aspect-ratio: 2/3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .lesson-card:hover::before {
+            left: 100%;
+        }
+        
+        .lesson-card:hover {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+            transform: translateY(-5px);
+        }
+        
+        .lesson-card h3 {
+            color: var(--neon-green);
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .lesson-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+        
+        .lesson-meta {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .difficulty, .duration {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .difficulty {
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--neon-green);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+        
+        .difficulty.intermediate {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--neon-cyan);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        .difficulty.advanced {
+            background: rgba(255, 107, 107, 0.1);
+            color: var(--neon-red);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+        
+        .duration {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--neon-gold);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn-secondary {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--neon-green), #00cc00);
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+        }
+        
+        /* ASSESSMENT SECTION */
+        .assessment-section {
+            margin: 4rem 0;
+            text-align: center;
+        }
+        
+        .assessment-section h2 {
+            color: var(--neon-green);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .assessment-section p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .assessment-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--neon-green);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+        }
+        
+        .assessment-card h3 {
+            color: var(--neon-green);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .assessment-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .assessment-meta {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .assessment-status, .questions, .time-limit {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .assessment-status.pending {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--neon-gold);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .questions, .time-limit {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--neon-cyan);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--neon-green), #00cc00);
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+        }
+        
+        /* MINI LOGO AT BOTTOM - 1/10th size of main logo */
+        .mini-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 0;
+            background: transparent;
+        }
+        
+        .mini-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.9px; /* 3x bigger (was 0.3px) */
+        }
+        
+        .mini-logo-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px; /* 3x bigger (was 6px) */
+            height: 18px; /* 3x bigger (was 6px) */
+            border-radius: 0.9px; /* 3x bigger (was 0.3px) */
+            font-size: 23.4px; /* 3x bigger (was 7.8px) */
+            font-weight: bold;
+            color: #000;
+            background: #00ff41;
+            border: 0.6px solid #ff4444; /* 3x bigger (was 0.2px) */
+            box-shadow: none;
+            transition: all 0.3s ease;
+            font-family: 'Minion Pro', 'Minion Pro Bold', 'Times New Roman', serif;
+        }
+        
+        .mini-logo-letter:nth-child(6) {
+            /* The "Z" - make it look like the favicon */
+            background: #FFFF00;
+            border: 0.6px solid #ff4444;
+            color: #ff4444;
+            box-shadow: none;
+            font-size: 25.2px; /* 3x bigger (was 8.4px) */
+        }
+        
+        .mini-logo-letter:nth-child(10) {
+            /* The space - make it green like the others */
+            background: #00ff41;
+            border: 0.6px solid #ff4444;
+            box-shadow: none;
+            width: 18px; /* 3x bigger (was 6px) */
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .lesson-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+                max-width: 90%;
+            }
+            
+            .lesson-card {
+                padding: 1.5rem 0.8rem;
+            }
+            
+            .central-hub {
+                padding: 2rem;
+            }
+            
+            .central-hub h2 {
+                font-size: 2.2rem;
+            }
+            
+            .foundation-stats {
+                gap: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .lesson-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                max-width: 95%;
+            }
+            
+            .lesson-card {
+                padding: 1.2rem 0.6rem;
+            }
+            
+            .central-hub {
+                padding: 1.5rem;
+            }
+            
+            .central-hub h2 {
+                font-size: 1.8rem;
+            }
+            
+            .foundation-stats {
+                gap: 1.5rem;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="foundation-page">
+    <!-- Navigation - Fixed and Optimized -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <ul class="navbar-nav">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/games/" class="nav-link">Games</a></li>
+                <li><a href="/academy/" class="nav-link active">Academy</a></li>
+                <li><a href="/pages/business-model.html" class="nav-link">Business</a></li>
+                <li><a href="/pages/whitepaper.html" class="nav-link">Whitepaper</a></li>
+                <li><a href="/pages/user-profile.html" class="nav-link">Support</a></li>
+                <li><a href="/pages/user-profile.html" class="nav-link">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Critical Content First -->
+    <section class="hero-section" id="heroSection">
+        <div class="hero-content">
+            <!-- Large Hero Brand -->
+            <div class="hero-brand">
+                <span class="hero-brand-letter">B</span>
+                <span class="hero-brand-letter">l</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">c</span>
+                <span class="hero-brand-letter">k</span>
+                <span class="hero-brand-letter">Z</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">n</span>
+                <span class="hero-brand-letter">e</span>
+                <span class="hero-brand-letter"> </span>
+                <span class="hero-brand-letter">L</span>
+                <span class="hero-brand-letter">a</span>
+                <span class="hero-brand-letter">b</span>
+            </div>
+            <div class="hero-subtitle">
+                <span>FOUNDATION</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Foundation Content - New Beautiful Layout -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Central Hub Card - Foundation Introduction -->
+            <section class="central-hub">
+                <h2>Essential Blockchain Knowledge</h2>
+                <p>Master the fundamental concepts that form the bedrock of blockchain technology. These 6 comprehensive lessons will prepare you for advanced study in our comprehensive 2-year program.</p>
+                <div class="foundation-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">6</span>
+                        <span class="stat-label">Core Lessons</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">420</span>
+                        <span class="stat-label">Total Minutes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Beginner Friendly</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lesson Cards Grid -->
+            <div class="lesson-grid">
+                <!-- Lesson 1 -->
+                <a href="../lessons/lesson-1/" class="lesson-card">
+                    <h3>🎯 Blockchain Basics</h3>
+                    <p>Introduction to blockchain technology, distributed ledgers, and cryptographic foundations. Understand how blocks are created, linked, and secured.</p>
+                    <div class="lesson-meta">
+                        <span class="difficulty">Beginner</span>
+                        <span class="duration">45 min</span>
+                    </div>
+                    <div class="btn-secondary">Start Lesson</div>
+                </a>
+
+                <!-- Lesson 2 -->
+                <a href="../lessons/lesson-2/" class="lesson-card">
+                    <h3>💰 Cryptocurrency Fundamentals</h3>
+                    <p>Understanding digital currencies, wallets, transactions, and the crypto ecosystem. Learn about Bitcoin, altcoins, and digital money principles.</p>
+                    <div class="lesson-meta">
+                        <span class="difficulty">Beginner</span>
+                        <span class="duration">60 min</span>
+                    </div>
+                    <div class="btn-secondary">Start Lesson</div>
+                </a>
+
+                <!-- Lesson 3 -->
+                <a href="../lessons/lesson-3/" class="lesson-card">
+                    <h3>⚡ Smart Contracts Intro</h3>
+                    <p>Basic smart contract concepts, Ethereum platform, and programmatic money. Discover how code can automate financial agreements.</p>
+                    <div class="lesson-meta">
+                        <span class="difficulty intermediate">Intermediate</span>
+                        <span class="duration">75 min</span>
+                    </div>
+                    <div class="btn-secondary">Start Lesson</div>
+                </a>
+
+                <!-- Lesson 4 -->
+                <a href="../lessons/lesson-4/" class="lesson-card">
+                    <h3>🏦 DeFi Basics</h3>
+                    <p>Decentralized finance overview, lending protocols, and yield farming fundamentals. Explore how DeFi is revolutionizing financial services.</p>
+                    <div class="lesson-meta">
+                        <span class="difficulty intermediate">Intermediate</span>
+                        <span class="duration">90 min</span>
+                    </div>
+                    <div class="btn-secondary">Start Lesson</div>
+                </a>
+
+                <!-- Lesson 5 -->
+                <a href="../lessons/lesson-5/" class="lesson-card">
+                    <h3>🎮 Platform Integration</h3>
+                    <p>BlockZone Lab platform features, wallet integration, and gaming mechanics. Learn how to use our platform for hands-on experimentation.</p>
+                    <div class="lesson-meta">
+                        <span class="difficulty">Beginner</span>
+                        <span class="duration">30 min</span>
+                    </div>
+                    <div class="btn-secondary">Start Lesson</div>
+                </a>
+
+                <!-- Lesson 6 -->
+                <a href="../lessons/andre-cronje-deep-dive/" class="lesson-card">
+                    <h3>🧠 Andre Cronje Deep Dive</h3>
+                    <p>Study of Andre Cronje's contributions to DeFi, Yearn Finance, and innovative protocols. Understand minimalist design and economic rationality.</p>
+                    <div class="lesson-meta">
+                        <span class="difficulty advanced">Advanced</span>
+                        <span class="duration">120 min</span>
+                    </div>
+                    <div class="btn-secondary">Start Lesson</div>
+                </a>
+            </div>
+
+            <!-- Assessment Section -->
+            <section class="assessment-section">
+                <h2>Foundation Assessment</h2>
+                <p>Complete the foundation assessment to demonstrate your understanding and unlock access to Year 1 curriculum.</p>
+                
+                <div class="assessment-card">
+                    <h3>Foundation Quiz</h3>
+                    <p>Test your knowledge of blockchain fundamentals, cryptocurrency concepts, and DeFi basics. This assessment covers all 6 pre-course lessons and must be completed with 80% or higher to proceed.</p>
+                    
+                    <div class="assessment-meta">
+                        <span class="assessment-status pending">Pending</span>
+                        <span class="questions">25 Questions</span>
+                        <span class="time-limit">60 Minutes</span>
+                    </div>
+                    
+                    <a href="../assessments/foundation-quiz/" class="btn-primary">Take Assessment</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Mini Logo at Bottom - 1/10th size of main logo -->
+    <div class="mini-logo-container">
+        <div class="mini-logo">
+            <span class="mini-logo-letter">B</span>
+            <span class="mini-logo-letter">l</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">c</span>
+            <span class="mini-logo-letter">k</span>
+            <span class="mini-logo-letter">Z</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">n</span>
+            <span class="mini-logo-letter">e</span>
+            <span class="mini-logo-letter"> </span>
+            <span class="mini-logo-letter">L</span>
+            <span class="mini-logo-letter">a</span>
+            <span class="mini-logo-letter">b</span>
+        </div>
+    </div>
+
+    <script>
+        // Navbar animation
+        const navbar = document.getElementById('navbar');
+        setTimeout(() => navbar.classList.add('loaded'), 100);
+
+        // Hero section animation
+        const heroSection = document.getElementById('heroSection');
+        setTimeout(() => heroSection.classList.add('loaded'), 300);
+    </script>
+</body>
+</html> 

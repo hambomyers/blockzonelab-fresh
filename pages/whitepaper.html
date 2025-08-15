@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlockZone Lab Whitepaper - Smart Contracts & Architecture</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="BlockZone Lab Technical Whitepaper - Complete system architecture, smart contracts, and technical implementation details">
+    <meta name="keywords" content="blockchain whitepaper, smart contracts, technical architecture, Cloudflare Workers, Sonic Labs, USDC.E">
+    
+    <!-- Professional Design System CSS -->
+    <link rel="stylesheet" href="../assets/css/design-system.css">
+    <link rel="stylesheet" href="../shared/hero-shared.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+    
+    <style>
+        /* CRITICAL RENDERING PATH - Minimal styles for instant visual feedback */
+        :root {
+            --primary: #ffffff;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #000000;
+            --text-secondary: #333333;
+            
+            /* Grayscale Color Palette */
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+        }
+        
+        /* CRITICAL NAVIGATION - STANDARDIZED */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .navbar.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .navbar-container {
+            width: 100%;
+            margin: 0;
+            padding: 0 2rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 32px;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            transform: translateY(-10px);
+        }
+        
+        .nav-link {
+            color: var(--gray-700);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--gray-900);
+        }
+        
+        /* HERO SECTION - USES SHARED CSS */
+        .hero-section.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Whitepaper page specific - match landing page spacing */
+        .whitepaper-page .hero-brand {
+            margin-bottom: calc(2rem - 30px); /* Match landing page spacing exactly */
+        }
+        
+        /* NEW WHITEPAPER LAYOUT - GRAYSCALE THEME */
+        .main-content {
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 2rem 0;
+            color: var(--text-primary);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* CENTRAL HUB CARD - WHITEPAPER INTRODUCTION */
+        .central-hub {
+            background: var(--gray-100);
+            border: 2px solid var(--gray-300);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem 0;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .central-hub:hover {
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        .central-hub h2 {
+            color: var(--gray-900);
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .central-hub p {
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .whitepaper-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            color: var(--gray-900);
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* TECHNICAL FLOW CHART - COMPREHENSIVE DESIGN */
+        .flow-section {
+            margin: 4rem 0;
+            text-align: center;
+        }
+        
+        .flow-section h2 {
+            color: var(--gray-900);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .flow-section p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .flow-chart {
+            background: var(--gray-100);
+            border: 2px solid var(--gray-300);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .flow-step {
+            background: var(--gray-200);
+            border: 2px solid var(--gray-400);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+        
+        .flow-step:hover {
+            background: var(--gray-300);
+            transform: translateX(10px);
+            border-color: var(--gray-600);
+        }
+        
+        .flow-step h3 {
+            color: var(--gray-900);
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .flow-step p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .tech-details {
+            background: var(--gray-100);
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--gray-700);
+        }
+        
+        .flow-arrow {
+            text-align: center;
+            color: var(--gray-600);
+            font-size: 2rem;
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+        
+        /* TECHNICAL CARDS GRID - MATCHING MAIN LANDING PAGE STYLE */
+        .technical-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 4rem 0;
+            max-width: 75%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .technical-card {
+            background: var(--gray-100);
+            border: 2px solid var(--gray-300);
+            border-radius: 16px;
+            padding: 2rem 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            aspect-ratio: 2/3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .technical-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.05), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .technical-card:hover::before {
+            left: 100%;
+        }
+        
+        .technical-card:hover {
+            border-color: var(--gray-600);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        .technical-card h3 {
+            color: var(--gray-900);
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .technical-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tech-meta {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .tech-tag, .component {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .tech-tag {
+            background: var(--gray-200);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-400);
+        }
+        
+        .component {
+            background: var(--gray-300);
+            color: var(--gray-800);
+            border: 1px solid var(--gray-500);
+        }
+        
+        .btn-secondary {
+            display: inline-block;
+            background: var(--gray-800);
+            color: var(--bg-primary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid var(--gray-800);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* MINI LOGO AT BOTTOM - 1/10th size of main logo */
+        .mini-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 0;
+            background: transparent;
+        }
+        
+        .mini-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.9px; /* 3x bigger (was 0.3px) */
+        }
+        
+        .mini-logo-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px; /* 3x bigger (was 6px) */
+            height: 18px; /* 3x bigger (was 6px) */
+            border-radius: 0.9px; /* 3x bigger (was 0.3px) */
+            font-size: 23.4px; /* 3x bigger (was 7.8px) */
+            font-weight: bold;
+            color: #000;
+            background: #00ff41;
+            border: 0.6px solid #ff4444; /* 3x bigger (was 0.2px) */
+            box-shadow: none;
+            transition: all 0.3s ease;
+            font-family: 'Minion Pro', 'Minion Pro Bold', 'Times New Roman', serif;
+        }
+        
+        .mini-logo-letter:nth-child(6) {
+            /* The "Z" - make it look like the favicon */
+            background: #FFFF00;
+            border: 0.6px solid #ff4444;
+            color: #ff4444;
+            box-shadow: none;
+            font-size: 25.2px; /* 3x bigger (was 8.4px) */
+        }
+        
+        .mini-logo-letter:nth-child(10) {
+            /* The space - make it green like the others */
+            background: #00ff41;
+            border: 0.6px solid #ff4444;
+            box-shadow: none;
+            width: 18px; /* 3x bigger (was 6px) */
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .technical-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+                max-width: 90%;
+            }
+            
+            .technical-card {
+                padding: 1.5rem 0.8rem;
+            }
+            
+            .central-hub {
+                padding: 2rem;
+            }
+            
+            .central-hub h2 {
+                font-size: 2.2rem;
+            }
+            
+            .whitepaper-stats {
+                gap: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .flow-chart {
+                padding: 1.5rem;
+            }
+            
+            .flow-step {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .technical-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                max-width: 95%;
+            }
+            
+            .technical-card {
+                padding: 1.2rem 0.6rem;
+            }
+            
+            .central-hub {
+                padding: 1.5rem;
+            }
+            
+            .central-hub h2 {
+                font-size: 1.8rem;
+            }
+            
+            .whitepaper-stats {
+                gap: 1.5rem;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+            
+            .flow-chart {
+                padding: 1rem;
+            }
+            
+            .flow-step {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="whitepaper-page">
+    <!-- Navigation - Fixed and Optimized -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <ul class="navbar-nav">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/games/" class="nav-link">Games</a></li>
+                <li><a href="/academy/" class="nav-link">Academy</a></li>
+                <li><a href="/pages/business-model.html" class="nav-link">Business</a></li>
+                <li><a href="/pages/whitepaper.html" class="nav-link active">Whitepaper</a></li>
+                <li><a href="/pages/user-profile.html" class="nav-link">Support</a></li>
+                <li><a href="/pages/profile.html" class="nav-link">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Critical Content First -->
+    <section class="hero-section" id="heroSection">
+        <div class="hero-content">
+            <!-- Large Hero Brand -->
+            <div class="hero-brand">
+                <span class="hero-brand-letter">B</span>
+                <span class="hero-brand-letter">l</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">c</span>
+                <span class="hero-brand-letter">k</span>
+                <span class="hero-brand-letter">Z</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">n</span>
+                <span class="hero-brand-letter">e</span>
+                <span class="hero-brand-letter"> </span>
+                <span class="hero-brand-letter">L</span>
+                <span class="hero-brand-letter">a</span>
+                <span class="hero-brand-letter">b</span>
+            </div>
+            <div class="hero-subtitle">
+                <span>WHITEPAPER</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Whitepaper Content - New Beautiful Layout -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Central Hub Card - Whitepaper Introduction -->
+            <section class="central-hub">
+                <h2>Technical Architecture & Implementation</h2>
+                <p>Complete system architecture documentation for BlockZone Lab's Web3 gaming platform. This whitepaper details our technical implementation, smart contracts, and system design.</p>
+                <div class="whitepaper-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">Smart Contracts</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">0.3s</span>
+                        <span class="stat-label">Load Time</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">99.9%</span>
+                        <span class="stat-label">Uptime</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Comprehensive Technical Flow Chart -->
+            <section class="flow-section">
+                <h2>🔧 Complete Technical Implementation Flow</h2>
+                <p>End-to-end technical journey from user arrival to prize distribution</p>
+                
+                <div class="flow-chart">
+                    <!-- Step 1: User Arrives -->
+                    <div class="flow-step">
+                        <h3>🌐 Step 1: User Arrives & Page Load</h3>
+                        <p>User navigates to BlockZone Lab website. Progressive Web App loads with instant play system initialization.</p>
+                        <div class="tech-details">
+                            <strong>Technical Implementation:</strong><br>
+                            • HTML5 Canvas game engine (0.3s load time)<br>
+                            • Progressive Web App with service worker<br>
+                            • Mobile-first responsive design<br>
+                            • Cloudflare CDN for global distribution
+                        </div>
+                    </div>
+                    
+                    <div class="flow-arrow">⬇️</div>
+                    
+                    <!-- Step 2: Identity Creation -->
+                    <div class="flow-step">
+                        <h3>🆔 Step 2: Identity Management & Device Fingerprinting</h3>
+                        <p>Backend-first identity system creates unique player profile using device fingerprinting and Cloudflare KV storage.</p>
+                        <div class="tech-details">
+                            <strong>Technical Implementation:</strong><br>
+                            • Device fingerprinting (canvas, device chars)<br>
+                            • Cloudflare Workers API (/api/players/status)<br>
+                            • Cloudflare KV Store for player data<br>
+                            • Unique player ID generation
+                        </div>
+                    </div>
+                    
+                    <div class="flow-arrow">⬇️</div>
+                    
+                    <!-- Step 3: Paywall Decision -->
+                    <div class="flow-step">
+                        <h3>💰 Step 3: Paywall Decision Tree & Access Control</h3>
+                        <p>Backend API checks player status and determines access level: free game, unlimited pass, or payment required.</p>
+                        <div class="tech-details">
+                            <strong>Technical Implementation:</strong><br>
+                            • Paywall manager intercepts all game attempts<br>
+                            • Decision tree: unlimited pass → free game → payment<br>
+                            • Apple Pay integration for payments<br>
+                            • Real-time status checking via API
+                        </div>
+                    </div>
+                    
+                    <div class="flow-arrow">⬇️</div>
+                    
+                    <!-- Step 4: Game Access -->
+                    <div class="flow-step">
+                        <h3>🎮 Step 4: Game Initialization & Neon Drop Startup</h3>
+                        <p>HTML5 Canvas game engine initializes with player context, identity validation, and game loop startup.</p>
+                        <div class="tech-details">
+                            <strong>Technical Implementation:</strong><br>
+                            • Game wrapper with identity validation<br>
+                            • Neon Drop game engine initialization<br>
+                            • Real-time physics engine<br>
+                            • Input controller and audio system
+                        </div>
+                    </div>
+                    
+                    <div class="flow-arrow">⬇️</div>
+                    
+                    <!-- Step 5: Gameplay & Scoring -->
+                    <div class="flow-step">
+                        <h3>🎯 Step 5: Gameplay & Real-Time Scoring</h3>
+                        <p>Player competes in skill-based puzzle game with real-time scoring, anti-cheat verification, and performance metrics.</p>
+                        <div class="tech-details">
+                            <strong>Technical Implementation:</strong><br>
+                            • Real-time scoring system with line clears<br>
+                            • Anti-cheat verification with state hashing<br>
+                            • Performance metrics (frame rate, inputs)<br>
+                            • Skill-based competition algorithms
+                        </div>
+                    </div>
+                    
+                    <div class="flow-arrow">⬇️</div>
+                    
+                    <!-- Step 6: Score Submission -->
+                    <div class="flow-step">
+                        <h3>📊 Step 6: Score Submission & Leaderboard Update</h3>
+                        <p>Game ends, score submitted to Cloudflare Workers API, daily leaderboard updated with real-time rankings.</p>
+                        <div class="tech-details">
+                            <strong>Technical Implementation:</strong><br>
+                            • Cloudflare Workers API (/api/scores/submit)<br>
+                            • KV Store leaderboard updates<br>
+                            • Real-time ranking calculations<br>
+                            • Tournament eligibility determination
+                        </div>
+                    </div>
+                    
+                    <div class="flow-arrow">⬇️</div>
+                    
+                    <!-- Step 7: Prize Distribution -->
+                    <div class="flow-step">
+                        <h3>🏆 Step 7: Prize Distribution & USDC.E Transfer</h3>
+                        <p>Daily reset at 11pm EST triggers automated prize distribution via smart contracts on Sonic Labs network.</p>
+                        <div class="tech-details">
+                            <strong>Technical Implementation:</strong><br>
+                            • Smart contract execution (BlockzoneGame.sol)<br>
+                            • Sonic Labs network for USDC.E transfers<br>
+                            • Automated payout calculations (90% to players)<br>
+                            • Instant wallet transfers
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technical Architecture Cards -->
+            <div class="technical-grid">
+                <!-- Card 1 -->
+                <div class="technical-card">
+                    <h3>🔗 Smart Contracts</h3>
+                    <p>Four core contracts on Sonic Labs network: BlockzoneGame.sol, DailyLeaderboard.sol, ChallengeManager.sol, and PaymentProcessor.sol.</p>
+                    <div class="tech-meta">
+                        <span class="tech-tag">Solidity 0.8.0+</span>
+                        <span class="component">OpenZeppelin</span>
+                    </div>
+                    <a href="contracts.html" class="btn-secondary">View Contracts</a>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="technical-card">
+                    <h3>⚡ Cloudflare Workers</h3>
+                    <p>Backend API with KV storage for player data, leaderboards, and real-time status checking. Global edge network for instant responses.</p>
+                    <div class="tech-meta">
+                        <span class="tech-tag">JavaScript</span>
+                        <span class="component">KV Store</span>
+                    </div>
+                    <a href="API_ENDPOINT_SPEC.md" class="btn-secondary">View API</a>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="technical-card">
+                    <h3>🎮 Game Engine</h3>
+                    <p>HTML5 Canvas-based game engine with real-time physics, anti-cheat verification, and progressive web app capabilities.</p>
+                    <div class="tech-meta">
+                        <span class="tech-tag">HTML5 Canvas</span>
+                        <span class="component">JavaScript</span>
+                    </div>
+                    <a href="../games/neondrop/" class="btn-secondary">View Engine</a>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="technical-card">
+                    <h3>💳 Payment System</h3>
+                    <p>Apple Pay integration with USDC.E token transfers on Sonic Labs network. Real cryptocurrency payments, no mock tokens.</p>
+                    <div class="tech-meta">
+                        <span class="tech-tag">Apple Pay</span>
+                        <span class="component">USDC.E</span>
+                    </div>
+                    <a href="../worker/minimal-worker.js" class="btn-secondary">View System</a>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="technical-card">
+                    <h3>🔒 Security Layer</h3>
+                    <p>Device fingerprinting, anti-cheat verification, OpenZeppelin audited contracts with ReentrancyGuard and Pausable patterns.</p>
+                    <div class="tech-meta">
+                        <span class="tech-tag">Device Fingerprinting</span>
+                        <span class="component">Anti-Cheat</span>
+                    </div>
+                    <a href="contracts.html" class="btn-secondary">View Security</a>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="technical-card">
+                    <h3>🌐 Infrastructure</h3>
+                    <p>Progressive Web App with service workers, Cloudflare CDN, global edge network, and 99.9% uptime guarantee.</p>
+                    <div class="tech-meta">
+                        <span class="tech-tag">PWA</span>
+                        <span class="component">CDN</span>
+                    </div>
+                    <a href="../README.md" class="btn-secondary">View Infrastructure</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mini Logo at Bottom - 1/10th size of main logo -->
+    <div class="mini-logo-container">
+        <div class="mini-logo">
+            <span class="mini-logo-letter">B</span>
+            <span class="mini-logo-letter">l</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">c</span>
+            <span class="mini-logo-letter">k</span>
+            <span class="mini-logo-letter">Z</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">n</span>
+            <span class="mini-logo-letter">e</span>
+            <span class="mini-logo-letter"> </span>
+            <span class="mini-logo-letter">L</span>
+            <span class="mini-logo-letter">a</span>
+            <span class="mini-logo-letter">b</span>
+        </div>
+    </div>
+
+    <script>
+        // Navbar animation
+        const navbar = document.getElementById('navbar');
+        setTimeout(() => navbar.classList.add('loaded'), 100);
+
+        // Hero section animation
+        const heroSection = document.getElementById('heroSection');
+        setTimeout(() => heroSection.classList.add('loaded'), 300);
+    </script>
+</body>
+</html> 

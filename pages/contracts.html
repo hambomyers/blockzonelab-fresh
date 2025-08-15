@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlockZone Lab Smart Contracts - Technical Documentation</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="BlockZone Lab Smart Contracts - Complete Solidity contract documentation with OpenZeppelin security">
+    <meta name="keywords" content="smart contracts, Solidity, OpenZeppelin, blockchain, Sonic Labs, USDC.E">
+    
+    <!-- Professional Design System CSS -->
+    <link rel="stylesheet" href="../assets/css/design-system.css">
+    <link rel="stylesheet" href="../shared/hero-shared.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+    
+    <style>
+        /* CRITICAL RENDERING PATH - Minimal styles for instant visual feedback */
+        :root {
+            --primary: #ffffff;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #000000;
+            --text-secondary: #333333;
+            
+            /* Grayscale Color Palette */
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+        }
+        
+        /* CRITICAL NAVIGATION - STANDARDIZED */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .navbar.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .navbar-container {
+            width: 100%;
+            margin: 0;
+            padding: 0 2rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 32px;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            transform: translateY(-10px);
+        }
+        
+        .nav-link {
+            color: var(--gray-700);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--gray-900);
+        }
+        
+        /* HERO SECTION - USES SHARED CSS */
+        .hero-section.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Contracts page specific - match landing page spacing */
+        .contracts-page .hero-brand {
+            margin-bottom: calc(2rem - 30px); /* Match landing page spacing exactly */
+        }
+        
+        /* NEW CONTRACTS LAYOUT - GRAYSCALE THEME */
+        .main-content {
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 2rem 0;
+            color: var(--text-primary);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* CENTRAL HUB CARD - CONTRACTS INTRODUCTION */
+        .central-hub {
+            background: var(--gray-100);
+            border: 2px solid var(--gray-300);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem 0;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .central-hub:hover {
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        .central-hub h2 {
+            color: var(--gray-900);
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .central-hub p {
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .contracts-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            color: var(--gray-900);
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* CONTRACT CARDS GRID */
+        .contracts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 4rem 0;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .contract-card {
+            background: var(--gray-100);
+            border: 2px solid var(--gray-300);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: left;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .contract-card:hover {
+            border-color: var(--gray-600);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        .contract-card h3 {
+            color: var(--gray-900);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .contract-card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .contract-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .contract-tag {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: var(--gray-200);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-400);
+        }
+        
+        .btn-secondary {
+            display: inline-block;
+            background: var(--gray-800);
+            color: var(--bg-primary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid var(--gray-800);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* MINI LOGO AT BOTTOM - 1/10th size of main logo */
+        .mini-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 0;
+            background: transparent;
+        }
+        
+        .mini-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.9px; /* 3x bigger (was 0.3px) */
+        }
+        
+        .mini-logo-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px; /* 3x bigger (was 6px) */
+            height: 18px; /* 3x bigger (was 6px) */
+            border-radius: 0.9px; /* 3x bigger (was 0.3px) */
+            font-size: 23.4px; /* 3x bigger (was 7.8px) */
+            font-weight: bold;
+            color: #000;
+            background: #00ff41;
+            border: 0.6px solid #ff4444; /* 3x bigger (was 0.2px) */
+            box-shadow: none;
+            transition: all 0.3s ease;
+            font-family: 'Minion Pro', 'Minion Pro Bold', 'Times New Roman', serif;
+        }
+        
+        .mini-logo-letter:nth-child(6) {
+            /* The "Z" - make it look like the favicon */
+            background: #FFFF00;
+            border: 0.6px solid #ff4444;
+            color: #ff4444;
+            box-shadow: none;
+            font-size: 25.2px; /* 3x bigger (was 8.4px) */
+        }
+        
+        .mini-logo-letter:nth-child(10) {
+            /* The space - make it green like the others */
+            background: #00ff41;
+            border: 0.6px solid #ff4444;
+            box-shadow: none;
+            width: 18px; /* 3x bigger (was 6px) */
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .contracts-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                max-width: 95%;
+            }
+            
+            .contract-card {
+                padding: 1.5rem;
+            }
+            
+            .central-hub {
+                padding: 2rem;
+            }
+            
+            .central-hub h2 {
+                font-size: 2.2rem;
+            }
+            
+            .contracts-stats {
+                gap: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .contracts-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                max-width: 100%;
+            }
+            
+            .contract-card {
+                padding: 1rem;
+            }
+            
+            .central-hub {
+                padding: 1.5rem;
+            }
+            
+            .central-hub h2 {
+                font-size: 1.8rem;
+            }
+            
+            .contracts-stats {
+                gap: 1.5rem;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="contracts-page">
+    <!-- Navigation - Fixed and Optimized -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <ul class="navbar-nav">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/games/" class="nav-link">Games</a></li>
+                <li><a href="/academy/" class="nav-link">Academy</a></li>
+                <li><a href="/pages/business-model.html" class="nav-link">Business</a></li>
+                <li><a href="/pages/whitepaper.html" class="nav-link">Whitepaper</a></li>
+                <li><a href="/pages/user-profile.html" class="nav-link">Support</a></li>
+                <li><a href="/pages/user-profile.html" class="nav-link">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Critical Content First -->
+    <section class="hero-section" id="heroSection">
+        <div class="hero-content">
+            <!-- Large Hero Brand -->
+            <div class="hero-brand">
+                <span class="hero-brand-letter">B</span>
+                <span class="hero-brand-letter">l</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">c</span>
+                <span class="hero-brand-letter">k</span>
+                <span class="hero-brand-letter">Z</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">n</span>
+                <span class="hero-brand-letter">e</span>
+                <span class="hero-brand-letter"> </span>
+                <span class="hero-brand-letter">L</span>
+                <span class="hero-brand-letter">a</span>
+                <span class="hero-brand-letter">b</span>
+            </div>
+            <div class="hero-subtitle">
+                <span>CONTRACTS</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contracts Content - New Beautiful Layout -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Central Hub Card - Contracts Introduction -->
+            <section class="central-hub">
+                <h2>Smart Contracts & Technical Documentation</h2>
+                <p>Complete Solidity smart contract documentation for BlockZone Lab's Web3 gaming platform. All contracts are OpenZeppelin audited and deployed on Sonic Labs network.</p>
+                <div class="contracts-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">Core Contracts</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">Solidity 0.8.0+</span>
+                        <span class="stat-label">Language Version</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">OpenZeppelin</span>
+                        <span class="stat-label">Security Framework</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Smart Contracts Grid -->
+            <div class="contracts-grid">
+                <!-- Contract 1 -->
+                <div class="contract-card">
+                    <h3>🎮 BlockzoneGame.sol</h3>
+                    <p>Main contract that coordinates all gaming operations. Handles player registration, game state management, and coordinates with other contracts for tournament operations.</p>
+                    <div class="contract-meta">
+                        <span class="contract-tag">Main Contract</span>
+                        <span class="contract-tag">151 Lines</span>
+                        <span class="contract-tag">Core Logic</span>
+                    </div>
+                    <a href="../contracts/src/BlockzoneGame.sol" class="btn-secondary">View Contract</a>
+                </div>
+
+                <!-- Contract 2 -->
+                <div class="contract-card">
+                    <h3>📊 DailyLeaderboard.sol</h3>
+                    <p>Manages free games and unlimited daily passes. Handles player eligibility, daily resets, and tournament qualification logic.</p>
+                    <div class="contract-meta">
+                        <span class="contract-tag">Leaderboard</span>
+                        <span class="contract-tag">394 Lines</span>
+                        <span class="contract-tag">Daily Logic</span>
+                    </div>
+                    <a href="../contracts/src/DailyLeaderboard.sol" class="btn-secondary">View Contract</a>
+                </div>
+
+                <!-- Contract 3 -->
+                <div class="contract-card">
+                    <h3>🏆 ChallengeManager.sol</h3>
+                    <p>Handles head-to-head competitions with viral game patterns. Manages challenge creation, acceptance, and prize distribution for direct player competitions.</p>
+                    <div class="contract-meta">
+                        <span class="contract-tag">Challenges</span>
+                        <span class="contract-tag">300 Lines</span>
+                        <span class="contract-tag">P2P Logic</span>
+                    </div>
+                    <a href="../contracts/src/ChallengeManager.sol" class="btn-secondary">View Contract</a>
+                </div>
+
+                <!-- Contract 4 -->
+                <div class="contract-card">
+                    <h3>💳 PaymentProcessor.sol</h3>
+                    <p>Processes USDC.E transactions for all payments. Handles payment validation, escrow management, and secure fund transfers on Sonic Labs network.</p>
+                    <div class="contract-meta">
+                        <span class="contract-tag">Payments</span>
+                        <span class="contract-tag">190 Lines</span>
+                        <span class="contract-tag">USDC.E</span>
+                    </div>
+                    <a href="../contracts/src/PaymentProcessor.sol" class="btn-secondary">View Contract</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mini Logo at Bottom - 1/10th size of main logo -->
+    <div class="mini-logo-container">
+        <div class="mini-logo">
+            <span class="mini-logo-letter">B</span>
+            <span class="mini-logo-letter">l</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">c</span>
+            <span class="mini-logo-letter">k</span>
+            <span class="mini-logo-letter">Z</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">n</span>
+            <span class="mini-logo-letter">e</span>
+            <span class="mini-logo-letter"> </span>
+            <span class="mini-logo-letter">L</span>
+            <span class="mini-logo-letter">a</span>
+            <span class="mini-logo-letter">b</span>
+        </div>
+    </div>
+
+    <script>
+        // Navbar animation
+        const navbar = document.getElementById('navbar');
+        setTimeout(() => navbar.classList.add('loaded'), 100);
+
+        // Hero section animation
+        const heroSection = document.getElementById('heroSection');
+        setTimeout(() => heroSection.classList.add('loaded'), 300);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - BlockZone Academy</title>
+    <link rel="stylesheet" href="../../../assets/css/design-system.css">
+    <link rel="stylesheet" href="../../shared/academy-main.css">
+    <link rel="stylesheet" href="../../shared/academy-resources.css">
+</head>
+<body>
+    <div class="academy-container">
+        <header class="academy-header">
+            <div class="academy-logo">
+                <h1>Documentation</h1>
+                <p>Technical Guides & References</p>
+            </div>
+            <nav class="academy-nav">
+                <a href="../../index.html" class="nav-link">← Back to Academy</a>
+            </nav>
+        </header>
+
+        <main class="academy-main">
+            <section class="academy-section">
+                <h2>Technical Documentation</h2>
+                <p>Comprehensive guides, API references, and technical documentation for blockchain development.</p>
+                
+                <div class="docs-nav">
+                    <ul class="docs-nav-list">
+                        <li class="docs-nav-item active">Getting Started</li>
+                        <li class="docs-nav-item">Smart Contracts</li>
+                        <li class="docs-nav-item">DeFi Protocols</li>
+                        <li class="docs-nav-item">Sonic Labs</li>
+                        <li class="docs-nav-item">API Reference</li>
+                        <li class="docs-nav-item">Best Practices</li>
+                    </ul>
+                </div>
+
+                <div class="docs-content">
+                    <h2>Getting Started with Blockchain Development</h2>
+                    
+                    <h3>Prerequisites</h3>
+                    <p>Before diving into blockchain development, ensure you have the following:</p>
+                    <ul>
+                        <li>Basic programming knowledge (JavaScript, Python, or similar)</li>
+                        <li>Understanding of cryptographic concepts</li>
+                        <li>Familiarity with web development (HTML, CSS, JavaScript)</li>
+                        <li>Knowledge of command-line interfaces</li>
+                    </ul>
+
+                    <h3>Development Environment Setup</h3>
+                    <p>Set up your blockchain development environment with these essential tools:</p>
+                    
+                    <h4>1. Node.js and npm</h4>
+                    <p>Install Node.js for JavaScript development and package management:</p>
+                    <pre><code># Download from https://nodejs.org/
+# Verify installation
+node --version
+npm --version</code></pre>
+
+                    <h4>2. Hardhat Development Environment</h4>
+                    <p>Hardhat is a development environment for Ethereum that helps you compile, deploy, test, and debug your smart contracts:</p>
+                    <pre><code>npm install --save-dev hardhat
+npx hardhat init</code></pre>
+
+                    <h4>3. MetaMask Wallet</h4>
+                    <p>Install MetaMask browser extension for wallet management and testnet interaction:</p>
+                    <p>Download from <a href="https://metamask.io/" target="_blank">metamask.io</a></p>
+
+                    <h3>Your First Smart Contract</h3>
+                    <p>Let's create a simple "Hello World" smart contract to get started:</p>
+                    
+                    <pre><code>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract HelloWorld {
+    string public message;
+    
+    constructor() {
+        message = "Hello, Blockchain World!";
+    }
+    
+    function setMessage(string memory newMessage) public {
+        message = newMessage;
+    }
+    
+    function getMessage() public view returns (string memory) {
+        return message;
+    }
+}</code></pre>
+
+                    <h3>Deploying to Testnet</h3>
+                    <p>Deploy your smart contract to a testnet for testing and validation:</p>
+                    
+                    <h4>1. Configure Network</h4>
+                    <pre><code>// hardhat.config.js
+module.exports = {
+  networks: {
+    sepolia: {
+      url: `https://sepolia.infura.io/v3/${INFURA_PROJECT_ID}`,
+      accounts: [PRIVATE_KEY]
+    }
+  }
+};</code></pre>
+
+                    <h4>2. Deploy Contract</h4>
+                    <pre><code>npx hardhat run scripts/deploy.js --network sepolia</code></pre>
+
+                    <h3>Next Steps</h3>
+                    <p>After setting up your development environment:</p>
+                    <ol>
+                        <li>Complete the pre-course foundation lessons</li>
+                        <li>Practice with simple smart contracts</li>
+                        <li>Explore DeFi protocol development</li>
+                        <li>Build your first dApp</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>Quick Reference</h2>
+                <p>Essential commands and concepts for blockchain development.</p>
+                
+                <div class="reference-grid">
+                    <div class="reference-card">
+                        <h3>Solidity Basics</h3>
+                        <ul>
+                            <li><code>pragma solidity ^0.8.0;</code> - Version declaration</li>
+                            <li><code>contract</code> - Smart contract definition</li>
+                            <li><code>public</code> - Public visibility modifier</li>
+                            <li><code>view</code> - Read-only function modifier</li>
+                            <li><code>payable</code> - Can receive ETH modifier</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="reference-card">
+                        <h3>Hardhat Commands</h3>
+                        <ul>
+                            <li><code>npx hardhat compile</code> - Compile contracts</li>
+                            <li><code>npx hardhat test</code> - Run tests</li>
+                            <li><code>npx hardhat node</code> - Start local node</li>
+                            <li><code>npx hardhat run scripts/deploy.js</code> - Deploy contracts</li>
+                            <li><code>npx hardhat console</code> - Interactive console</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="reference-card">
+                        <h3>Web3.js Basics</h3>
+                        <ul>
+                            <li><code>web3.eth.getAccounts()</code> - Get accounts</li>
+                            <li><code>contract.methods.functionName()</code> - Call contract function</li>
+                            <li><code>web3.utils.toWei()</code> - Convert to Wei</li>
+                            <li><code>web3.utils.fromWei()</code> - Convert from Wei</li>
+                            <li><code>contract.events.EventName()</code> - Listen to events</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>API Reference</h2>
+                <p>Complete API documentation for blockchain development tools and libraries.</p>
+                
+                <div class="api-sections">
+                    <div class="api-section">
+                        <h3>Solidity Language Reference</h3>
+                        <p>Complete reference for the Solidity programming language used for smart contract development.</p>
+                        <a href="#" class="btn-secondary">View Solidity Docs</a>
+                    </div>
+                    
+                    <div class="api-section">
+                        <h3>Web3.js Documentation</h3>
+                        <p>JavaScript library for interacting with Ethereum blockchain and smart contracts.</p>
+                        <a href="#" class="btn-secondary">View Web3.js Docs</a>
+                    </div>
+                    
+                    <div class="api-section">
+                        <h3>Hardhat Framework</h3>
+                        <p>Development environment for Ethereum with testing, deployment, and debugging tools.</p>
+                        <a href="#" class="btn-secondary">View Hardhat Docs</a>
+                    </div>
+                    
+                    <div class="api-section">
+                        <h3>Sonic Labs API</h3>
+                        <p>High-performance blockchain infrastructure and DeFi protocol development tools.</p>
+                        <a href="#" class="btn-secondary">View Sonic Labs Docs</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="academy-footer">
+            <p>&copy; 2024 BlockZone Academy. Comprehensive blockchain documentation and resources.</p>
+        </footer>
+    </div>
+
+    <script src="../../shared/academy-main.js"></script>
+</body>
+</html> 

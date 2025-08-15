@@ -105,49 +105,132 @@ export class PaywallManager {
      * Intercept game start and show paywall if needed
      */
     async interceptGameStart(gameId = 'neondrop', options = {}) {
-        try {
-            console.log('🎯 PaywallManager: Intercepting game start for', gameId);
+        // SESSION-BASED CACHING: Check if we have a valid session decision
+        const now = Date.now();
+        const sessionKey = `paywall_session_${gameId}`;
+        
+        // Check for existing session decision (valid for entire game session)
+        if (this.sessionCache.sessionDecisions.has(sessionKey)) {
+            const sessionDecision = this.sessionCache.sessionDecisions.get(sessionKey);
+            const timeSinceDecision = now - sessionDecision.timestamp;
             
-            // ENHANCED: Check if player needs onboarding first
-            if (!this.identityManager || !this.identityManager.hasValidIdentity()) {
-                console.log('🎨 New player detected - showing welcome system');
-                await this.showWelcomeSystem();
-                return false; // Don't start game yet
+            // Session decisions are valid for 30 minutes or until player status changes
+            if (timeSinceDecision < 30 * 60 * 1000) {
+                // 
+                return sessionDecision.allowed;
             }
+        }
+        
+        // Check for recent cached decision (within 5 seconds) as fallback
+        if (this.lastDecision && (now - this.lastDecisionTime) < 5000) {
+            // 
+            return this.lastDecision;
+        }
+        
+        // 
+        
+        // CLEAN DEVELOPMENT MODE: Bypass paywall entirely for development
+        if (window.devMode && window.devMode.bypassPaywall) {
+            // // console.log('🔧 DEV MODE: Bypassing paywall entirely for development'); // Removed for production performance
+            return true;
+        }
+        
+        // LEGACY BYPASS MODE: Skip paywall entirely for game testing
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('bypass') === 'true') {
+            // // console.log('🚀 BYPASS MODE: Skipping paywall entirely for game testing'); // Removed for production performance
+            return true;
+        }
+        
+        // Get player status from backend
+        const playerStatus = await this.getPlayerStatusFromBackend();
+        //  // Removed for production performance
+        
+        // ENVIRONMENT DETECTION: Single source of truth for environment
+        const environment = this.detectEnvironment();
+        // // console.log(`🌍 Environment detected: ${environment}`); // Removed for production performance
+        
+        // TEST MODE: Full paywall logic but minimal payment processing
+        if (environment === 'test') {
+            // // console.log('🧪 Test mode detected - running full paywall logic with minimal payment processing'); // Removed for production performance
+            if (playerStatus && playerStatus.can_play_free) {
+                // // console.log('🧪 Player has free game - going directly to game'); // Removed for production performance
+                await this.startGameDirectly(gameId, { ...options, isFreeGame: true });
+                return true;
+            }
+            // // console.log('🧪 No free game available - showing payment cards (test mode); // Removed for production performance');
+            this.showPaymentOptions(gameId, options, playerStatus);
+            return false;
+        }
+        
+        // DEVELOPMENT: Bypass paywall but run all checks
+        if (environment === 'development') {
+            //  // Removed for production performance
+            if (playerStatus && playerStatus.can_play_free) {
+                //  // Removed for production performance
+                await this.startGameDirectly(gameId, { ...options, isFreeGame: true });
+                return true;
+            }
+            // 
+            return true;
+        }
+        
+        // PRODUCTION: Full paywall logic with real payment processing
+        if (environment === 'production') {
+            // // console.log('🌐 Production environment detected - full paywall logic enabled'); // Removed for production performance
+        }
+        
+        // Ensure IdentityManager is ready
+        if (!this.identityManager || !this.identityManager.isReady()) {
+            //  // Removed for production performance
+            await new Promise(resolve => setTimeout(resolve, 1000));
             
-            // Get player status from backend
-            const playerStatus = await this.getPlayerStatusFromBackend();
-            
-            if (!playerStatus) {
-                console.error('❌ Failed to get player status');
+            if (!this.identityManager || !this.identityManager.isReady()) {
+                //  // Removed for production performance
                 this.showIdentityRequired();
                 return false;
             }
-            
-            // Check if player has free game available
-            if (playerStatus.free_games_remaining > 0) {
-                console.log('🎁 Player has free game available');
-                
-                // Show welcome message for returning players
-                if (playerStatus.games_played > 0) {
-                    await this.showWelcomeMessage(playerStatus);
-                }
-                
-                // Show free game option
-                this.showPaymentOptions(gameId, options, playerStatus);
-                return false; // Don't start game automatically
-            }
-            
-            // No free game - show payment options
-            console.log('💳 Player needs to pay - showing payment options');
-            this.showPaymentOptions(gameId, options, playerStatus);
-            return false;
-            
-        } catch (error) {
-            console.error('❌ Error intercepting game start:', error);
-            this.showPaymentStatus('error', 'Failed to check game access. Please try again.');
-            return false;
         }
+        
+        // Show welcome message first (if returning player)
+        if (playerStatus && playerStatus.player_id) {
+            await this.showWelcomeMessage(playerStatus);
+        }
+        
+        // DEFAULT BEHAVIOR: Show paywall with payment cards
+        let decision = false;
+        
+        if (playerStatus.has_unlimited_pass) {
+            // Day pass buyer - go directly to game
+            // // console.log('✅ Day pass buyer - going directly to game'); // Removed for production performance
+            await this.startGameDirectly(gameId, options);
+            decision = true;
+        } else if (playerStatus.can_play_free) {
+            // Free game available - go directly to game
+            // // console.log('✅ Free game available - going directly to game'); // Removed for production performance
+            await this.startGameDirectly(gameId, { ...options, isFreeGame: true });
+            decision = true;
+        } else {
+            // Show paywall with payment cards
+            // // console.log('💰 DEFAULT: Showing paywall with payment cards'); // Removed for production performance
+            this.showPaymentOptions(gameId, options, playerStatus);
+            decision = false;
+        }
+        
+        // SESSION-BASED CACHING: Store decision for entire game session
+        this.lastDecision = decision;
+        this.lastDecisionTime = Date.now();
+        
+        // Store session decision (valid for 30 minutes)
+        this.sessionCache.sessionDecisions.set(sessionKey, {
+            allowed: decision,
+            timestamp: now,
+            playerStatus: playerStatus
+        });
+        
+        //  // Removed for production performance
+        
+        return decision;
     }
 
     /**
@@ -256,179 +339,8 @@ export class PaywallManager {
      * Show welcome message for returning players
      */
     async showWelcomeMessage(playerStatus) {
-        // Enhanced welcome message with player info
-        const message = `Welcome back, ${playerStatus.display_name || 'Champion'}! 🎮`;
-        this.showPaymentStatus('success', message);
-    }
-    
-    // ENHANCED: Show welcome system for new players
-    async showWelcomeSystem(playerStatus = null) {
-        console.log('🎨 PaywallManager: Showing welcome system for new player');
-        
-        // Create welcome overlay
-        const overlay = document.createElement('div');
-        overlay.id = 'paywall-welcome';
-        overlay.className = 'paywall-welcome-overlay';
-        
-        overlay.innerHTML = `
-            <style>
-                .paywall-welcome-overlay {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100vw;
-                    height: 100vh;
-                    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: 999999;
-                    padding: 40px 20px;
-                    box-sizing: border-box;
-                    font-family: 'Bungee', monospace;
-                }
-                
-                .welcome-card {
-                    background: linear-gradient(145deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-                    border: 2px solid #00d4ff;
-                    border-radius: 24px;
-                    padding: 40px;
-                    max-width: 600px;
-                    width: 90%;
-                    text-align: center;
-                    box-shadow: 
-                        0 0 64px rgba(0, 212, 255, 0.4),
-                        0 20px 64px rgba(0, 0, 0, 0.6);
-                    position: relative;
-                    overflow: hidden;
-                }
-                
-                .welcome-card::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    height: 2px;
-                    background: linear-gradient(90deg, transparent, #00d4ff, transparent);
-                    animation: shimmer 2s infinite;
-                }
-                
-                .welcome-title {
-                    font-size: 32px;
-                    color: #00d4ff;
-                    margin-bottom: 20px;
-                    text-shadow: 0 0 15px #00d4ff;
-                }
-                
-                .welcome-subtitle {
-                    font-size: 18px;
-                    color: #cccccc;
-                    margin-bottom: 30px;
-                    line-height: 1.5;
-                }
-                
-                .welcome-features {
-                    list-style: none;
-                    padding: 0;
-                    margin: 30px 0;
-                    text-align: left;
-                }
-                
-                .welcome-features li {
-                    color: #e0e0e0;
-                    font-size: 16px;
-                    margin: 15px 0;
-                    padding-left: 30px;
-                    position: relative;
-                }
-                
-                .welcome-features li::before {
-                    content: '✨';
-                    position: absolute;
-                    left: 0;
-                    color: #00d4ff;
-                    font-size: 20px;
-                }
-                
-                .welcome-btn {
-                    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-                    color: #000;
-                    border: none;
-                    border-radius: 12px;
-                    padding: 18px 36px;
-                    font-size: 18px;
-                    font-weight: 700;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    text-transform: uppercase;
-                    letter-spacing: 1.2px;
-                    margin: 20px 10px;
-                    font-family: 'Bungee', monospace;
-                }
-                
-                .welcome-btn:hover {
-                    background: linear-gradient(135deg, #00b8e6 0%, #0088b3 100%);
-                    transform: translateY(-3px);
-                    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
-                }
-                
-                .welcome-btn.secondary {
-                    background: rgba(255, 255, 255, 0.1);
-                    color: #cccccc;
-                    border: 1px solid rgba(255, 255, 255, 0.2);
-                }
-                
-                .welcome-btn.secondary:hover {
-                    background: rgba(255, 255, 255, 0.2);
-                    color: #ffffff;
-                }
-            </style>
-            
-            <div class="welcome-card">
-                <div class="welcome-title">🎮 Welcome to BlockZone Lab!</div>
-                
-                <div class="welcome-subtitle">
-                    You're about to enter the world of competitive Web3 gaming with real prizes!
-                </div>
-                
-                <ul class="welcome-features">
-                    <li>🎁 Get 1 FREE game every day</li>
-                    <li>🏆 Compete in daily tournaments</li>
-                    <li>💰 Win real USDC.E prizes</li>
-                    <li>🔐 Secure blockchain identity</li>
-                    <li>⚡ Lightning-fast gameplay</li>
-                </ul>
-                
-                <div style="margin: 30px 0;">
-                    <button class="welcome-btn" onclick="window.paywallManager.startWelcomeFlow()">
-                        🚀 Start Gaming Now
-                    </button>
-                    <button class="welcome-btn secondary" onclick="window.paywallManager.hideWelcomeSystem()">
-                        Maybe Later
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(overlay);
-    }
-    
-    // ENHANCED: Start the welcome flow
-    async startWelcomeFlow() {
-        // Hide welcome system
-        this.hideWelcomeSystem();
-        
-        // Show payment options (which will handle new player flow)
-        await this.showPaymentOptions('neondrop', {}, null);
-    }
-    
-    // ENHANCED: Hide welcome system
-    hideWelcomeSystem() {
-        const overlay = document.getElementById('paywall-welcome');
-        if (overlay && overlay.parentNode) {
-            overlay.parentNode.removeChild(overlay);
-        }
+        // Simple welcome message - can be enhanced later
+        // // console.log('👤 Welcome back, player!'); // Removed for production performance
     }
 
     /**
@@ -1308,59 +1220,9 @@ export class PaywallManager {
                         <div class="free-game-subtitle">Your complimentary game this tournament cycle!</div>
                     </div>
                     
-                    <!-- ENHANCED: Real-time countdown and status -->
-                    <div class="tournament-cycle" style="
-                        background: rgba(0, 255, 136, 0.15);
-                        border: 2px solid rgba(0, 255, 136, 0.4);
-                        border-radius: 12px;
-                        padding: 18px;
-                        margin: 25px 0;
-                        color: #a0ffa0;
-                        font-size: 14px;
-                        position: relative;
-                        overflow: hidden;
-                    ">
-                        <div style="
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            right: 0;
-                            height: 2px;
-                            background: linear-gradient(90deg, transparent, #00ff88, transparent);
-                            animation: shimmer 2s infinite;
-                        "></div>
-                        
-                        <div style="
-                            display: flex;
-                            justify-content: space-between;
-                            align-items: center;
-                            margin-bottom: 10px;
-                        ">
-                            <strong>🏆 Daily Tournament Cycle</strong>
-                            <div style="
-                                background: rgba(0, 255, 136, 0.2);
-                                padding: 4px 8px;
-                                border-radius: 6px;
-                                font-size: 12px;
-                                color: #00ff88;
-                            ">ACTIVE NOW</div>
-                        </div>
-                        
-                        <div style="
-                            display: grid;
-                            grid-template-columns: 1fr 1fr;
-                            gap: 15px;
-                            margin-top: 15px;
-                        ">
-                            <div>
-                                <div style="font-size: 12px; color: #888888; margin-bottom: 3px;">Next Reset</div>
-                                <div style="font-size: 16px; color: #00ff88; font-weight: 600;">11:00 PM EST</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 12px; color: #888888; margin-bottom: 3px;">Time Remaining</div>
-                                <div id="countdown-timer" style="font-size: 16px; color: #00ff88; font-weight: 600;">Calculating...</div>
-                            </div>
-                        </div>
+                    <div class="tournament-cycle">
+                        <strong>🏆 Daily Tournament Cycle</strong><br>
+                        Resets daily at 11:00 PM EST
                     </div>
                     
                     <ul class="free-game-features">
@@ -1368,22 +1230,15 @@ export class PaywallManager {
                         <li>Complete leaderboard access and ranking</li>
                         <li>All premium game features included</li>
                         <li>No payment required - your daily gift!</li>
-                        <li>🎯 <strong>Limited Time:</strong> Claim before next reset!</li>
                     </ul>
                     
                     <button class="free-game-btn" onclick="event.stopPropagation(); window.paywallManager.claimFreeGame('${gameId}', ${JSON.stringify(options)})">
-                        🚀 CLAIM & START TOURNAMENT
+                        CLAIM & START TOURNAMENT
                     </button>
                     
-                    <!-- ENHANCED: Quick action buttons -->
-                    <div class="nav-buttons" style="margin-top: 20px;">
-                        <button class="nav-btn" onclick="window.location.href='/games/'">🎮 Games</button>
-                        <button class="nav-btn" onclick="window.location.href='/'">🏠 Home</button>
-                        <button class="nav-btn" onclick="window.paywallManager.showPaymentOptions('${gameId}', ${JSON.stringify(options)})" style="
-                            background: rgba(0, 212, 255, 0.2);
-                            border-color: #00d4ff;
-                            color: #00d4ff;
-                        ">💳 More Options</button>
+                    <div class="nav-buttons">
+                        <button class="nav-btn" onclick="window.location.href='/games/'">Games</button>
+                        <button class="nav-btn" onclick="window.location.href='/'">Home</button>
                     </div>
                 </div>
                 ` : `
@@ -1429,20 +1284,6 @@ export class PaywallManager {
                         <div class="payment-button sonic-labs">
                             Pay $0.25 & Play
                         </div>
-                        
-                        <!-- ENHANCED: Status indicator -->
-                        <div style="
-                            position: absolute;
-                            top: 10px;
-                            right: 10px;
-                            background: rgba(0, 212, 255, 0.2);
-                            color: #00d4ff;
-                            padding: 4px 8px;
-                            border-radius: 6px;
-                            font-size: 10px;
-                            font-weight: 600;
-                            border: 1px solid rgba(0, 212, 255, 0.3);
-                        ">INSTANT</div>
                     </a>
                     
                     <!-- GAMES PAGE STYLE: Clickable cards like the games page -->
@@ -1464,35 +1305,6 @@ export class PaywallManager {
                         <div class="payment-button sonic-labs">
                             Get Day Pass
                         </div>
-                        
-                        <!-- ENHANCED: Featured badge and status -->
-                        <div style="
-                            position: absolute;
-                            top: 10px;
-                            right: 10px;
-                            background: linear-gradient(135deg, #00ff88, #00cc6a);
-                            color: #000;
-                            padding: 4px 8px;
-                            border-radius: 6px;
-                            font-size: 10px;
-                            font-weight: 700;
-                            border: 1px solid rgba(0, 255, 136, 0.5);
-                            box-shadow: 0 2px 8px rgba(0, 255, 136, 0.3);
-                        ">BEST VALUE</div>
-                        
-                        <!-- ENHANCED: Savings indicator -->
-                        <div style="
-                            position: absolute;
-                            bottom: 10px;
-                            left: 10px;
-                            background: rgba(0, 255, 136, 0.15);
-                            color: #00ff88;
-                            padding: 3px 6px;
-                            border-radius: 4px;
-                            font-size: 9px;
-                            font-weight: 600;
-                            border: 1px solid rgba(0, 255, 136, 0.3);
-                        ">Save 90% vs 10x $0.25</div>
                     </a>
                 </div>
                 
@@ -1507,155 +1319,14 @@ export class PaywallManager {
                 <div class="paywall-footer">
                     <p>Next free game at 11:15</p>
                 </div>
-                
-                <!-- ENHANCED: Status Indicators and Daily Tracking -->
-                <div class="status-indicators" style="
-                    margin-top: 30px;
-                    padding: 20px;
-                    background: rgba(0, 212, 255, 0.05);
-                    border: 1px solid rgba(0, 212, 255, 0.2);
-                    border-radius: 12px;
-                    text-align: center;
-                ">
-                    <div style="
-                        font-size: 16px;
-                        color: #00d4ff;
-                        margin-bottom: 15px;
-                        font-weight: 600;
-                    ">🎯 Your Tournament Status</div>
-                    
-                    <div style="
-                        display: grid;
-                        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                        gap: 15px;
-                        margin-bottom: 20px;
-                    ">
-                        <div style="
-                            background: rgba(0, 255, 136, 0.1);
-                            border: 1px solid rgba(0, 255, 136, 0.3);
-                            border-radius: 8px;
-                            padding: 12px;
-                        ">
-                            <div style="
-                                font-size: 14px;
-                                color: #00ff88;
-                                font-weight: 600;
-                                margin-bottom: 5px;
-                            ">🎁 Daily Free Game</div>
-                            <div style="
-                                font-size: 12px;
-                                color: #a0a0a0;
-                            ">${hasFreeGame ? 'Available Now!' : 'Used Today'}</div>
-                        </div>
-                        
-                        <div style="
-                            background: rgba(255, 193, 7, 0.1);
-                            border: 1px solid rgba(255, 193, 7, 0.3);
-                            border-radius: 8px;
-                            padding: 12px;
-                        ">
-                            <div style="
-                                font-size: 14px;
-                                color: #ffc107;
-                                font-weight: 600;
-                                margin-bottom: 5px;
-                            ">⏰ Next Reset</div>
-                            <div style="
-                                font-size: 12px;
-                                color: #a0a0a0;
-                            ">11:00 PM EST Daily</div>
-                        </div>
-                        
-                        <div style="
-                            background: rgba(138, 43, 226, 0.1);
-                            border: 1px solid rgba(138, 43, 226, 0.3);
-                            border-radius: 8px;
-                            padding: 12px;
-                        ">
-                            <div style="
-                                font-size: 14px;
-                                color: #8a2be2;
-                                font-weight: 600;
-                                margin-bottom: 5px;
-                            ">🏆 Tournament</div>
-                            <div style="
-                                font-size: 12px;
-                                color: #a0a0a0;
-                            ">Active Now</div>
-                        </div>
-                    </div>
-                    
-                    <div style="
-                        font-size: 12px;
-                        color: #888888;
-                        line-height: 1.4;
-                    ">
-                        <strong>💡 Pro Tip:</strong> Day Pass gives you unlimited games for just $2.50 - perfect if you plan to play more than 10 times today!
-                    </div>
-                </div>
             </div>
         </div>
         `;
         
         document.body.appendChild(paywallSection);
         
-        // ENHANCED: Start countdown timer for free game card
-        if (hasFreeGame) {
-            this.startCountdownTimer();
-        }
-        
         // GAMES PAGE APPROACH: No background click handlers - cards are fully clickable
         // No problematic overlay system that can cause black screens
-    }
-    
-    // ENHANCED: Countdown timer for daily reset
-    startCountdownTimer() {
-        const countdownElement = document.getElementById('countdown-timer');
-        if (!countdownElement) return;
-        
-        const updateCountdown = () => {
-            const now = new Date();
-            const tomorrow = new Date(now);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(23, 0, 0, 0); // 11:00 PM EST
-            
-            const timeDiff = tomorrow - now;
-            
-            if (timeDiff > 0) {
-                const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-                const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-                
-                countdownElement.textContent = `${hours}h ${minutes}m ${seconds}s`;
-                
-                // Add urgency styling when less than 1 hour remaining
-                if (hours < 1) {
-                    countdownElement.style.color = '#ff6b6b';
-                    countdownElement.style.animation = 'pulse 1s infinite';
-                }
-            } else {
-                countdownElement.textContent = 'RESET NOW!';
-                countdownElement.style.color = '#ff4444';
-                countdownElement.style.animation = 'pulse 0.5s infinite';
-            }
-        };
-        
-        // Update immediately and then every second
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
-        
-        // Add pulse animation CSS
-        if (!document.getElementById('countdown-css')) {
-            const style = document.createElement('style');
-            style.id = 'countdown-css';
-            style.textContent = `
-                @keyframes pulse {
-                    0%, 100% { opacity: 1; }
-                    50% { opacity: 0.5; }
-                }
-            `;
-            document.head.appendChild(style);
-        }
     }
 
     /**

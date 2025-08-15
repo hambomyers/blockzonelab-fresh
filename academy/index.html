@@ -12,7 +12,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
     
     <!-- Favicon -->
     <link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
@@ -20,9 +20,6 @@
     <!-- Professional Design System CSS -->
     <link rel="stylesheet" href="../assets/css/design-system.css">
     <link rel="stylesheet" href="../shared/hero-shared.css">
-    <!-- REMOVED: page-template.css no longer exists -->
-    
-    <!-- EXACT GAMES PAGE STYLES - NO OVERRIDES NEEDED -->
     
     <style>
         /* CRITICAL RENDERING PATH - Minimal styles for instant visual feedback */
@@ -40,7 +37,7 @@
             --neon-gold: #ffd700;
         }
         
-        /* CRITICAL NAVIGATION - EXACT same as games page */
+        /* CRITICAL NAVIGATION - STANDARDIZED */
         .navbar {
             position: fixed;
             top: 0;
@@ -91,22 +88,7 @@
         
         .nav-link:hover,
         .nav-link.active {
-            color: var(--neon-green);
-        }
-        
-        .nav-link::after {
-            content: '';
-            display: block;
-            width: 0;
-            height: 2px;
-            background: var(--neon-green);
-            transition: width 0.3s ease;
-            margin-top: 2px;
-        }
-        
-        .nav-link:hover::after,
-        .nav-link.active::after {
-            width: 100%;
+            color: var(--primary);
         }
         
         /* HERO SECTION - USES SHARED CSS */
@@ -115,7 +97,10 @@
             transform: translateY(0);
         }
         
-
+        /* Academy page specific - match landing page spacing */
+        .academy-page .hero-brand {
+            margin-bottom: calc(2rem - 30px); /* Match landing page spacing exactly */
+        }
         
         /* NEW ACADEMY LAYOUT - MATCHING MAIN LANDING PAGE STYLE */
         .main-content {
@@ -153,7 +138,7 @@
             font-size: 2.8rem;
             margin-bottom: 1.5rem;
             font-weight: 700;
-            text-shadow: 0 0 25px rgba(255, 215, 0, 0.625);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
         }
         
         .central-hub p {
@@ -457,7 +442,7 @@
                 <span class="hero-brand-letter">a</span>
                 <span class="hero-brand-letter">b</span>
             </div>
-            <div class="hero-subtitle" data-text="ACADEMY">
+            <div class="hero-subtitle">
                 <span>ACADEMY</span>
             </div>
         </div>
@@ -486,119 +471,40 @@
                 </div>
             </section>
 
-            <!-- Professional BlockZone Cards Grid -->
-            <div class="blockzone-grid">
-                <!-- Lesson 1: Blockchain Basics -->
-                <div class="blockzone-card education">
-                    <div class="lesson-number">1</div>
-                    <div class="card-content">
-                        <h3>Blockchain Basics</h3>
-                        <p>Understanding distributed ledgers, cryptographic hashing, and the fundamentals of blockchain technology.</p>
-                        <div class="lesson-meta">
-                            <span class="difficulty beginner">Beginner</span>
-                            <span class="demos">3 Demos</span>
-                        </div>
-                        <a href="lessons/lesson-1/" class="card-button">Start Learning</a>
+            <!-- Curriculum Cards Grid -->
+            <div class="curriculum-grid">
+                <!-- Pre-Course Foundation -->
+                <a href="pre-course/" class="curriculum-card">
+                    <h3>🎯 Foundation</h3>
+                    <p>Essential blockchain concepts, cryptocurrency basics, and platform fundamentals. Perfect for beginners starting their blockchain journey.</p>
+                    <div class="curriculum-meta">
+                        <span class="duration">6 Lessons</span>
+                        <span class="difficulty">Beginner</span>
                     </div>
-                </div>
+                    <div class="btn-primary">Start Foundation</div>
+                </a>
 
-                <!-- Lesson 2: Bitcoin & Wallets -->
-                <div class="blockzone-card featured">
-                    <div class="lesson-number">2</div>
-                    <div class="card-content">
-                        <h3>Bitcoin & Wallets</h3>
-                        <p>Explore Bitcoin's architecture, wallet creation, and transaction mechanics with interactive demos.</p>
-                        <div class="lesson-meta">
-                            <span class="difficulty beginner">Beginner</span>
-                            <span class="demos">7 Demos</span>
-                        </div>
-                        <a href="lessons/lesson-2/" class="card-button">Explore Bitcoin</a>
+                <!-- Year 1: Core Fundamentals -->
+                <a href="year-1/" class="curriculum-card">
+                    <h3>📚 Year 1</h3>
+                    <p>Advanced blockchain theory, smart contract development, DeFi protocols, and Sonic Labs integration. Build real-world blockchain applications.</p>
+                    <div class="curriculum-meta">
+                        <span class="duration">24 Lessons</span>
+                        <span class="difficulty intermediate">Intermediate</span>
                     </div>
-                </div>
+                    <div class="btn-primary">Year 1 Curriculum</div>
+                </a>
 
-                <!-- Lesson 3: Smart Contracts -->
-                <div class="blockzone-card technology">
-                    <div class="lesson-number">3</div>
-                    <div class="card-content">
-                        <h3>Smart Contracts</h3>
-                        <p>Learn Solidity programming, contract deployment, and building decentralized applications.</p>
-                        <div class="lesson-meta">
-                            <span class="difficulty intermediate">Intermediate</span>
-                            <span class="demos">5 Demos</span>
-                        </div>
-                        <a href="lessons/lesson-3/" class="card-button">Build Contracts</a>
+                <!-- Year 2: Advanced Applications -->
+                <a href="year-2/" class="curriculum-card">
+                    <h3>🚀 Year 2</h3>
+                    <p>Enterprise blockchain solutions, AI integration, governance systems, and real-world project development. Become a blockchain expert.</p>
+                    <div class="curriculum-meta">
+                        <span class="duration">24 Lessons</span>
+                        <span class="difficulty advanced">Advanced</span>
                     </div>
-                </div>
-
-                <!-- Lesson 4: DeFi Protocols -->
-                <div class="blockzone-card rewards">
-                    <div class="lesson-number">4</div>
-                    <div class="card-content">
-                        <h3>DeFi Protocols</h3>
-                        <p>Decentralized finance, liquidity pools, yield farming, and automated market makers.</p>
-                        <div class="lesson-meta">
-                            <span class="difficulty intermediate">Intermediate</span>
-                            <span class="demos">4 Demos</span>
-                        </div>
-                        <a href="lessons/lesson-4/" class="card-button">Explore DeFi</a>
-                    </div>
-                </div>
-
-                <!-- Lesson 5: Web3 Development -->
-                <div class="blockzone-card decentralized">
-                    <div class="lesson-number">5</div>
-                    <div class="card-content">
-                        <h3>Web3 Development</h3>
-                        <p>Frontend integration with blockchain, Web3.js, MetaMask, and dApp architecture.</p>
-                        <div class="lesson-meta">
-                            <span class="difficulty advanced">Advanced</span>
-                            <span class="demos">6 Demos</span>
-                        </div>
-                        <a href="lessons/lesson-5/" class="card-button">Build dApps</a>
-                    </div>
-                </div>
-
-                <!-- Lesson 6: Sonic Labs -->
-                <div class="blockzone-card community">
-                    <div class="lesson-number">6</div>
-                    <div class="card-content">
-                        <h3>Sonic Labs</h3>
-                        <p>High-performance blockchain, Sonic integration, and advanced scaling solutions.</p>
-                        <div class="lesson-meta">
-                            <span class="difficulty advanced">Advanced</span>
-                            <span class="demos">5 Demos</span>
-                        </div>
-                        <a href="lessons/lesson-6/" class="card-button">Master Sonic</a>
-                    </div>
-                </div>
-
-                <!-- Year 1 Program -->
-                <div class="blockzone-card featured">
-                    <div class="lesson-number">Y1</div>
-                    <div class="card-content">
-                        <h3>Year 1 Program</h3>
-                        <p>Complete blockchain development curriculum with 24 lessons, projects, and certifications.</p>
-                        <div class="lesson-meta">
-                            <span class="difficulty intermediate">24 Lessons</span>
-                            <span class="demos">Certificate</span>
-                        </div>
-                        <a href="year-1/" class="card-button">Start Year 1</a>
-                    </div>
-                </div>
-
-                <!-- Year 2 Program -->
-                <div class="blockzone-card technology">
-                    <div class="lesson-number">Y2</div>
-                    <div class="card-content">
-                        <h3>Year 2 Program</h3>
-                        <p>Enterprise blockchain solutions, AI integration, and advanced project development.</p>
-                        <div class="lesson-meta">
-                            <span class="difficulty advanced">24 Lessons</span>
-                            <span class="demos">Certificate</span>
-                        </div>
-                        <a href="year-2/" class="card-button">Start Year 2</a>
-                    </div>
-                </div>
+                    <div class="btn-primary">Year 2 Curriculum</div>
+                </a>
             </div>
         </div>
     </main>
@@ -626,41 +532,10 @@
         // Navbar animation
         const navbar = document.getElementById('navbar');
         setTimeout(() => navbar.classList.add('loaded'), 100);
-        
+
         // Hero section animation
         const heroSection = document.getElementById('heroSection');
         setTimeout(() => heroSection.classList.add('loaded'), 300);
-        
-        // Academy Navigation System
-        const academySections = [
-            { name: 'Foundation', url: '/academy/' },
-            { name: 'Year 1', url: '/academy/year-1/' },
-            { name: 'Year 2', url: '/academy/year-2/' }
-        ];
-        
-        let currentSectionIndex = 0; // Homepage = Foundation
-        
-        function navigateAcademy(direction) {
-            if (direction === 'prev') {
-                currentSectionIndex = Math.max(0, currentSectionIndex - 1);
-            } else if (direction === 'next') {
-                currentSectionIndex = Math.min(academySections.length - 1, currentSectionIndex + 1);
-            }
-            
-            const targetSection = academySections[currentSectionIndex];
-            
-            // Smooth transition effect
-            document.body.style.opacity = '0.8';
-            setTimeout(() => {
-                window.location.href = targetSection.url;
-            }, 200);
-        }
-        
-        // Hero subtitle animation with arrows
-        setTimeout(() => {
-            const arrows = document.querySelectorAll('.academy-nav-arrow');
-            arrows.forEach(arrow => arrow.classList.add('loaded'));
-        }, 500);
     </script>
 </body>
 </html>

@@ -10,11 +10,9 @@ import { GameEngine } from './core/game-engine.js';
 import { AudioSystem } from './core/audio-system.js';
 import { Renderer } from './core/renderer.js';
 import { Config, GAME_CONFIG } from './config.js';
-import { GameOverSystem } from './game-over-redesigned.js';
+import { GameOverSystem } from './game-over.js';
 import { ViewportManager } from './core/viewport-manager.js';
 import { ProfessionalRNG } from './core/game-engine.js';
-import { QuantumFloatGenerator } from './core/quantum-float-generator.js';
-import { QuantumPieceGenerator } from './core/quantum-piece-generator.js';
 // Performance optimized - console.log removed
 
 // LAZY LOAD: Non-critical modules will be loaded on-demand
@@ -78,10 +76,6 @@ class NeonDrop {
         this.audio = null;
         this.input = null;
         
-        // Quantum FLOAT probability system
-        this.quantumFloat = null;
-        this.quantumPieceGenerator = null;
-        
         // Visual effects systems (lazy loaded)
         this.particles = null;
         this.scoring = null;
@@ -104,20 +98,18 @@ class NeonDrop {
     
     // WIN 5: REMOVE CONSOLE.LOG IN PRODUCTION (2-5ms win)
     log(level, message) {
-        // Production optimized - console.log removed for performance
-        // if (this.logLevel >= level) {
-        //     console.log(message);
-        // }
+        if (this.logLevel >= level) {
+            console.log(message);
+        }
     }
     
     // Performance monitoring helper
     measurePerformance(label, asyncFunction) {
         return async (...args) => {
-            // Production optimized - performance monitoring removed
-            // const startTime = performance.now();
+            const startTime = performance.now();
             const result = await asyncFunction.apply(this, args);
-            // const duration = performance.now() - startTime;
-            // console.log(`⏱️ ${label}: ${duration.toFixed(2)}ms`);
+            const duration = performance.now() - startTime;
+            console.log(`⏱️ ${label}: ${duration.toFixed(2)}ms`);
             return result;
         };
     }
@@ -172,7 +164,7 @@ class NeonDrop {
     // OPTIMIZED: Parallel initialization with critical systems only
     async initCriticalSystemsParallel() {
         if (window.timeStart) window.timeStart('initCriticalSystemsParallel');
-        // console.log('⚡ Phase 1: Parallel initialization of critical systems...');
+        console.log('⚡ Phase 1: Parallel initialization of critical systems...');
         
         // Start everything in parallel for maximum speed
         const [displayReady, systemsReady] = await Promise.all([
@@ -195,19 +187,19 @@ class NeonDrop {
 
     // WIN 3: SKIP NON-CRITICAL BACKGROUND LOADING (moved to after game starts)
     scheduleBackgroundLoading() {
-        // console.log('🔄 Background loading scheduled for after game starts...');
+        console.log('🔄 Background loading scheduled for after game starts...');
         
         // Schedule background loading after game is playable
         setTimeout(() => {
             this.initBackgroundSystems();
         }, 1000); // Wait 1 second after game starts
         
-        // console.log('✅ Background loading scheduled');
+        console.log('✅ Background loading scheduled');
     }
     
     // PERFORMANCE OPTIMIZATION: Phase 2 - Background systems (non-blocking)
     async initBackgroundSystems() {
-        // console.log('🔄 Phase 2: Initializing background systems...');
+        console.log('🔄 Phase 2: Initializing background systems...');
         
         // Identity validation (non-blocking)
         setTimeout(async () => {
@@ -244,7 +236,7 @@ class NeonDrop {
             this.logPerformance();
         }, 3000);
         
-        // console.log('✅ Phase 2 scheduled: Background systems will initialize');
+        console.log('✅ Phase 2 scheduled: Background systems will initialize');
     }
 
     // Identity handled by game wrapper system
@@ -321,7 +313,7 @@ class NeonDrop {
     // WIN 1: PARALLEL SYSTEMS CREATION
     async createSystemsParallel() {
         if (window.timeStart) window.timeStart('createSystemsParallel');
-        // console.log('⚡ OPTIMIZED: Creating critical systems only...');
+        console.log('⚡ OPTIMIZED: Creating critical systems only...');
         
         // Create the game engine first
         this.engine = new GameEngine(this.config, null, null, this.eventBus);
@@ -335,14 +327,8 @@ class NeonDrop {
         
         // 🚀 CRITICAL FIX: Connect game over system to engine for API calls
         if (this.gameOverHandler && this.engine) {
-            // console.log('🔗 Connecting game over system to engine for API calls');
+            console.log('🔗 Connecting game over system to engine for API calls');
             this.engine.setGameOverSystem(this.gameOverHandler);
-        }
-        
-        // 🔬 QUANTUM: Install quantum enhancements after engine is ready
-        if (this.quantumPieceGenerator && this.engine) {
-            this.quantumPieceGenerator.installQuantumEnhancements();
-            console.log('🎯 Quantum FLOAT probability system activated');
         }
         
         // WIN 6: BATCH DOM UPDATES (3-5ms win) - Only do UI setup once
@@ -358,7 +344,7 @@ class NeonDrop {
     
     // OPTIMIZED: Fast daily seed generation with caching
     async generateDailySeedFast() {
-        // console.log('🎲 Generating daily seed (optimized with caching)...');
+        console.log('🎲 Generating daily seed (optimized with caching)...');
         
         // Check for cached seed first
         const today = new Date().toISOString().split('T')[0];
@@ -368,16 +354,10 @@ class NeonDrop {
             const cached = localStorage.getItem(cachedKey);
             if (cached) {
                 const seedData = JSON.parse(cached);
-                // console.log('✅ Using cached daily seed (0ms lookup)');
+                console.log('✅ Using cached daily seed (0ms lookup)');
                 this.dailySeed = seedData.seed;
                 this.seedDate = today;
                 this.engine.rng = new ProfessionalRNG(seedData.processed);
-                
-                // Initialize quantum FLOAT generator with cached seed
-                this.quantumFloat = new QuantumFloatGenerator(seedData.seed);
-                this.quantumPieceGenerator = new QuantumPieceGenerator(this.engine, this.quantumFloat);
-                console.log('🔬 Quantum FLOAT system initialized with cached seed');
-                
                 return seedData;
             }
         } catch (error) {
@@ -398,53 +378,8 @@ class NeonDrop {
         this.dailySeed = seed;
         this.seedDate = today;
         this.engine.rng = new ProfessionalRNG(processed);
-        
-        // Initialize quantum FLOAT generator with new seed
-        this.quantumFloat = new QuantumFloatGenerator(seed);
-        this.quantumPieceGenerator = new QuantumPieceGenerator(this.engine, this.quantumFloat);
         console.log('✅ Daily seed generated and cached');
-        console.log('🔬 Quantum FLOAT system initialized with new seed');
-        
         return { seed, processed };
-    }
-    
-    // Get current quantum FLOAT probability for UI/debugging
-    getCurrentFloatProbability() {
-        if (!this.quantumFloat || !this.engine) {
-            return GAME_CONFIG.PIECES?.FLOAT_CHANCE || 0.07; // Fallback to base probability
-        }
-        
-        const state = this.engine.getState();
-        const board = state.board;
-        
-        // Calculate stack height
-        let stackHeight = 0;
-        if (board && Array.isArray(board)) {
-            for (let y = 0; y < board.length; y++) {
-                for (let x = 0; x < board[y].length; x++) {
-                    if (board[y][x] !== null) {
-                        stackHeight = board.length - y;
-                        break;
-                    }
-                }
-                if (stackHeight > 0) break;
-            }
-        }
-        
-        return this.quantumFloat.getFloatProbability(stackHeight);
-    }
-    
-    // Get quantum system statistics for debugging
-    getQuantumStats() {
-        if (!this.quantumPieceGenerator) {
-            return { enabled: false, reason: 'Quantum system not initialized' };
-        }
-        
-        return {
-            enabled: true,
-            ...this.quantumPieceGenerator.getQuantumStats(),
-            currentProbabilityPercent: (this.getCurrentFloatProbability() * 100).toFixed(1)
-        };
     }
     
     // Helper method for fast string hashing
@@ -495,7 +430,7 @@ class NeonDrop {
     
     // OPTIMIZED: Schedule non-critical systems for background loading
     scheduleNonCriticalSystems() {
-        // console.log('📅 Scheduling non-critical systems for background loading...');
+        console.log('📅 Scheduling non-critical systems for background loading...');
         
         // Load input controller immediately (critical for gameplay)
         setTimeout(() => {
@@ -505,12 +440,12 @@ class NeonDrop {
     
     // OPTIMIZED: Load non-critical systems in background
     async loadNonCriticalSystems() {
-        // console.log('🔄 Loading non-critical systems in background...');
+        console.log('🔄 Loading non-critical systems in background...');
         
         // PRIORITY 1: Load input controller immediately (critical for gameplay)
         try {
             await this.loadFullInputController();
-            // console.log('✅ Input controller loaded in background');
+            console.log('✅ Input controller loaded in background');
         } catch (error) {
             console.error('❌ Failed to load input controller:', error);
         }
@@ -526,7 +461,7 @@ class NeonDrop {
         
         try {
             await Promise.all(backgroundTasks);
-            // console.log('✅ All non-critical systems loaded in background');
+            console.log('✅ All non-critical systems loaded in background');
         } catch (error) {
             console.warn('Some background systems failed to load:', error);
         }
@@ -758,39 +693,15 @@ class NeonDrop {
 
             // Handle gameplay input
             handleGameplayInput(action) {
-                const gameState = neonDropInstance.engine?.getState();
-                
-                // Handle pause (always allowed)
+                // Handle pause
                 if (action.type === 'PAUSE' || action.type === 'ESCAPE') {
                     neonDropInstance.handleAction({ type: 'PAUSE' });
                     return;
                 }
 
-                // COUNTDOWN PHASE: Block all drop actions to prevent pieces getting stuck
-                if (gameState?.phase === 'COUNTDOWN') {
-                    // During countdown, only allow left/right movement, block all drop actions
-                    if (action.type === 'HARD_DROP' || action.type === 'SPACE' || 
-                        action.type === 'ROTATE' || action.type === 'UP_PRESSED' ||
-                        action.type === 'HOLD' || (action.type === 'MOVE' && action.dy !== 0)) {
-                        // Block these actions during countdown
-                        console.log('🚫 Drop action blocked during countdown:', action.type);
-                        return;
-                    }
-                    
-                    // Allow only horizontal movement during countdown
-                    if (action.type === 'MOVE' && action.dx !== 0 && action.dy === 0) {
-                        neonDropInstance.handleAction(action);
-                        return;
-                    }
-                    
-                    // Block all other actions during countdown
-                    return;
-                }
-
-                // PLAYING/LOCKING PHASE: Normal gameplay input handling
-                
                 // Handle FLOAT piece up movement
                 if (action.type === 'ROTATE' && action.direction === 1) {
+                    const gameState = neonDropInstance.engine?.getState();
                     const isFloatPiece = gameState?.current && gameState.current.type === 'FLOAT';
                     
                     if (isFloatPiece) {
@@ -802,6 +713,7 @@ class NeonDrop {
 
                 // Handle FLOAT piece diagonal up movement (up + left/right)
                 if (action.type === 'MOVE' && action.dy === 0) {
+                    const gameState = neonDropInstance.engine?.getState();
                     const isFloatPiece = gameState?.current && gameState.current.type === 'FLOAT';
                     
                     if (isFloatPiece) {
@@ -892,12 +804,12 @@ class NeonDrop {
         this.input.setupListeners();
         this.inputReady = true;
         
-        // console.log('✅ Input controller created and ready for immediate gameplay');
+        console.log('✅ Input controller created and ready for immediate gameplay');
         
-        // console.log('  - Event listeners attached to document');
-        // console.log('  - Key mappings configured for: Arrow keys, WASD, Space, etc.');
-        // console.log('  - Current game state will be checked on key press');
-        // console.log('  - Auto-repeat system enabled for smooth movement');
+        console.log('  - Event listeners attached to document');
+        console.log('  - Key mappings configured for: Arrow keys, WASD, Space, etc.');
+        console.log('  - Current game state will be checked on key press');
+        console.log('  - Auto-repeat system enabled for smooth movement');
         
         // Add global keyboard test function
         window.testKeyboard = () => {
@@ -1595,23 +1507,6 @@ export async function startGame() {
 
 // Make startGame globally available for PaywallManager
 window.startNeonDropGame = startGame;
-
-// Make quantum stats available globally for debugging
-window.getQuantumStats = () => {
-    if (window.neonDrop && window.neonDrop.getQuantumStats) {
-        return window.neonDrop.getQuantumStats();
-    }
-    return { enabled: false, reason: 'NeonDrop not initialized' };
-};
-
-// Make current FLOAT probability available globally
-window.getCurrentFloatProbability = () => {
-    if (window.neonDrop && window.neonDrop.getCurrentFloatProbability) {
-        const prob = window.neonDrop.getCurrentFloatProbability();
-        return `${(prob * 100).toFixed(1)}%`;
-    }
-    return 'N/A';
-};
 
 // Cleanup on exit
 addEventListener('beforeunload', () => window.neonDrop?.destroy());

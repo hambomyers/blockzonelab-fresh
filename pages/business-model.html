@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlockZone Lab Business Model - Web3 Gaming & Education Platform</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="BlockZone Lab Business Model - Revolutionary Web3 gaming platform with 10% platform fees, real USDC.E prizes, and blockchain education">
+    <meta name="keywords" content="Web3 gaming, blockchain education, skill-based tournaments, USDC.E prizes, Sonic Labs, platform fees">
+    
+    <!-- Professional Design System CSS -->
+    <link rel="stylesheet" href="../assets/css/design-system.css">
+    <link rel="stylesheet" href="../shared/hero-shared.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+    
+    <style>
+        /* CRITICAL RENDERING PATH - Minimal styles for instant visual feedback */
+        :root {
+            --primary: #00ff41;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            
+            /* Neon Drop Color Palette */
+            --neon-cyan: #00d4ff;
+            --neon-green: #00ff00;
+            --neon-red: #ff6b6b;
+            --neon-gold: #ffd700;
+        }
+        
+        /* CRITICAL NAVIGATION - STANDARDIZED */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .navbar.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .navbar-container {
+            width: 100%;
+            margin: 0;
+            padding: 0 2rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 32px;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            transform: translateY(-10px);
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+        
+        /* HERO SECTION - USES SHARED CSS */
+        .hero-section.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Business page specific - match landing page spacing */
+        .business-page .hero-brand {
+            margin-bottom: calc(2rem - 30px); /* Match landing page spacing exactly */
+        }
+        
+        /* NEW BUSINESS LAYOUT - MATCHING MAIN LANDING PAGE STYLE */
+        .main-content {
+            background: #0a0a0a;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* CENTRAL HUB CARD - BUSINESS INTRODUCTION */
+        .central-hub {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem 0;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .central-hub:hover {
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.4);
+            transform: translateY(-5px);
+        }
+        
+        .central-hub h2 {
+            color: var(--neon-cyan);
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+        
+        .central-hub p {
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .business-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            color: var(--neon-cyan);
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* FLOW CHART SECTION - CLEANER DESIGN */
+        .flow-section {
+            margin: 4rem 0;
+            text-align: center;
+        }
+        
+        .flow-section h2 {
+            color: var(--neon-cyan);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .flow-section p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .flow-chart {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+        }
+        
+        .flow-step {
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+        
+        .flow-step:hover {
+            background: rgba(0, 212, 255, 0.15);
+            transform: translateX(10px);
+        }
+        
+        .flow-step h3 {
+            color: var(--neon-cyan);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .flow-step p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin: 0;
+        }
+        
+        .flow-arrow {
+            text-align: center;
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            margin: 0.5rem 0;
+        }
+        
+        /* BUSINESS CARDS GRID - MATCHING MAIN LANDING PAGE STYLE */
+        .business-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 4rem 0;
+            max-width: 75%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .business-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 16px;
+            padding: 2rem 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            aspect-ratio: 2/3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .business-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .business-card:hover::before {
+            left: 100%;
+        }
+        
+        .business-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+            transform: translateY(-5px);
+        }
+        
+        .business-card h3 {
+            color: var(--neon-cyan);
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .business-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+        
+        .business-meta {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .metric, .feature {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .metric {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--neon-cyan);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        .feature {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--neon-gold);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn-secondary {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--neon-cyan), #0099cc);
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+        
+        /* REVENUE SECTION */
+        .revenue-section {
+            margin: 4rem 0;
+            text-align: center;
+        }
+        
+        .revenue-section h2 {
+            color: var(--neon-cyan);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .revenue-section p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .revenue-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 75%;
+            margin: 0 auto;
+        }
+        
+        .revenue-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 16px;
+            padding: 2rem 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            aspect-ratio: 2/3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .revenue-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .revenue-card:hover::before {
+            left: 100%;
+        }
+        
+        .revenue-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+            transform: translateY(-5px);
+        }
+        
+        .revenue-card h3 {
+            color: var(--neon-cyan);
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .revenue-card .amount {
+            color: var(--neon-gold);
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        
+        .revenue-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--neon-cyan), #0099cc);
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+        
+        /* MINI LOGO AT BOTTOM - 1/10th size of main logo */
+        .mini-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 0;
+            background: transparent;
+        }
+        
+        .mini-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.9px; /* 3x bigger (was 0.3px) */
+        }
+        
+        .mini-logo-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px; /* 3x bigger (was 6px) */
+            height: 18px; /* 3x bigger (was 6px) */
+            border-radius: 0.9px; /* 3x bigger (was 0.3px) */
+            font-size: 23.4px; /* 3x bigger (was 7.8px) */
+            font-weight: bold;
+            color: #000;
+            background: #00ff41;
+            border: 0.6px solid #ff4444; /* 3x bigger (was 0.2px) */
+            box-shadow: none;
+            transition: all 0.3s ease;
+            font-family: 'Minion Pro', 'Minion Pro Bold', 'Times New Roman', serif;
+        }
+        
+        .mini-logo-letter:nth-child(6) {
+            /* The "Z" - make it look like the favicon */
+            background: #FFFF00;
+            border: 0.6px solid #ff4444;
+            color: #ff4444;
+            box-shadow: none;
+            font-size: 25.2px; /* 3x bigger (was 8.4px) */
+        }
+        
+        .mini-logo-letter:nth-child(10) {
+            /* The space - make it green like the others */
+            background: #00ff41;
+            border: 0.6px solid #ff4444;
+            box-shadow: none;
+            width: 18px; /* 3x bigger (was 6px) */
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .business-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+                max-width: 90%;
+            }
+            
+            .revenue-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                max-width: 90%;
+            }
+            
+            .business-card, .revenue-card {
+                padding: 1.5rem 0.8rem;
+            }
+            
+            .central-hub {
+                padding: 2rem;
+            }
+            
+            .central-hub h2 {
+                font-size: 2.2rem;
+            }
+            
+            .business-stats {
+                gap: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .flow-chart {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .business-grid, .revenue-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                max-width: 95%;
+            }
+            
+            .business-card, .revenue-card {
+                padding: 1.2rem 0.6rem;
+            }
+            
+            .central-hub {
+                padding: 1.5rem;
+            }
+            
+            .central-hub h2 {
+                font-size: 1.8rem;
+            }
+            
+            .business-stats {
+                gap: 1.5rem;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+            
+            .flow-chart {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="business-page">
+    <!-- Navigation - Fixed and Optimized -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <ul class="navbar-nav">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/games/" class="nav-link">Games</a></li>
+                <li><a href="/academy/" class="nav-link">Academy</a></li>
+                <li><a href="/pages/business-model.html" class="nav-link active">Business</a></li>
+                <li><a href="/pages/whitepaper.html" class="nav-link">Whitepaper</a></li>
+                <li><a href="/pages/user-profile.html" class="nav-link">Support</a></li>
+                <li><a href="/pages/profile.html" class="nav-link">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Critical Content First -->
+    <section class="hero-section" id="heroSection">
+        <div class="hero-content">
+            <!-- Large Hero Brand -->
+            <div class="hero-brand">
+                <span class="hero-brand-letter">B</span>
+                <span class="hero-brand-letter">l</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">c</span>
+                <span class="hero-brand-letter">k</span>
+                <span class="hero-brand-letter">Z</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">n</span>
+                <span class="hero-brand-letter">e</span>
+                <span class="hero-brand-letter"> </span>
+                <span class="hero-brand-letter">L</span>
+                <span class="hero-brand-letter">a</span>
+                <span class="hero-brand-letter">b</span>
+            </div>
+            <div class="hero-subtitle">
+                <span>BUSINESS</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Content - New Beautiful Layout -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Central Hub Card - Business Introduction -->
+            <section class="central-hub">
+                <h2>Revolutionary Web3 Gaming & Education</h2>
+                <p>BlockZone Lab combines skill-based gaming tournaments with real USDC.E prizes, blockchain education, and community building. Powered by Sonic Labs blockchain for anti-cheat protection, speed economy optimization, and contract-driven operations.</p>
+                <div class="business-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">10%</span>
+                        <span class="stat-label">Platform Fee</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">90%</span>
+                        <span class="stat-label">To Players</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Tournaments</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Game Flow Chart - Cleaner Design -->
+            <section class="flow-section">
+                <h2>🎮 How Our Gaming Platform Works</h2>
+                <p>A simplified overview of our player journey from arrival to rewards</p>
+                
+                <div class="flow-chart">
+                    <div class="flow-step">
+                        <h3>🎯 Player Arrives & Identity Creation</h3>
+                        <p>User lands on BlockZone Lab, instant play system loads in 0.3 seconds. Device fingerprinting creates unique player identity, preventing duplicate accounts.</p>
+                    </div>
+                    
+                    <div class="flow-arrow">⬇️</div>
+                    
+                    <div class="flow-step">
+                        <h3>💰 Paywall Decision & Game Access</h3>
+                        <p>Paywall manager checks player status: free game available, unlimited pass active, or payment required. $0.25 per game or $2.50 daily unlimited pass.</p>
+                    </div>
+                    
+                    <div class="flow-arrow">⬇️</div>
+                    
+                    <div class="flow-step">
+                        <h3>🎮 Neon Drop Gameplay & Scoring</h3>
+                        <p>Player competes in skill-based puzzle game. Real-time scoring system with anti-cheat verification. Performance metrics tracked for fair competition.</p>
+                    </div>
+                    
+                    <div class="flow-arrow">⬇️</div>
+                    
+                    <div class="flow-step">
+                        <h3>🏆 Score Submission & Leaderboard</h3>
+                        <p>Game ends, score submitted to Cloudflare Workers API. Daily leaderboard updates with real-time rankings. Tournament eligibility determined.</p>
+                    </div>
+                    
+                    <div class="flow-arrow">⬇️</div>
+                    
+                    <div class="flow-step">
+                        <h3>💎 Prize Distribution & USDC.E Rewards</h3>
+                        <p>Daily reset at 11pm EST. Winners determined by skill-based rankings. USDC.E prizes distributed instantly via Sonic Labs blockchain. 90% of pool goes to players.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Business Model Cards -->
+            <div class="business-grid">
+                <!-- Card 1 -->
+                <div class="business-card">
+                    <h3>🎮 Gaming Platform</h3>
+                    <p>Skill-based tournaments with real USDC.E prizes. Daily competitions, leaderboards, and head-to-head challenges. Our flagship game Neon Drop combines puzzle mechanics with competitive gameplay.</p>
+                    <div class="business-meta">
+                        <span class="metric">Daily Tournaments</span>
+                        <span class="feature">Real Prizes</span>
+                    </div>
+                    <div class="btn-secondary">Learn More</div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="business-card">
+                    <h3>🎓 BlockZone Academy</h3>
+                    <p>Comprehensive blockchain education platform with structured curriculum, interactive learning, and hands-on projects. From beginner to advanced levels with industry-relevant content.</p>
+                    <div class="business-meta">
+                        <span class="metric">2-Year Curriculum</span>
+                        <span class="feature">Hands-On Projects</span>
+                    </div>
+                    <div class="btn-secondary">Learn More</div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="business-card">
+                    <h3>🏆 Tournament System</h3>
+                    <p>Blockchain-powered competition with automated daily tournaments, transparent prize pools, and instant payouts. Built on Sonic Labs for security, transparency, and anti-cheat protection.</p>
+                    <div class="business-meta">
+                        <span class="metric">Smart Contracts</span>
+                        <span class="feature">Anti-Cheat</span>
+                    </div>
+                    <div class="btn-secondary">Learn More</div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="business-card">
+                    <h3>🔒 Sonic Labs Integration</h3>
+                    <p>EVM-compatible blockchain with low fees and fast transactions. Anti-cheat verification system and speed economy optimization. Contract-driven tournament operations with USDC.E native support.</p>
+                    <div class="business-meta">
+                        <span class="metric">EVM Compatible</span>
+                        <span class="feature">Low Fees</span>
+                    </div>
+                    <div class="btn-secondary">Learn More</div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="business-card">
+                    <h3>⚡ Backend Architecture</h3>
+                    <p>Cloudflare Workers and KV storage provide scalable, reliable infrastructure for global users. Progressive Web App design ensures seamless experience across all devices and network conditions.</p>
+                    <div class="business-meta">
+                        <span class="metric">Global Scale</span>
+                        <span class="feature">Progressive Web App</span>
+                    </div>
+                    <div class="btn-secondary">Learn More</div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="business-card">
+                    <h3>💰 Revenue Model</h3>
+                    <p>Revolutionary 10% platform fee - the lowest in gaming history. Players keep 90% of their winnings while we maintain sustainable revenue through volume and fair pricing.</p>
+                    <div class="business-meta">
+                        <span class="metric">10% Platform Fee</span>
+                        <span class="feature">Lowest in History</span>
+                    </div>
+                    <div class="btn-secondary">Learn More</div>
+                </div>
+            </div>
+
+            <!-- Revenue Streams Section -->
+            <section class="revenue-section">
+                <h2>💰 Revenue Streams</h2>
+                <p>Our sustainable revenue model is built on multiple streams, ensuring long-term growth and platform stability.</p>
+                
+                <div class="revenue-grid">
+                    <!-- Revenue 1 -->
+                    <div class="revenue-card">
+                        <h3>🎮 Gaming Revenue</h3>
+                        <div class="amount">$0.25</div>
+                        <p>Per game entry fee</p>
+                        <div class="amount">$2.50</div>
+                        <p>Daily unlimited pass</p>
+                        <div class="btn-secondary">View Details</div>
+                    </div>
+
+                    <!-- Revenue 2 -->
+                    <div class="revenue-card">
+                        <h3>🏆 Challenge System</h3>
+                        <div class="amount">$2-$5</div>
+                        <p>Head-to-head competitions</p>
+                        <p>10% platform fee on challenges</p>
+                        <p>Transparent prize distribution</p>
+                        <div class="btn-secondary">View Details</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technical Flow Chart -->
+            <section class="flow-section">
+                <h2>🔧 Technical Architecture Overview</h2>
+                <p>Our backend-first approach ensures security, scalability, and performance</p>
+                
+                <div class="flow-chart">
+                    <div class="flow-step">
+                        <h3>🌐 Frontend Layer</h3>
+                        <p>HTML5 Canvas game engine with progressive web app design. Instant play system loads in 0.1-0.3 seconds with mobile-first responsive controls.</p>
+                    </div>
+                    
+                    <div class="flow-arrow">⬇️</div>
+                    
+                    <div class="flow-step">
+                        <h3>⚡ Backend Layer</h3>
+                        <p>Cloudflare Workers API with KV storage for player data and leaderboards. Device fingerprinting and anti-cheat verification systems.</p>
+                    </div>
+                    
+                    <div class="flow-arrow">⬇️</div>
+                    
+                    <div class="flow-step">
+                        <h3>🔗 Blockchain Layer</h3>
+                        <p>Sonic Labs network for USDC.E transactions and smart contract execution. Contract-driven tournament operations with transparent prize distribution.</p>
+                    </div>
+                    
+                    <div class="flow-arrow">⬇️</div>
+                    
+                    <div class="flow-step">
+                        <h3>💳 Payment Layer</h3>
+                        <p>Apple Pay integration for seamless payments. Real USDC.E tokens on Sonic Labs network. No mock tokens, actual cryptocurrency rewards.</p>
+                    </div>
+                    
+                    <div class="flow-arrow">⬇️</div>
+                    
+                    <div class="flow-step">
+                        <h3>🔐 Security Layer</h3>
+                        <p>OpenZeppelin audited smart contracts with ReentrancyGuard. Real-time score validation and state hashing. Anti-cheat measures with performance metrics.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Mini Logo at Bottom - 1/10th size of main logo -->
+    <div class="mini-logo-container">
+        <div class="mini-logo">
+            <span class="mini-logo-letter">B</span>
+            <span class="mini-logo-letter">l</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">c</span>
+            <span class="mini-logo-letter">k</span>
+            <span class="mini-logo-letter">Z</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">n</span>
+            <span class="mini-logo-letter">e</span>
+            <span class="mini-logo-letter"> </span>
+            <span class="mini-logo-letter">L</span>
+            <span class="mini-logo-letter">a</span>
+            <span class="mini-logo-letter">b</span>
+        </div>
+    </div>
+
+    <script>
+        // Navbar animation
+        const navbar = document.getElementById('navbar');
+        setTimeout(() => navbar.classList.add('loaded'), 100);
+
+        // Hero section animation
+        const heroSection = document.getElementById('heroSection');
+        setTimeout(() => heroSection.classList.add('loaded'), 300);
+    </script>
+</body>
+</html> 

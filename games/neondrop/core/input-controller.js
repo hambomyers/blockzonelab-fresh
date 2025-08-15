@@ -139,7 +139,7 @@ export class InputController {
         }
 
         const state = this.getCurrentGameState();
-        const gameplayPhases = ['PLAYING', 'LOCKING', 'COUNTDOWN', 'COUNTDOWN_TO_PLAYING', 'PAUSED'];
+        const gameplayPhases = ['PLAYING', 'LOCKING', 'COUNTDOWN', 'PAUSED'];
         const gameOverPhases = ['GAME_OVER', 'GAME_OVER_SEQUENCE'];
         
         if (gameOverPhases.includes(state.phase)) {
@@ -176,7 +176,6 @@ export class InputController {
             case 'PLAYING':
             case 'LOCKING':
             case 'COUNTDOWN':
-            case 'COUNTDOWN_TO_PLAYING':
                 this.handleGameplayInput(action);
                 break;
             case 'PAUSED':

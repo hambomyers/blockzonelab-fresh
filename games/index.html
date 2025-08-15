@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlockZone Lab - Game Hub</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../public/favicon.svg">
+    
+    <!-- Professional Design System CSS -->
+    <link rel="stylesheet" href="../assets/css/design-system.css">
+    <link rel="stylesheet" href="../assets/css/game-wrapper.css">
+    <link rel="stylesheet" href="../shared/hero-shared.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#00ff41">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <!-- Instant Mobile Detection -->
+    <script>
+        // Mobile detection and CSS property setup for games page
+        (function() {
+            window.BlockZoneMobile = {
+                _isMobile: window.innerWidth <= 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent),
+                _isTablet: window.innerWidth > 768 && window.innerWidth <= 1024 && 'ontouchstart' in window,
+                _hasTouch: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+                _isPWA: window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true,
+                isMobile() { return this._isMobile; },
+                isTablet() { return this._isTablet; },
+                hasTouch() { return this._hasTouch; },
+                isPWA() { return this._isPWA; },
+                hasPhysicalKeyboard() { 
+                    return !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth > 1024;
+                },
+                needsMobileControls() {
+                    return (this._isMobile || this._isTablet) && !this.hasPhysicalKeyboard();
+                },
+                getScreenSize() {
+                    const w = window.innerWidth;
+                    return w <= 480 ? 'small' : w <= 768 ? 'medium' : w <= 1024 ? 'large' : 'xlarge';
+                }
+            };
+            document.documentElement.style.setProperty('--is-mobile', window.BlockZoneMobile._isMobile ? '1' : '0');
+            document.documentElement.style.setProperty('--has-touch', window.BlockZoneMobile._hasTouch ? '1' : '0');
+            document.documentElement.style.setProperty('--has-keyboard', window.BlockZoneMobile.hasPhysicalKeyboard() ? '1' : '0');
+            document.documentElement.style.setProperty('--needs-mobile-controls', window.BlockZoneMobile.needsMobileControls() ? '1' : '0');
+        })();
+    </script>
+
+    <style>
+        /* CRITICAL RENDERING PATH - Minimal styles for instant visual feedback */
+        :root {
+            --primary: #00ff41;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            
+            /* Neon Drop Color Palette */
+            --neon-cyan: #00d4ff;
+            --neon-green: #00ff00;
+            --neon-red: #ff6b6b;
+            --neon-gold: #ffd700;
+        }
+        
+        /* Professional Starfield Background - Easter Egg for Games */
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: #0a0a0a;
+            overflow: hidden;
+        }
+
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 160px 30px, #ddd, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: sparkle 20s linear infinite;
+        }
+
+        @keyframes sparkle {
+            from { transform: translateY(0); }
+            to { transform: translateY(-100px); }
+        }
+
+        /* Games page specific - match landing page spacing */
+        .games-page .hero-brand {
+            margin-bottom: calc(2rem - 30px); /* Match landing page spacing exactly */
+        }
+        .games-page .hero-subtitle {
+            justify-content: center !important; /* Force center single word */
+            text-align: center !important;
+        }
+
+        /* CRITICAL NAVIGATION */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .navbar.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .navbar-container {
+            width: 100%;
+            margin: 0;
+            padding: 0 2rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 32px; /* Much thinner */
+        }
+        
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            transform: translateY(-10px); /* Move links up 2 more pixels */
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 0.9rem; /* Keep original size */
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+
+        .hero-subtitle span {
+            font-size: clamp(2.4rem, 8vw, 3.6rem);
+            color: #0a0a0a;
+        }
+
+
+
+        .hero-content {
+            text-align: center;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* Game Cards Grid - MATCHING MAIN LANDING PAGE STYLE WITH YELLOW EDGES */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 75%;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--neon-gold);
+            border-radius: 16px;
+            padding: 2rem 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            aspect-ratio: 2/3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .game-card:hover::before {
+            left: 100%;
+        }
+
+        .game-card:hover {
+            border-color: var(--neon-gold);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .game-card h3 {
+            color: var(--neon-gold);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .game-card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #00ff41;
+            color: #000;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #00cc33;
+            transform: translateY(-2px);
+        }
+
+        .btn--outline {
+            background: transparent;
+            border: 2px solid #00ff41;
+            color: #00ff41;
+        }
+
+        .btn--outline:hover {
+            background: #00ff41;
+            color: #000;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero-brand {
+                gap: 2px; /* 2px gap on mobile */
+                margin-bottom: 1.5rem;
+            }
+            
+            .hero-brand-letter {
+                width: 40px; /* Smaller on mobile but still large */
+                height: 40px;
+                font-size: 48px; /* Proportional increase for mobile */
+                border-radius: 3px;
+                border-width: 1px;
+            }
+            
+            .hero-brand-letter:nth-child(10) {
+                width: 40px; /* Same size as letter blocks on mobile */
+            }
+            
+            .hero-section {
+                padding-top: 80px; /* Normal padding on mobile */
+            }
+
+
+
+            .games-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+                max-width: 90%;
+            }
+            
+            .game-card {
+                padding: 1.5rem 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                max-width: 95%;
+            }
+            
+            .game-card {
+                padding: 1.2rem 0.6rem;
+            }
+        }
+        
+        /* MINI LOGO AT BOTTOM - 1/10th size of main logo */
+        .mini-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 0;
+            background: transparent;
+        }
+        
+        .mini-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.9px; /* 3x bigger (was 0.3px) */
+        }
+        
+        .mini-logo-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px; /* 3x bigger (was 6px) */
+            height: 18px; /* 3x bigger (was 6px) */
+            border-radius: 0.9px; /* 3x bigger (was 0.3px) */
+            font-size: 23.4px; /* 3x bigger (was 7.8px) */
+            font-weight: bold;
+            color: #000;
+            background: #00ff41;
+            border: 0.6px solid #ff4444; /* 3x bigger (was 0.2px) */
+            box-shadow: none;
+            transition: all 0.3s ease;
+            font-family: 'Minion Pro', 'Minion Pro Bold', 'Times New Roman', serif;
+        }
+        
+        .mini-logo-letter:nth-child(6) {
+            /* The "Z" - make it look like the favicon */
+            background: #FFFF00;
+            border: 0.6px solid #ff4444;
+            color: #ff4444;
+            box-shadow: none;
+            font-size: 25.2px; /* 3x bigger (was 8.4px) */
+        }
+        
+        .mini-logo-letter:nth-child(10) {
+            /* The space - make it green like the others */
+            background: #00ff41;
+            border: 0.6px solid #ff4444;
+            box-shadow: none;
+            width: 18px; /* 3x bigger (was 6px) */
+        }
+    </style>
+</head>
+
+<body class="games-page">
+    <!-- Professional Starfield Background -->
+    <div class="starfield">
+        <div class="stars"></div>
+    </div>
+
+    <!-- Navigation - Fixed and Optimized -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <ul class="navbar-nav">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/games/" class="nav-link active">Games</a></li>
+                <li><a href="/academy/" class="nav-link">Academy</a></li>
+                <li><a href="/pages/business-model.html" class="nav-link">Business</a></li>
+                <li><a href="/pages/whitepaper.html" class="nav-link">Whitepaper</a></li>
+                <li><a href="/pages/user-profile.html" class="nav-link">Support</a></li>
+                <li><a href="/pages/profile.html" class="nav-link">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="heroSection">
+        <div class="hero-content">
+            <!-- Large Hero Brand -->
+            <div class="hero-brand">
+                <span class="hero-brand-letter">B</span>
+                <span class="hero-brand-letter">l</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">c</span>
+                <span class="hero-brand-letter">k</span>
+                <span class="hero-brand-letter">Z</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">n</span>
+                <span class="hero-brand-letter">e</span>
+                <span class="hero-brand-letter"> </span>
+                <span class="hero-brand-letter">L</span>
+                <span class="hero-brand-letter">a</span>
+                <span class="hero-brand-letter">b</span>
+            </div>
+            <div class="hero-subtitle">
+                <span>GAMES</span>
+            </div>
+
+            <!-- Game Cards Grid -->
+            <div class="games-grid">
+                <a href="neondrop/" class="game-card">
+                    <h3>⚡ NeonDrop Tournament</h3>
+                    <p>Fast-paced arcade action with USDC.E prizes. $0.25 per game or $2.50 unlimited. 30% to 1st place with hyperbolic decay distribution.</p>
+                    <button class="btn">Play Now</button>
+                </a>
+
+                <a href="#coming-soon" class="game-card">
+                    <h3>⚡ Electric Eel</h3>
+                    <p>Navigate through electric currents, growing longer with each power-up. Modern Snake with electric power mechanics.</p>
+                    <button class="btn btn--outline">Coming Soon</button>
+                </a>
+
+                <a href="#coming-soon" class="game-card">
+                    <h3>🌌 Cosmic Debris</h3>
+                    <p>Navigate through space debris, destroying asteroids with precision. Classic Asteroids with modern graphics.</p>
+                    <button class="btn btn--outline">Coming Soon</button>
+                </a>
+
+                <a href="#coming-soon" class="game-card">
+                    <h3>👾 Retro Invasion</h3>
+                    <p>Defend Earth from alien invaders in this Space Invaders revival. Boss battles and power-ups included.</p>
+                    <button class="btn btn--outline">Coming Soon</button>
+                </a>
+
+                <a href="#coming-soon" class="game-card">
+                    <h3>🔴 Pixel Hunter</h3>
+                    <p>Navigate through pixelated mazes, collecting dots while avoiding ghosts. Classic Pac-Man with modern pixel art.</p>
+                    <button class="btn btn--outline">Coming Soon</button>
+                </a>
+
+                <a href="#coming-soon" class="game-card">
+                    <h3>🏓 Paddle Master</h3>
+                    <p>Master the paddle in this Breakout revival. Destroy blocks with power-ups and special abilities.</p>
+                    <button class="btn btn--outline">Coming Soon</button>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mini Logo at Bottom - 1/10th size of main logo -->
+    <div class="mini-logo-container">
+        <div class="mini-logo">
+            <span class="mini-logo-letter">B</span>
+            <span class="mini-logo-letter">l</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">c</span>
+            <span class="mini-logo-letter">k</span>
+            <span class="mini-logo-letter">Z</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">n</span>
+            <span class="mini-logo-letter">e</span>
+            <span class="mini-logo-letter"> </span>
+            <span class="mini-logo-letter">L</span>
+            <span class="mini-logo-letter">a</span>
+            <span class="mini-logo-letter">b</span>
+        </div>
+    </div>
+
+    <!-- Identity Manager Integration -->
+    <script type="module">
+        import { identityManager } from '../shared/core/IdentityManager.js';
+
+        class GamesWelcome {
+            constructor() {
+                this.init();
+            }
+
+            async init() {
+                try {
+                    await identityManager.initialize();
+                    
+                    if (identityManager.hasValidIdentity()) {
+                        // User has existing identity - show welcome banner
+                        this.showWelcomeBanner();
+                    }
+                    // If no identity, don't show anything - let individual pages handle it
+                } catch (error) {
+                    console.error('Failed to initialize games welcome:', error);
+                }
+            }
+
+            showWelcomeBanner() {
+                const playerName = identityManager.getPlayerName();
+                const walletInfo = identityManager.getWalletInfo();
+                
+                const welcomeBanner = document.createElement('div');
+                welcomeBanner.style.cssText = `
+                    position: fixed;
+                    top: 80px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 212, 255, 0.05));
+                    border: 1px solid rgba(0, 212, 255, 0.3);
+                    border-radius: 10px;
+                    padding: 20px;
+                    max-width: 600px;
+                    text-align: center;
+                    animation: fadeIn 0.5s ease-out;
+                    z-index: 1001;
+                `;
+                
+                welcomeBanner.innerHTML = `
+                    <h3 style="color: #00d4ff; margin-bottom: 10px; font-size: 24px;">Welcome, ${playerName}!</h3>
+                    <p style="color: #cccccc; margin-bottom: 15px;">Your gaming journey continues with your existing identity.</p>
+                    <div style="
+                        background: rgba(0, 212, 255, 0.1);
+                        border: 1px solid rgba(0, 212, 255, 0.3);
+                        border-radius: 8px;
+                        padding: 10px;
+                        margin: 10px 0;
+                        font-family: 'Courier New', monospace;
+                        font-size: 11px;
+                        color: #00d4ff;
+                        display: inline-block;
+                    ">
+                        <strong>Wallet:</strong> ${walletInfo.address}<br>
+                        <strong>Type:</strong> ${walletInfo.isAccountAbstraction ? 'Account Abstraction' : 'Traditional'}
+                    </div>
+                `;
+                
+                document.body.appendChild(welcomeBanner);
+                
+                // Remove banner after 5 seconds
+                setTimeout(() => {
+                    welcomeBanner.remove();
+                }, 5000);
+            }
+        }
+
+        // Initialize games welcome system
+        new GamesWelcome();
+    </script>
+
+    <!-- Main Entry Point -->
+    <script type="module">
+        // Initialize mobile detection
+        if (window.BlockZoneMobile && window.BlockZoneMobile.needsMobileControls()) {
+            console.log('📱 Mobile controls enabled');
+        }
+
+        // Navbar animation
+        const navbar = document.getElementById('navbar');
+        setTimeout(() => navbar.classList.add('loaded'), 100);
+
+        // Hero section animation
+        const heroSection = document.getElementById('heroSection');
+        setTimeout(() => heroSection.classList.add('loaded'), 300);
+    </script>
+
+</body>
+</html>

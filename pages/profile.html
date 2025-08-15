@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Profile - BlockZone Lab</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Your BlockZone Lab player profile - view stats, achievements, wallet info, and gaming progress">
+    <meta name="keywords" content="player profile, gaming stats, blockchain wallet, achievements">
+    
+    <!-- Professional Design System CSS -->
+    <link rel="stylesheet" href="../assets/css/design-system.css">
+    <link rel="stylesheet" href="../shared/hero-shared.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+    
+    <!-- Web3 Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.8.1/ethers.umd.min.js" type="application/javascript"></script>
+    
+    <style>
+        /* CRITICAL RENDERING PATH - Minimal styles for instant visual feedback */
+        :root {
+            --primary: #00ff41;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            
+            /* Neon Drop Color Palette */
+            --neon-cyan: #00d4ff;
+            --neon-green: #00ff00;
+            --neon-red: #ff6b6b;
+            --neon-gold: #ffd700;
+            --dark-blue-1: #1a1a2e;
+            --dark-blue-2: #16213e;
+            --dark-blue-3: #0f3460;
+            
+            /* Neutral Grays */
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+        }
+        
+        /* CRITICAL NAVIGATION - STANDARDIZED */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .navbar.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .navbar-container {
+            width: 100%;
+            margin: 0;
+            padding: 0 2rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 32px;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            transform: translateY(-10px);
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+        
+        /* HERO SECTION - USES SHARED CSS */
+        .hero-section.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Profile page specific - match landing page spacing */
+        .profile-page .hero-brand {
+            margin-bottom: calc(2rem - 30px); /* Match landing page spacing exactly */
+        }
+        
+        /* NEW PROFILE LAYOUT - ONE GIANT FRAME */
+        .main-content {
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 2rem 0;
+            color: var(--text-primary);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* GIANT PROFILE FRAME */
+        .profile-frame {
+            background: linear-gradient(135deg, var(--dark-blue-1), var(--dark-blue-2));
+            border: 3px solid var(--neon-green);
+            border-radius: 24px;
+            padding: 3rem;
+            margin: 4rem 0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .profile-frame:hover {
+            box-shadow: 0 0 80px rgba(0, 255, 0, 0.5);
+            transform: translateY(-5px);
+        }
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid rgba(0, 255, 0, 0.3);
+        }
+        
+        .profile-header h2 {
+            color: var(--neon-green);
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .profile-header p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .player-name {
+            color: var(--neon-cyan);
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .player-id {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-family: monospace;
+            opacity: 0.7;
+        }
+        
+        /* PROFILE SECTIONS GRID */
+        .profile-sections {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .profile-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .profile-section:hover {
+            border-color: var(--neon-gold);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .section-title {
+            color: var(--neon-cyan);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+        }
+        
+        .info-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .info-value {
+            color: var(--text-primary);
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: rgba(0, 255, 0, 0.2);
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+        }
+        
+        .status-inactive {
+            background: rgba(255, 107, 107, 0.2);
+            color: var(--neon-red);
+            border: 1px solid var(--neon-red);
+        }
+        
+        /* STATS CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--dark-blue-2), var(--dark-blue-3));
+            border: 2px solid var(--neon-gold);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .stat-value {
+            color: var(--neon-gold);
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* ACHIEVEMENTS SECTION */
+        .achievements-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--neon-red);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .achievements-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .achievement-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--neon-gold), var(--neon-red));
+            color: var(--bg-primary);
+            padding: 0.8rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: 2px solid var(--neon-gold);
+            transition: all 0.3s ease;
+        }
+        
+        .achievement-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        /* WALLET SECTION */
+        .wallet-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .wallet-address {
+            font-family: monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        .quark-display {
+            background: linear-gradient(135deg, #8A2BE2, #4B0082);
+            border: 2px solid #9370DB;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .quark-balance {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quark-label {
+            color: #DDA0DD;
+            font-size: 0.9rem;
+        }
+        
+        /* LOADING AND ERROR STATES */
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 255, 0, 0.3);
+            border-top: 4px solid var(--neon-green);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 2rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--neon-red);
+        }
+        
+        /* GAME RESULTS SECTION */
+        .game-results-display {
+            background: linear-gradient(135deg, var(--dark-blue-1), var(--dark-blue-2));
+            border: 2px solid var(--neon-cyan);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .current-score-display {
+            margin-bottom: 2rem;
+        }
+
+        .score-value {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 20px var(--neon-cyan);
+            margin-bottom: 0.5rem;
+            animation: scorePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes scorePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .score-label {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .game-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .challenge-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .challenge-btn {
+            background: linear-gradient(135deg, var(--neon-green), #00cc6a);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .challenge-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.5);
+        }
+
+        .challenge-amount {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 0.3rem;
+        }
+
+        .challenge-win {
+            font-size: 0.9rem;
+            color: #000000;
+            font-weight: 600;
+        }
+
+        /* LEADERBOARD SECTION */
+        .leaderboard-container {
+            background: linear-gradient(135deg, var(--dark-blue-1), var(--dark-blue-2));
+            border: 2px solid var(--neon-gold);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .leaderboard-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .leaderboard-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--neon-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .tournament-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .leaderboard-content {
+            margin-bottom: 2rem;
+        }
+
+        .leaderboard-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .leaderboard-row:hover {
+            border-color: var(--neon-gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .leaderboard-row.current-player {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--neon-green);
+        }
+
+        .rank-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .rank-medal {
+            font-size: 1.2rem;
+        }
+
+        .rank-number {
+            font-weight: bold;
+            color: var(--neon-gold);
+        }
+
+        .player-info {
+            flex: 1;
+            margin-left: 1rem;
+        }
+
+        .player-name {
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .player-score {
+            color: var(--neon-cyan);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .leaderboard-footer {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .refresh-btn, .view-full-btn {
+            background: linear-gradient(135deg, var(--neon-gold), #ffb347);
+            border: none;
+            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            color: #000000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover, .view-full-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .loading-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        /* MINI LOGO AT BOTTOM - 1/10th size of main logo */
+        .mini-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 0;
+            background: transparent;
+        }
+        
+        .mini-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.9px; /* 3x bigger (was 0.3px) */
+        }
+        
+        .mini-logo-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px; /* 3x bigger (was 6px) */
+            height: 18px; /* 3x bigger (was 6px) */
+            border-radius: 0.9px; /* 3x bigger (was 0.3px) */
+            font-size: 23.4px; /* 3x bigger (was 7.8px) */
+            font-weight: bold;
+            color: #000;
+            background: #00ff41;
+            border: 0.6px solid #ff4444; /* 3x bigger (was 0.2px) */
+            box-shadow: none;
+            transition: all 0.3s ease;
+            font-family: 'Minion Pro', 'Minion Pro Bold', 'Times New Roman', serif;
+        }
+        
+        .mini-logo-letter:nth-child(6) {
+            /* The "Z" - make it look like the favicon */
+            background: #FFFF00;
+            border: 0.6px solid #ff4444;
+            color: #ff4444;
+            box-shadow: none;
+            font-size: 25.2px; /* 3x bigger (was 8.4px) */
+        }
+        
+        .mini-logo-letter:nth-child(10) {
+            /* The space - make it green like the others */
+            background: #00ff41;
+            border: 0.6px solid #ff4444;
+            box-shadow: none;
+            width: 18px; /* 3x bigger (was 6px) */
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .profile-sections {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .profile-frame {
+                padding: 2rem;
+            }
+            
+            .profile-header h2 {
+                font-size: 2.2rem;
+            }
+            
+            .player-name {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .profile-frame {
+                padding: 1.5rem;
+            }
+            
+            .profile-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .player-name {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="profile-page">
+    <!-- Navigation - Fixed and Optimized -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <ul class="navbar-nav">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/games/" class="nav-link">Games</a></li>
+                <li><a href="/academy/" class="nav-link">Academy</a></li>
+                <li><a href="/pages/business-model.html" class="nav-link">Business</a></li>
+                <li><a href="/pages/whitepaper.html" class="nav-link">Whitepaper</a></li>
+                <li><a href="/pages/user-profile.html" class="nav-link">Support</a></li>
+                <li><a href="/pages/profile.html" class="nav-link active">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Critical Content First -->
+    <section class="hero-section" id="heroSection">
+        <div class="hero-content">
+            <!-- Large Hero Brand -->
+            <div class="hero-brand">
+                <span class="hero-brand-letter">B</span>
+                <span class="hero-brand-letter">l</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">c</span>
+                <span class="hero-brand-letter">k</span>
+                <span class="hero-brand-letter">Z</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">n</span>
+                <span class="hero-brand-letter">e</span>
+                <span class="hero-brand-letter"> </span>
+                <span class="hero-brand-letter">L</span>
+                <span class="hero-brand-letter">a</span>
+                <span class="hero-brand-letter">b</span>
+            </div>
+            <div class="hero-subtitle">
+                <span>PROFILE</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Profile Content - One Giant Frame -->
+    <main class="main-content">
+        <div class="container">
+            <div class="profile-frame" id="profileFrame">
+                <!-- Loading State -->
+                <div class="loading-state" id="loadingState">
+                    <div class="loading-spinner"></div>
+                    <h3>Loading your profile...</h3>
+                    <p>Fetching your data from the blockchain...</p>
+                </div>
+                
+                <!-- Error State -->
+                <div class="error-state" id="errorState" style="display: none;">
+                    <h3>❌ Profile Error</h3>
+                    <p id="errorMessage">Failed to load your profile. Please try again later.</p>
+                    <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.8rem 1.5rem; background: var(--neon-green); color: var(--bg-primary); border: none; border-radius: 8px; cursor: pointer;">Retry</button>
+                </div>
+                
+                <!-- Profile Content -->
+                <div id="profileContent" style="display: none;">
+                    <!-- Profile Header -->
+                    <div class="profile-header">
+                        <h2>🎮 Player Profile</h2>
+                        <p>Your complete BlockZone Lab gaming profile and statistics</p>
+                        <div class="player-name" id="playerName">Loading...</div>
+                        <div class="player-id" id="playerId">Player ID: Loading...</div>
+                    </div>
+                    
+                    <!-- Profile Sections -->
+                    <div class="profile-sections">
+                        <!-- Identity Section -->
+                        <div class="profile-section">
+                            <div class="section-title">
+                                <span>👤</span>
+                                <span>Identity</span>
+                            </div>
+                            <div class="section-content" id="identityContent">
+                                <!-- Identity content will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <!-- Current Status Section -->
+                        <div class="profile-section">
+                            <div class="section-title">
+                                <span>🎮</span>
+                                <span>Current Status</span>
+                            </div>
+                            <div class="section-content" id="statusContent">
+                                <!-- Status content will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <!-- Wallet Section -->
+                        <div class="profile-section">
+                            <div class="section-title">
+                                <span>💎</span>
+                                <span>Wallet & Quarks</span>
+                            </div>
+                            <div class="section-content" id="walletContent">
+                                <!-- Wallet content will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Game Results Section -->
+                        <div class="profile-section" id="gameResultsSection" style="display: none;">
+                            <div class="section-title" style="color: var(--neon-cyan);">
+                                <span>⚡</span>
+                                <span>Current Game Results</span>
+                            </div>
+                            <div class="section-content">
+                                <div class="game-results-display">
+                                    <div class="current-score-display">
+                                        <div class="score-value" id="currentScoreValue">0</div>
+                                        <div class="score-label">Your Score</div>
+                                    </div>
+                                    <div class="game-info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">🎯 Rank:</span>
+                                            <span class="info-value" id="currentRankValue">#0</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">🏆 Tournament:</span>
+                                            <span class="info-value">Daily Challenge</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">⏰ Next Reset:</span>
+                                            <span class="info-value">11:15 PM EST</span>
+                                        </div>
+                                    </div>
+                                    <div class="challenge-buttons">
+                                        <button class="challenge-btn challenge-2" onclick="createChallenge(2)">
+                                            <div class="challenge-amount">💰 $2</div>
+                                            <div class="challenge-win">Win $3.60</div>
+                                        </button>
+                                        <button class="challenge-btn challenge-5" onclick="createChallenge(5)">
+                                            <div class="challenge-amount">💎 $5</div>
+                                            <div class="challenge-win">Win $9.00</div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Leaderboard Section -->
+                        <div class="profile-section">
+                            <div class="section-title" style="color: var(--neon-gold);">
+                                <span>🏆</span>
+                                <span>Daily Tournament Leaderboard</span>
+                            </div>
+                            <div class="section-content">
+                                <div class="leaderboard-container">
+                                    <div class="leaderboard-header">
+                                        <div class="leaderboard-title">Top Players</div>
+                                        <div class="tournament-info">Daily Tournament • Resets at 11:15 PM EST</div>
+                                    </div>
+                                    <div class="leaderboard-content" id="leaderboardContent">
+                                        <div class="loading-placeholder">Loading leaderboard...</div>
+                                    </div>
+                                    <div class="leaderboard-footer">
+                                        <button class="refresh-btn" onclick="refreshLeaderboard()">🔄 Refresh</button>
+                                        <button class="view-full-btn" onclick="viewFullLeaderboard()">📊 View Complete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gaming Stats -->
+                    <div class="section-title" style="margin-bottom: 1.5rem; color: var(--neon-gold);">
+                        <span>🏆</span>
+                        <span>Gaming Statistics</span>
+                    </div>
+                    <div class="stats-grid" id="statsGrid">
+                        <!-- Stats will be populated by JavaScript -->
+                    </div>
+                    
+                    <!-- Achievements -->
+                    <div class="achievements-section">
+                        <div class="section-title" style="color: var(--neon-red);">
+                            <span>🏅</span>
+                            <span>Achievements</span>
+                        </div>
+                        <div class="achievements-grid" id="achievementsGrid">
+                            <!-- Achievements will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mini Logo at Bottom - 1/10th size of main logo -->
+    <div class="mini-logo-container">
+        <div class="mini-logo">
+            <span class="mini-logo-letter">B</span>
+            <span class="mini-logo-letter">l</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">c</span>
+            <span class="mini-logo-letter">k</span>
+            <span class="mini-logo-letter">Z</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">n</span>
+            <span class="mini-logo-letter">e</span>
+            <span class="mini-logo-letter"> </span>
+            <span class="mini-logo-letter">L</span>
+            <span class="mini-logo-letter">a</span>
+            <span class="mini-logo-letter">b</span>
+        </div>
+    </div>
+
+    <script>
+        // Navbar animation
+        const navbar = document.getElementById('navbar');
+        setTimeout(() => navbar.classList.add('loaded'), 100);
+
+        // Hero section animation
+        const heroSection = document.getElementById('heroSection');
+        setTimeout(() => heroSection.classList.add('loaded'), 300);
+
+        // Global functions for challenge and leaderboard
+        function createChallenge(amount) {
+            console.log(`💰 Creating $${amount} challenge...`);
+            // TODO: Implement challenge creation
+            alert(`Challenge creation for $${amount} will be implemented soon!`);
+        }
+
+        function refreshLeaderboard() {
+            console.log('🔄 Refreshing leaderboard...');
+            if (window.profilePage) {
+                window.profilePage.loadLeaderboard();
+            }
+        }
+
+        function viewFullLeaderboard() {
+            console.log('📊 Opening full leaderboard...');
+            // TODO: Implement full leaderboard view
+            alert('Full leaderboard view will be implemented soon!');
+        }
+
+        // Profile functionality
+        class ProfilePage {
+            constructor() {
+                this.playerProfile = null;
+                this.identityManager = null;
+                this.playerId = null;
+                this.playerData = null;
+            }
+            
+            async initialize() {
+                try {
+                    console.log('🏗️ Initializing Profile Page...');
+                    
+                    // Import required modules
+                    const { PlayerProfile } = await import('../shared/components/PlayerProfile.js');
+                    const { IdentityManager } = await import('../shared/core/IdentityManager.js');
+                    
+                    // Initialize identity system
+                    this.identityManager = new IdentityManager();
+                    await this.identityManager.initialize();
+                    
+                    if (!this.identityManager.hasValidIdentity()) {
+                        this.showError('No player identity found. Please play a game first to create your profile.');
+                        return;
+                    }
+                    
+                    this.playerId = this.identityManager.getPlayerId();
+                    const playerName = this.identityManager.getPlayerName();
+                    
+                    console.log('👤 Loading profile for:', playerName, '(', this.playerId, ')');
+                    
+                    // Initialize PlayerProfile
+                    this.playerProfile = new PlayerProfile();
+                    await this.playerProfile.initialize(this.playerId);
+                    
+                    // Load comprehensive player data
+                    this.playerData = await this.playerProfile.getComprehensivePlayerData(this.playerId, true);
+                    
+                    this.renderProfile();
+                    
+                } catch (error) {
+                    console.error('❌ Profile initialization failed:', error);
+                    this.showError('Failed to load your profile. Please try again later.');
+                }
+            }
+            
+            renderProfile() {
+                const playerName = this.identityManager.getPlayerName() || 'Anonymous Player';
+                const firstName = playerName.split('#')[0];
+                const profile = this.playerData?.profile;
+                
+                // Update header
+                document.getElementById('playerName').textContent = `Welcome, ${firstName}! 🎮`;
+                document.getElementById('playerId').textContent = `Player ID: ${this.playerId}`;
+                
+                // Render identity section
+                this.renderIdentitySection(profile);
+                
+                // Render status section
+                this.renderStatusSection(profile);
+                
+                // Render wallet section
+                this.renderWalletSection(profile);
+                
+                // Render gaming stats
+                this.renderGamingStats(profile);
+                
+                                    // Render achievements
+                    this.renderAchievements(profile);
+                    
+                    // Load leaderboard
+                    this.loadLeaderboard();
+                    
+                    // Show profile content
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('profileContent').style.display = 'block';
+            }
+            
+            renderIdentitySection(profile) {
+                const identityContent = document.getElementById('identityContent');
+                identityContent.innerHTML = `
+                    <div class="info-item">
+                        <span class="info-label">🎮 Username:</span>
+                        <span class="info-value">${profile?.username || profile?.display_name || this.playerId}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">💼 Wallet Address:</span>
+                        <span class="info-value">${profile?.wallet_address || "Not Connected"}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">📅 Member Since:</span>
+                        <span class="info-value">${profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "Unknown"}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">🏆 Account Tier:</span>
+                        <span class="status-badge status-active">${profile?.tier || "Anonymous"}</span>
+                    </div>
+                `;
+            }
+            
+            renderStatusSection(profile) {
+                const statusContent = document.getElementById('statusContent');
+                const status = profile?.status || {};
+                
+                statusContent.innerHTML = `
+                    <div class="info-item">
+                        <span class="info-label">Unlimited Pass:</span>
+                        <span class="status-badge ${status.has_unlimited_pass ? 'status-active' : 'status-inactive'}">
+                            ${status.has_unlimited_pass ? '✅ Active' : '❌ Inactive'}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Free Game Available:</span>
+                        <span class="status-badge ${status.can_play_free ? 'status-active' : 'status-inactive'}">
+                            ${status.can_play_free ? '✅ Yes' : '❌ No'}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Next Reset:</span>
+                        <span class="info-value">${status.next_reset ? new Date(status.next_reset).toLocaleString() : "Unknown"}</span>
+                    </div>
+                `;
+            }
+            
+            renderWalletSection(profile) {
+                const walletContent = document.getElementById('walletContent');
+                const quarkBalance = this.getQuarkBalance();
+                
+                walletContent.innerHTML = `
+                    <div class="quark-display">
+                        <div class="quark-balance">${quarkBalance} QUARK</div>
+                        <div class="quark-label">Governance & Street Cred Token</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Total Earned:</span>
+                        <span class="info-value">${this.getLocalQuarkTotal()} QUARK</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Games Played:</span>
+                        <span class="info-value">${this.getLocalQuarkGames()}</span>
+                    </div>
+                `;
+            }
+            
+            renderGamingStats(profile) {
+                const statsGrid = document.getElementById('statsGrid');
+                const gaming = profile?.gaming || {};
+                
+                statsGrid.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-value">${(gaming.lifetime_high_score || 0).toLocaleString()}</div>
+                        <div class="stat-label">Lifetime High Score</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${gaming.total_games_played || 0}</div>
+                        <div class="stat-label">Games Played</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${(gaming.average_score || 0).toLocaleString()}</div>
+                        <div class="stat-label">Average Score</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${gaming.current_streak || 0}</div>
+                        <div class="stat-label">Current Streak</div>
+                    </div>
+                `;
+            }
+            
+            renderAchievements(profile) {
+                const achievementsGrid = document.getElementById('achievementsGrid');
+                const achievements = [];
+                
+                // Check for various achievements based on player data
+                if (profile?.gaming?.total_games_played > 0) {
+                    achievements.push('🎮 First Game');
+                }
+                
+                if (profile?.gaming?.total_games_played >= 10) {
+                    achievements.push('🔥 10 Games');
+                }
+                
+                if (profile?.gaming?.lifetime_high_score >= 1000) {
+                    achievements.push('⭐ High Scorer');
+                }
+                
+                if (this.getQuarkBalance() >= 50) {
+                    achievements.push('💎 Quark Collector');
+                }
+                
+                if (profile?.status?.has_unlimited_pass) {
+                    achievements.push('👑 VIP Player');
+                }
+                
+                if (achievements.length === 0) {
+                    achievementsGrid.innerHTML = '<p style="color: #888; text-align: center;">Play games to unlock achievements!</p>';
+                } else {
+                    achievementsGrid.innerHTML = achievements.map(achievement => 
+                        `<span class="achievement-badge">${achievement}</span>`
+                    ).join('');
+                }
+            }
+            
+            getQuarkBalance() {
+                try {
+                    const balance = localStorage.getItem('quark_balance');
+                    return balance ? parseInt(balance, 10) : 0;
+                } catch (error) {
+                    return 0;
+                }
+            }
+            
+            getLocalQuarkTotal() {
+                try {
+                    const total = localStorage.getItem('quark_total_earned');
+                    return total ? parseInt(total, 10) : this.getQuarkBalance();
+                } catch (error) {
+                    return this.getQuarkBalance();
+                }
+            }
+            
+            getLocalQuarkGames() {
+                try {
+                    const games = localStorage.getItem('quark_games_played');
+                    return games ? parseInt(games, 10) : 0;
+                } catch (error) {
+                    return 0;
+                }
+            }
+            
+            showError(message) {
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('errorState').style.display = 'block';
+                document.getElementById('errorMessage').textContent = message;
+            }
+
+            async loadLeaderboard() {
+                try {
+                    console.log('🏆 Loading leaderboard...');
+                    const leaderboardData = await this.playerProfile.getLeaderboardData();
+                    this.renderLeaderboard(leaderboardData);
+                } catch (error) {
+                    console.error('❌ Failed to load leaderboard:', error);
+                    this.renderLeaderboardError();
+                }
+            }
+
+            renderLeaderboard(data) {
+                const leaderboardContent = document.getElementById('leaderboardContent');
+                const scores = data.scores || [];
+                const currentPlayerId = this.playerId;
+
+                if (scores.length === 0) {
+                    leaderboardContent.innerHTML = '<div class="loading-placeholder">No leaderboard data available</div>';
+                    return;
+                }
+
+                let html = '';
+                scores.slice(0, 10).forEach((score, index) => {
+                    const isCurrentPlayer = score.player_id === currentPlayerId || score.id === currentPlayerId;
+                    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+                    const rankClass = isCurrentPlayer ? 'leaderboard-row current-player' : 'leaderboard-row';
+                    
+                    html += `
+                        <div class="${rankClass}">
+                            <div class="rank-info">
+                                <span class="rank-medal">${medal}</span>
+                                <span class="rank-number">#${index + 1}</span>
+                            </div>
+                            <div class="player-info">
+                                <div class="player-name">${score.display_name || score.player_name || 'Anonymous'}</div>
+                            </div>
+                            <div class="player-score">${score.score.toLocaleString()}</div>
+                        </div>
+                    `;
+                });
+
+                leaderboardContent.innerHTML = html;
+            }
+
+            renderLeaderboardError() {
+                const leaderboardContent = document.getElementById('leaderboardContent');
+                leaderboardContent.innerHTML = '<div class="loading-placeholder">Failed to load leaderboard</div>';
+            }
+
+            showGameResults(score, rank) {
+                const gameResultsSection = document.getElementById('gameResultsSection');
+                const currentScoreValue = document.getElementById('currentScoreValue');
+                const currentRankValue = document.getElementById('currentRankValue');
+
+                if (score && rank) {
+                    currentScoreValue.textContent = score.toLocaleString();
+                    currentRankValue.textContent = `#${rank}`;
+                    gameResultsSection.style.display = 'block';
+                } else {
+                    gameResultsSection.style.display = 'none';
+                }
+            }
+        }
+        
+        // Initialize profile page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', async () => {
+            const profilePage = new ProfilePage();
+            window.profilePage = profilePage; // Make it globally accessible
+            await profilePage.initialize();
+        });
+    </script>
+</body>
+</html> 

@@ -23,7 +23,7 @@ export class IdentityManager {
         this.player = null;
         this.isInitialized = false;
         this.fingerprintCache = null;
-        this.storageKey = 'blockzone_player';
+        this.storageKey = 'blockzone_player_v3';
         this.apiBase = 'https://api.blockzonelab.com';
         
         // Only log once when first instance is created
@@ -34,61 +34,66 @@ export class IdentityManager {
     }
 
     /**
-     * Initialize the identity system - Simplified localStorage-first approach
-     * Prioritizes existing player data and creates simple players for immediate access
+     * Initialize the identity system - Backend-First Approach
+     * Prevents duplicate wallets by checking backend first using device fingerprinting
      */
     async initialize() {
         if (this.isInitialized) return this.player;
         
-        console.log('🚀 Starting real backend identity initialization...');
+        // // console.log('🚀 Starting backend-first identity initialization...'); // Removed for production performance
         
         try {
-            // Step 1: Check local cache FIRST for existing player
-            console.log('💾 Checking local cache for existing player...');
-            const cachedPlayer = this.loadFromCache();
-            if (cachedPlayer) {
-                console.log('✅ Existing player found in local cache:', cachedPlayer.displayName);
-                this.player = cachedPlayer;
-                this.isInitialized = true;
-                return cachedPlayer;
-            }
-            
-            // Step 2: Generate consistent device fingerprint
+            // Step 1: Generate consistent device fingerprint
             const fingerprint = this.generateDeviceFingerprint();
             this.fingerprintCache = fingerprint;
-            console.log('🔍 Device fingerprint:', fingerprint);
+            // // console.log('🔍 Device fingerprint:', fingerprint); // Removed for production performance
             
-            // Step 3: Check backend for existing player
-            console.log('📡 Checking backend for existing player...');
+            // Step 2: Check backend FIRST (not localStorage)
             const backendPlayer = await this.checkBackendForPlayer(fingerprint);
             
             if (backendPlayer) {
-                console.log('✅ Existing player found in backend:', backendPlayer.displayName);
-                console.log('✅ Player object structure:', backendPlayer);
-                console.log('✅ Player ID:', backendPlayer.id);
+                // // console.log('✅ Existing player found in backend:', backendPlayer.displayName); // Removed for production performance
+                
+                // Check if this player has a custom name or is still using default
+                const hasCustomName = backendPlayer.displayName && 
+                    backendPlayer.displayName.includes('#') && 
+                    !backendPlayer.displayName.startsWith('Player#');
+                
+                if (hasCustomName) {
+                    // // console.log('👤 Welcome back,', backendPlayer.displayName.split('#'); // Removed for production performance[0] + '!');
+                } else {
+                    // // console.log('👤 Welcome back! (Using default name, can be customized); // Removed for production performance');
+                }
+                
                 this.player = backendPlayer;
                 this.cacheLocally(backendPlayer);
                 this.isInitialized = true;
+                
                 return backendPlayer;
             }
             
-            // Step 4: Create new real player in backend
-            console.log('🆕 Creating new player in backend...');
+            // Step 3: Create new real Sonic wallet (only if truly new)
+            // // console.log('🆕 Creating new Sonic wallet for device:', fingerprint); // Removed for production performance
             const newPlayer = await this.createSonicWallet(fingerprint);
             
-            // Step 5: Store in backend FIRST, then cache locally
+            // Step 4: Store in backend FIRST, then cache locally
             await this.storeInBackend(newPlayer);
             this.cacheLocally(newPlayer);
             
             this.player = newPlayer;
             this.isInitialized = true;
             
-            console.log('✅ New player created and stored in backend:', newPlayer.displayName);
+            // // console.log('✅ New player created:', newPlayer.displayName); // Removed for production performance
+            // // console.log('💎 Awarded 10 Quarks signup bonus!'); // Removed for production performance
+            
             return newPlayer;
             
         } catch (error) {
             console.error('❌ Identity initialization failed:', error);
-            throw error; // NO FALLBACKS - let it fail so we can fix the backend
+            // Create fallback player to prevent game startup failure
+            this.createFallbackPlayer();
+            this.isInitialized = true;
+            return this.player;
         }
     }
 
@@ -132,33 +137,20 @@ export class IdentityManager {
      */
     async checkBackendForPlayer(fingerprint) {
         try {
-            console.log('📡 Checking backend for player with fingerprint:', fingerprint);
             const response = await fetch(`${this.apiBase}/api/player/fingerprint/${fingerprint}`);
             
             if (response.ok) {
                 const player = await response.json();
-                console.log('📡 Backend returned player object:', player);
-                console.log('📡 Player ID:', player.id);
-                console.log('📡 Player displayName:', player.displayName);
-                console.log('📡 Player keys:', Object.keys(player));
-                
-                // Ensure the player object has the required structure
-                if (player && player.id) {
-                    return player;
-                } else {
-                    console.warn('⚠️ Backend returned invalid player structure:', player);
-                    return null;
-                }
+                // // console.log('📡 Backend returned existing player:', player.displayName); // Removed for production performance
+                return player;
             } else if (response.status === 404) {
-                console.log('📡 No existing player found in backend (404)');
+                // // console.log('📡 No existing player found in backend for fingerprint:', fingerprint); // Removed for production performance
                 return null;
             } else {
-                console.warn('⚠️ Backend check failed with status:', response.status);
-                return null;
+                throw new Error(`Backend error: ${response.status}`);
             }
         } catch (error) {
-            console.warn('⚠️ Backend check failed, continuing with local identity:', error.message);
-            // Continue with local identity even if backend is not available
+            console.warn('Backend check failed (will create new):', error);
             return null;
         }
     }
@@ -195,67 +187,6 @@ export class IdentityManager {
         } catch (error) {
             console.error('❌ Wallet creation failed:', error);
             throw new Error('Failed to create Sonic wallet');
-        }
-    }
-
-    /**
-     * Create identity with custom game name - used by welcome system
-     */
-    async createIdentityWithGameName(gameName) {
-        try {
-            console.log('🎯 Creating identity with game name:', gameName);
-            
-            // Generate device fingerprint
-            const fingerprint = this.generateDeviceFingerprint();
-            
-            // Generate real EVM wallet using global ethers
-            const wallet = window.ethers.Wallet.createRandom();
-            
-            const newPlayer = {
-                id: `player_${fingerprint}`,
-                device_fingerprint: fingerprint,
-                wallet_address: wallet.address,
-                private_key_encrypted: this.encryptPrivateKey(wallet.privateKey),
-                displayName: gameName, // Use the custom game name
-                created_at: Date.now(),
-                last_seen: Date.now(),
-                quark_balance: 10, // Signup bonus
-                sonic_network: 'mainnet',
-                version: '3.0',
-                games_played: 0,
-                high_score: 0,
-                total_score: 0
-            };
-            
-            console.log('🔧 New player object created:', newPlayer);
-            
-            // Store in backend first
-            try {
-                await this.storeInBackend(newPlayer);
-                console.log('✅ Player stored in backend');
-            } catch (backendError) {
-                console.warn('⚠️ Backend storage failed, continuing with local identity:', backendError);
-                // Continue with local identity even if backend fails
-            }
-            
-            // Set the player and mark as initialized
-            this.player = newPlayer;
-            this.isInitialized = true;
-            
-            console.log('🔐 IdentityManager state after creation:');
-            console.log('  - this.player:', this.player);
-            console.log('  - this.isInitialized:', this.isInitialized);
-            console.log('  - hasValidIdentity():', this.hasValidIdentity());
-            
-            // Cache locally
-            this.cacheLocally(newPlayer);
-            
-            console.log('✅ Identity created successfully with game name:', gameName);
-            return newPlayer;
-            
-        } catch (error) {
-            console.error('❌ Identity creation failed:', error);
-            throw error;
         }
     }
 
@@ -301,24 +232,6 @@ export class IdentityManager {
     }
 
     /**
-     * Load player data from local cache
-     */
-    loadFromCache() {
-        try {
-            const cachedData = localStorage.getItem(this.storageKey);
-            if (cachedData) {
-                const player = JSON.parse(cachedData);
-                console.log('💾 Loading player from local cache:', player.displayName);
-                return player;
-            }
-            return null;
-        } catch (error) {
-            console.warn('Failed to load player from local cache:', error);
-            return null;
-        }
-    }
-
-    /**
      * Simple private key encryption (use proper encryption in production)
      */
     encryptPrivateKey(privateKey) {
@@ -330,12 +243,7 @@ export class IdentityManager {
      * Compatibility methods for existing code
      */
     hasValidIdentity() {
-        const result = this.isInitialized && this.player !== null;
-        console.log('🔍 hasValidIdentity() called:');
-        console.log('  - this.isInitialized:', this.isInitialized);
-        console.log('  - this.player:', this.player);
-        console.log('  - result:', result);
-        return result;
+        return this.isInitialized && this.player !== null;
     }
 
     getCurrentPlayer() {
@@ -409,11 +317,6 @@ export class IdentityManager {
      */
     getDeviceId() {
         return this.generateFingerprint();
-    }
-    
-    // ENHANCED: Get device fingerprint for display
-    getDeviceFingerprint() {
-        return this.fingerprintCache || this.generateDeviceFingerprint();
     }
 
     /**

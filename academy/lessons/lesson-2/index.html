@@ -2,417 +2,724 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Lesson 2: Bitcoin & Wallets - BlockZone Lab Academy</title>
-    
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Learn Bitcoin fundamentals, wallet creation, and transaction mechanics with interactive demos">
-    <meta name="keywords" content="bitcoin, cryptocurrency, wallets, blockchain, Web3 education">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Open+Sans&display=swap" rel="stylesheet">
-    
-    <!-- Favicon -->
-    <link rel="icon" href="../../../public/favicon.svg" type="image/svg+xml">
-    
-    <!-- Professional Design System CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2: From Pizza to Digital Gold - BlockZone Academy</title>
     <link rel="stylesheet" href="../../../assets/css/design-system.css">
-    <link rel="stylesheet" href="../../../shared/hero-shared.css">
-    <link rel="stylesheet" href="../../../shared/page-template.css">
-    <link rel="stylesheet" href="../../academy.css">
-</head>
-
-<body class="academy-page lesson-page">
-    <!-- Navigation - Fixed and Optimized -->
-    <nav class="navbar" id="navbar">
-        <div class="navbar-container">
-            <ul class="navbar-nav">
-                <li><a href="/" class="nav-link">Home</a></li>
-                <li><a href="/games/" class="nav-link">Games</a></li>
-                <li><a href="/academy/" class="nav-link active">Academy</a></li>
-                <li><a href="/pages/business-model.html" class="nav-link">Business</a></li>
-                <li><a href="/pages/whitepaper.html" class="nav-link">Whitepaper</a></li>
-                <li><a href="/pages/user-profile.html" class="nav-link">Support</a></li>
-                <li><a href="/pages/profile.html" class="nav-link">Profile</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Hero Section - Critical Content First -->
-    <section class="hero-section" id="heroSection">
-        <div class="hero-content">
-            <!-- Large Hero Brand -->
-            <div class="hero-brand">
-                <span class="hero-brand-letter">B</span>
-                <span class="hero-brand-letter">l</span>
-                <span class="hero-brand-letter">o</span>
-                <span class="hero-brand-letter">c</span>
-                <span class="hero-brand-letter">k</span>
-                <span class="hero-brand-letter">Z</span>
-                <span class="hero-brand-letter">o</span>
-                <span class="hero-brand-letter">n</span>
-                <span class="hero-brand-letter">e</span>
-                <span class="hero-brand-letter"> </span>
-                <span class="hero-brand-letter">L</span>
-                <span class="hero-brand-letter">a</span>
-                <span class="hero-brand-letter">b</span>
-            </div>
-            <div class="hero-subtitle" data-text="LESSON 2">
-                <span>LESSON</span>
-                <span>2</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Lesson Content -->
-    <main class="main-content">
-        <div class="container">
-            <!-- Lesson Header -->
-            <section class="central-hub">
-                <h2>Bitcoin & Wallets</h2>
-                <p>Explore Bitcoin's architecture, wallet creation, and transaction mechanics with interactive demos. Learn the fundamentals of cryptocurrency through hands-on experience.</p>
-                <div class="academy-stats">
-                    <div class="stat-item">
-                        <span class="stat-number">7</span>
-                        <span class="stat-label">Interactive Demos</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">45</span>
-                        <span class="stat-label">Minutes</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">Beginner</span>
-                        <span class="stat-label">Difficulty</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Comprehensive Lesson Content -->
-            <section class="lesson-section">
-                <h3>🏛️ The Austrian Revolution: When Economics Met Cryptography</h3>
-                <p>In 2008, while central banks worldwide printed trillions to bail out failing institutions, a mysterious figure named Satoshi Nakamoto published a nine-page paper that would forever change how we think about money. But this wasn't just a technological innovation—it was the manifestation of economic principles that Austrian economists had been advocating for over a century.</p>
-                <p>The Austrian School of Economics, founded by Carl Menger in 1871 and developed by luminaries like Ludwig von Mises and Friedrich Hayek, had long argued that sound money must emerge from market forces, not government decree. They warned about the dangers of central planning, the corruption of currency through inflation, and the impossibility of economic calculation without honest price signals. Bitcoin, whether intentionally or not, became the world's first implementation of Austrian monetary theory in digital form.</p>
-            </section>
-
-            <section class="lesson-section">
-                <h4>📚 The Death of Money: Lessons from History</h4>
-                <p>Every fiat currency in history has eventually failed. The Roman denarius, once 95% silver, was debased to less than 0.5% silver content by 270 AD, leading to the empire's economic collapse. In 1920s Germany, children played with worthless billion-mark notes in the streets while their parents burned money for warmth because it was cheaper than buying firewood. A loaf of bread that cost 163 marks in 1922 cost 200 billion marks by November 1923.</p>
-                <p>Zimbabwe's hundred-trillion-dollar bills became novelty items sold on eBay for more than their face value. Venezuela's bolivar lost 99.9% of its value between 2016 and 2019, forcing citizens to weigh money rather than count it. These aren't ancient history lessons—they're happening right now, in our lifetime. In Argentina, inflation runs at over 100% annually. In Turkey, the lira has lost 90% of its value in the past decade. In Lebanon, bank depositors can't access their own money.</p>
-                <p>Friedrich Hayek predicted this in 1976: "I don't believe we shall ever have good money again before we take it out of the hands of government." Thirty-two years later, Bitcoin was born.</p>
-            </section>
-
-            <section class="lesson-section">
-                <h3>🔧 SHA-256 Hash Generator: Bitcoin's Digital Fingerprint</h3>
-                <p>SHA-256 is the cryptographic foundation of Bitcoin's immutability. Try changing even one character in the input below and watch how the entire hash completely changes. This is what makes Bitcoin transactions irreversible and the blockchain tamper-proof. Every block contains the hash of the previous block, creating an unbreakable chain back to the genesis block.</p>
-                <div class="demo-container">
-                    <input type="text" id="hash-input" placeholder="Enter text to hash..." class="demo-input">
-                    <button class="demo-button" onclick="hashText()">Generate SHA-256 Hash</button>
-                    <div class="demo-output" id="hash-output">Enter any text above and click to see its unique cryptographic fingerprint</div>
-                </div>
-            </section>
-
-            <section class="lesson-section">
-                <h4>₿ The Genesis Block: A Hidden Message to Central Banks</h4>
-                <p>On January 3, 2009, Satoshi Nakamoto mined Bitcoin's first block, embedding a message that revealed the motivation behind this new form of money: "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks." This wasn't just a timestamp—it was a declaration of war against the very system that Austrian economists had been criticizing for decades.</p>
-                <p>The timing was no coincidence. The 2008 financial crisis had exposed the fragility of our monetary system. Banks that were "too big to fail" had gambled with depositors' money, lost spectacularly, and then received taxpayer-funded bailouts. The moral hazard that Mises warned about—where profits are privatized but losses are socialized—had reached its apex. Meanwhile, ordinary citizens lost their homes, jobs, and savings.</p>
-                <p>Bitcoin offered an alternative: a monetary system with no bailouts, no money printing, no Cantillon Effect where those closest to the money printer get rich while everyone else gets poorer. Just pure, mathematical scarcity enforced by cryptography and consensus.</p>
-            </section>
-
-            <section class="lesson-section">
-                <h4>💡 The Cantillon Effect: Why Money Printing Makes You Poorer</h4>
-                <p>Richard Cantillon, an 18th-century economist, observed that newly created money doesn't affect all prices equally or simultaneously. Instead, it flows through the economy in waves, enriching those who receive it first at the expense of those who receive it last. When the Federal Reserve creates new dollars, banks get them first, then corporations, then maybe—eventually—you get a 2% raise while prices have already risen 8%.</p>
-                <p>This is why, despite productivity gains that should make everything cheaper, prices keep rising. Your grandfather could support a family on one income, buy a house at 25, and send kids to college without loans. Today, dual-income families struggle to afford a one-bedroom apartment. It's not that we've become less productive—we're victims of systematic wealth transfer through monetary debasement.</p>
-                <p>Bitcoin breaks this cycle. New bitcoins are created at a predictable rate and distributed to miners who perform useful work securing the network. There's no central authority deciding who gets newly created money. No Cantillon Effect. No insider advantage. Just transparent, algorithmic monetary policy that treats everyone equally.</p>
-            </section>
-
-            <section class="lesson-section">
-                <h3>🔧 Inflation Calculator: The Hidden Tax on Your Savings</h3>
-                <p>See how inflation destroys purchasing power over time. This demo shows what $1,000 saved in 2000 is worth today in real purchasing power, versus if you had bought Bitcoin at various points in history. The Federal Reserve targets 2% inflation, but real inflation often exceeds this, especially for housing, education, and healthcare.</p>
-                <div class="demo-container">
-                    <input type="number" id="initial-amount" placeholder="Initial Amount ($)" class="demo-input">
-                    <input type="number" id="inflation-rate" placeholder="Annual Inflation Rate (%)" class="demo-input">
-                    <input type="number" id="years" placeholder="Years" class="demo-input">
-                    <button class="demo-button" onclick="calculateInflation()">Calculate Real Inflation Impact</button>
-                    <div class="demo-output" id="inflation-output">Click to see how much purchasing power you've lost to inflation</div>
-                </div>
-            </section>
-
-            <section class="lesson-section">
-                <h3>🏛️ Mises' Regression Theorem Meets Digital Scarcity</h3>
-                <p>Ludwig von Mises argued that money must originate from a commodity that had value before it became money—his famous Regression Theorem. Gold was valuable for jewelry before it became money. Silver had industrial uses. Critics claimed Bitcoin violated this theorem because it had no pre-monetary use value.</p>
-                <p>But they missed the profound insight: Bitcoin's pre-monetary value was as a distributed timestamp server—a solution to the double-spend problem that computer scientists had struggled with for decades. Satoshi didn't just create digital money; he solved a fundamental problem in distributed systems. The first Bitcoin transaction wasn't a currency exchange—it was Hal Finney testing whether this new system actually worked.</p>
-                <p>As Murray Rothbard explained, "The emergence of money from barter is one of the great inventions of mankind." Bitcoin represents the next evolution: the emergence of incorruptible money from corruptible institutions.</p>
-            </section>
-
-            <section class="lesson-section">
-                <h4>📚 From Seashells to Satoshis: The Evolution of Money</h4>
-                <p>On the island of Yap, massive stone discs called Rai stones served as money. These stones, some weighing four tons, never moved—ownership was tracked in collective memory. When a stone fell into the ocean during transport, the islanders still considered it valid money because everyone agreed it existed. This was humanity's first documented example of a distributed ledger.</p>
-                <p>Throughout history, we've used cattle (the origin of "capital"), salt (where "salary" comes from), cigarettes in prisons, and even mackerel in federal detention centers. Each form of money emerged not by government decree but through voluntary market adoption based on specific properties: durability, divisibility, portability, and scarcity.</p>
-                <p>Bitcoin perfects these properties digitally. It's more durable than gold (existing as information across thousands of nodes), more divisible (down to 100 millionth of a bitcoin), more portable (transferable at the speed of light), and more scarce (gold's supply increases 2% annually; Bitcoin's supply is mathematically fixed).</p>
-            </section>
-
-            <section class="lesson-section">
-                <h3>🔧 Bitcoin Address Generator: Your Personal Digital Swiss Bank</h3>
-                <p>Generate a Bitcoin address and see the beautiful randomness of cryptographic security. Each address is one of 2^160 possible addresses—that's more than the number of atoms in the observable universe. This demo shows how Bitcoin enables true financial sovereignty: you can create your own bank account without anyone's permission.</p>
-                <div class="demo-container">
-                    <button class="demo-button" onclick="generateAddress()">Generate New Bitcoin Address</button>
-                    <div class="demo-output" id="address-output">Your unique Bitcoin address will appear here</div>
-                </div>
-            </section>
-
-            <section class="lesson-section">
-                <h4>₿ Proof of Work: When Energy Becomes Security</h4>
-                <p>Critics claim Bitcoin "wastes" energy, but they misunderstand the fundamental innovation. Proof of Work transforms energy into security, creating an unforgeable costliness that protects the network from attacks. It's the digital equivalent of the work required to mine gold, but with perfect verification.</p>
-                <p>As Saifedean Ammous explains in "The Bitcoin Standard," this energy consumption isn't a bug—it's the feature that makes Bitcoin incorruptible. You can't print more bitcoins by decree any more than you can legislate gold into existence. The laws of thermodynamics, not the whims of central bankers, govern Bitcoin's monetary policy.</p>
-                <p>Bitcoin mining consumes about 120 TWh annually—less than clothes dryers in the US (108 TWh) or always-on devices in America (150 TWh). But unlike these applications, Bitcoin mining provides global, censorship-resistant, inflation-proof money for billions of people. It's not waste; it's the cost of monetary freedom.</p>
-            </section>
-
-            <section class="lesson-section">
-                <h4>💡 Hayek's Knowledge Problem: Why Central Planning Always Fails</h4>
-                <p>Friedrich Hayek won the Nobel Prize for demonstrating that central planners can never have enough information to efficiently manage an economy. Prices in a free market aggregate millions of individual decisions, creating signals that guide resource allocation. When governments manipulate these signals through money printing or price controls, they create distortions that lead to bubbles, crashes, and misallocation of resources.</p>
-                <p>The Federal Reserve's board of governors, no matter how brilliant, cannot know the correct interest rate for 330 million Americans engaged in billions of daily transactions. Their models failed to predict the 2008 crisis, the dot-com bubble, or any major economic event. Yet they continue to manipulate the most important price in the economy: the price of money itself.</p>
-                <p>Bitcoin solves Hayek's knowledge problem in monetary policy through algorithmic certainty. No committee decides how many bitcoins to create. No board adjusts the mining difficulty. The protocol responds automatically to network conditions, creating a predictable monetary policy that everyone can verify but no one can manipulate.</p>
-            </section>
-
-            <section class="lesson-section">
-                <h3>🔧 Money Supply Visualizer: Fed Printer vs Bitcoin's Fixed Supply</h3>
-                <p>Watch in real-time as this visualization shows the dramatic difference between the Federal Reserve's money printing since 2020 (40% of all dollars ever created) versus Bitcoin's predictable, declining inflation rate. See why economists call Bitcoin "digital gold" and understand the power of programmatic scarcity.</p>
-                <div class="demo-container">
-                    <button class="demo-button" onclick="showMoneySupply()">Visualize Money Supply Growth</button>
-                    <div class="demo-output" id="money-supply-output">Money supply comparison will display here</div>
-                </div>
-            </section>
-
-            <section class="lesson-section">
-                <h3>🏛️ The Misesian Critique of Fiat Currency Made Real</h3>
-                <p>Ludwig von Mises predicted in 1912 that government-controlled money would lead to "crack-up boom"—a complete loss of confidence in currency as people rush to exchange money for real goods. We're watching this prediction unfold in real-time as institutions and individuals flee into Bitcoin, real estate, stocks—anything but holding depreciating currency.</p>
-                <p>Michael Saylor's MicroStrategy holds over 150,000 bitcoins. Tesla, Square, and dozens of public companies have added Bitcoin to their treasuries. El Salvador made it legal tender. Why? Because as Mises wrote, "Government is the only institution that can take a valuable commodity like paper, and make it worthless by applying ink."</p>
-                <p>Bitcoin represents the free market's answer to this government failure. It's the separation of money and state, as radical as the separation of church and state was centuries ago. No more funding wars through inflation. No more stealing from savers to bail out banks. No more Cantillon Effect enriching the politically connected at everyone else's expense.</p>
-            </section>
-
-            <section class="lesson-section">
-                <h3>🔧 Merkle Tree Builder: Bitcoin's Cryptographic Structure</h3>
-                <p>Build your own Merkle tree and understand how Bitcoin efficiently verifies transactions. This hierarchical structure allows you to prove a transaction exists in a block by checking just a few hashes instead of every transaction. It's the mathematical innovation that makes lightweight Bitcoin wallets possible.</p>
-                <div class="demo-container">
-                    <button class="demo-button" onclick="buildMerkleTree()">Build Interactive Merkle Tree</button>
-                    <div class="demo-output" id="merkle-output">Merkle tree visualization will appear here</div>
-                </div>
-            </section>
-
-            <section class="lesson-section">
-                <h4>₿ The Network Effect: Why Bitcoin Wins</h4>
-                <p>Carl Menger, founder of the Austrian School, explained how money emerges through a process of market selection. The most saleable good becomes the medium of exchange. In the digital age, Bitcoin has emerged as the most saleable digital good, with network effects that strengthen with each new user.</p>
-                <p>Every person who adopts Bitcoin makes it more valuable for everyone else—Metcalfe's Law in action. Every merchant that accepts it increases its utility. Every developer who builds on it expands its capabilities. Every node that runs strengthens its decentralization. This is spontaneous order, Hayek's concept of complex systems organizing without central planning, manifesting in real-time.</p>
-                <p>Bitcoin's competitors—over 20,000 cryptocurrencies—face the same challenge that social networks faced against Facebook or search engines against Google. The network effect creates a winner-take-all dynamic. Bitcoin has the most security, most liquidity, most development, and most importantly, the most trust. It's the Schelling point for those seeking non-state money.</p>
-            </section>
-
-            <section class="lesson-section">
-                <h4>💡 Time Preference: Why Fiat Encourages Consumption</h4>
-                <p>Austrian economists emphasize time preference—the degree to which people value present goods over future goods. Sound money encourages low time preference: saving for the future. Inflationary money encourages high time preference: spend now before your money loses value.</p>
-                <p>This explains modern society's debt addiction. Why save when your dollars lose 5-10% annually? Why defer gratification when central banks punish savers with negative real rates? Consumer debt hit $17 trillion because our monetary system incentivizes borrowing over saving, consumption over production, speculation over investment.</p>
-                <p>Bitcoin reverses these incentives. With a fixed supply and growing demand, holding Bitcoin means your purchasing power increases over time. This encourages saving, planning, and long-term thinking. Bitcoiners famously "HODL" (hold on for dear life) because they understand their money will be worth more tomorrow than today—the exact opposite of fiat's incentive structure.</p>
-            </section>
-
-            <section class="lesson-section">
-                <h3>🔧 Austrian vs Keynesian Economics: The Great Debate Visualized</h3>
-                <p>Interact with this comparison tool to understand the fundamental differences between Austrian and Keynesian economic philosophy. See how these opposing views on money printing, government intervention, and market cycles lead to radically different policy prescriptions—and why Bitcoin aligns perfectly with Austrian principles.</p>
-                <div class="demo-container">
-                    <button class="demo-button" onclick="compareEconomics()">Compare Economic Schools</button>
-                    <div class="demo-output" id="economics-output">Economic comparison will display here</div>
-                </div>
-            </section>
-
-            <section class="lesson-section">
-                <h4>📚 The Denationalization of Money: Hayek's Vision Realized</h4>
-                <p>In 1976, Friedrich Hayek published "The Denationalization of Money," arguing that governments should not have a monopoly on currency creation. He envisioned competing private currencies, where the best money would win through market selection. Critics dismissed it as impractical—how could private money compete with legal tender laws and the full force of government?</p>
-                <p>Satoshi Nakamoto found the answer: create money that exists beyond any single jurisdiction, protected by mathematics rather than law, distributed across thousands of nodes rather than centralized in vaults. Bitcoin didn't ask permission to exist. It simply provided a better alternative and let the market decide.</p>
-                <p>Today, Bitcoin processes over $15 billion in daily transactions. Lightning Network enables instant micropayments. Countries adopt it as legal tender. Corporations hold it as treasury reserves. Hayek's "impractical" idea has become a trillion-dollar reality, proving that markets, not governments, should determine what serves as money.</p>
-            </section>
-
-            <section class="lesson-section">
-                <h3>🔧 Sound Money Timeline: From Gold to Bitcoin</h3>
-                <p>Explore this interactive timeline showing the evolution of money from gold standard to fiat to Bitcoin. See key events like Nixon closing the gold window in 1971, the creation of the Federal Reserve in 1913, and how each departure from sound money preceded economic crisis. Understand why Bitcoin represents a return to monetary sanity.</p>
-                <div class="demo-container">
-                    <button class="demo-button" onclick="showTimeline()">Explore Monetary History</button>
-                    <div class="demo-output" id="timeline-output">Interactive timeline will load here</div>
-                </div>
-            </section>
-
-            <section class="lesson-section">
-                <h4>₿ The Sovereign Individual: Bitcoin as Freedom Technology</h4>
-                <p>James Davidson and William Rees-Mogg predicted in 1997 that digital money would enable individuals to escape the control of nation-states. Bitcoin fulfills this prophecy. For the first time in history, individuals can store and transfer wealth without any institution's permission. No bank can freeze your Bitcoin. No government can confiscate it without your private keys. No border can stop it.</p>
-                <p>This isn't just theoretical. When Canada froze bank accounts of peaceful protesters, Bitcoin provided financial escape. When Russia invaded Ukraine, refugees carried their wealth across borders in twelve words memorized in their heads. When inflation devastates Argentina, citizens preserve purchasing power in Bitcoin. When authoritarian regimes restrict capital flows, Bitcoin provides freedom.</p>
-                <p>As Rothbard argued, "The State thrives on war, for war means more power, more money, and more jobs for the bureaucracy." Bitcoin defunds this machine. Without the ability to print money for wars, governments must tax directly—making the cost of their adventures visible to voters. Bitcoin doesn't just separate money and state; it restrains state power itself.</p>
-            </section>
-
-            <section class="lesson-section">
-                <h4>💡 Gresham's Law Inverted: Good Money Drives Out Bad</h4>
-                <p>Gresham's Law states that "bad money drives out good"—when forced to accept both, people spend the bad money and hoard the good. This is why silver coins disappeared from circulation when governments debased them. But Gresham's Law assumes legal tender laws forcing acceptance of bad money.</p>
-                <p>Bitcoin inverts this dynamic. Without legal tender laws forcing its acceptance, Bitcoin must compete on merit. And it's winning. People voluntarily adopt Bitcoin because it's superior money—scarce, divisible, portable, verifiable, and incorruptible. Good money is driving out bad, not through force but through voluntary adoption.</p>
-                <p>We're witnessing reverse Gresham's Law in real-time. People earn in fiat but save in Bitcoin. Companies bill in dollars but hold Bitcoin. Countries maintain local currencies but accumulate Bitcoin reserves. The best money in history doesn't need legal tender laws—it just needs time for people to recognize its superiority.</p>
-            </section>
-
-            <section class="lesson-section">
-                <h3>🏛️ The End of Monetary Socialism</h3>
-                <p>Mises demonstrated that socialism fails because without market prices, economic calculation becomes impossible. Central planners can't know how to allocate resources efficiently. The same principle applies to money. Central banks practicing "monetary socialism"—centrally planning interest rates and money supply—create the same calculation problems.</p>
-                <p>Bitcoin ends monetary socialism. Its monetary policy is not planned but emergent. Its value is not decreed but discovered through voluntary exchange. Its security comes not from government force but from voluntary participation of miners, nodes, and users worldwide. It's the free market in money that Austrian economists always advocated.</p>
-                <p>As we transition from fiat to Bitcoin, we're witnessing the greatest peaceful revolution in history. Not through violence or voting, but through voluntary adoption of better money. Every Bitcoin transaction is a vote against monetary socialism. Every satoshi saved is a declaration of independence from central banking. Every node run is an act of monetary sovereignty.</p>
-                <p>Satoshi Nakamoto gave us the tools. Austrian economists provided the theory. Together, they've created an unstoppable force for monetary freedom. The revolution isn't coming—it's here, growing block by block, transaction by transaction, one sovereign individual at a time.</p>
-            </section>
-
-            <!-- Navigation -->
-            <div class="lesson-navigation">
-                <a href="/academy/" class="nav-button prev">← Back to Academy</a>
-                <a href="/academy/lessons/lesson-3/" class="nav-button next">Lesson 3: Smart Contracts →</a>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        // Navbar animation
-        const navbar = document.getElementById('navbar');
-        setTimeout(() => navbar.classList.add('loaded'), 100);
+    <link rel="stylesheet" href="../../shared/academy-main.css">
+    <link rel="stylesheet" href="../../shared/academy-curriculum.css">
+    <link rel="stylesheet" href="../../shared/academy-assessments.css">
+    <style>
+        .story-section {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 4px solid #00d4ff;
+        }
         
-        // Hero section animation
-        const heroSection = document.getElementById('heroSection');
-        setTimeout(() => heroSection.classList.add('loaded'), 300);
-
-        // Demo Functions
-        async function hashText() {
-            const input = document.getElementById('hash-input').value;
-            if (!input) return;
-            
-            const encoder = new TextEncoder();
-            const data = encoder.encode(input);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            
-            document.getElementById('hash-output').innerHTML = `
-                <strong>Input:</strong> ${input}<br>
-                <strong>SHA-256 Hash:</strong><br>
-                <code style="word-break: break-all; color: var(--primary);">${hashHex}</code>
-            `;
+        .fun-fact {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid #ffd700;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
         }
-
-        function generateWallet() {
-            // Simplified wallet generation for demo
-            const privateKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-                .map(b => b.toString(16).padStart(2, '0')).join('');
-            const publicKey = '04' + Array.from(crypto.getRandomValues(new Uint8Array(64)))
-                .map(b => b.toString(16).padStart(2, '0')).join('');
-            const address = '1' + Array.from(crypto.getRandomValues(new Uint8Array(20)))
-                .map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 33);
-            
-            document.getElementById('wallet-output').innerHTML = `
-                <strong>Private Key:</strong><br>
-                <code style="word-break: break-all; color: var(--neon-red);">${privateKey}</code><br><br>
-                <strong>Public Key:</strong><br>
-                <code style="word-break: break-all; color: var(--neon-cyan);">${publicKey}</code><br><br>
-                <strong>Bitcoin Address:</strong><br>
-                <code style="color: var(--primary);">${address}</code><br><br>
-                <small style="color: var(--neon-gold);">⚠️ This is for educational purposes only. Never share your real private keys!</small>
-            `;
+        
+        .fun-fact::before {
+            content: "💡";
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            background: #1a1a2e;
+            padding: 0 8px;
+            font-size: 1.2rem;
         }
-
-        function buildTransaction() {
-            const from = document.getElementById('tx-from').value;
-            const to = document.getElementById('tx-to').value;
-            const amount = document.getElementById('tx-amount').value;
-            
-            if (!from || !to || !amount) {
-                document.getElementById('tx-output').innerHTML = '<span style="color: var(--neon-red);">Please fill in all fields</span>';
-                return;
+        
+        .interactive-demo {
+            background: rgba(0, 212, 255, 0.05);
+            border: 2px solid #00d4ff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .demo-button {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        
+        .demo-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .code-snippet {
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            overflow-x: auto;
+        }
+        
+        .hot-link {
+            color: #00d4ff;
+            text-decoration: none;
+            border-bottom: 1px dotted #00d4ff;
+            cursor: pointer;
+        }
+        
+        .hot-link:hover {
+            color: #ffd700;
+            border-bottom-color: #ffd700;
+        }
+        
+        .hot-term {
+            color: #00d4ff;
+            cursor: pointer;
+            border-bottom: 1px dotted #00d4ff;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .hot-term:hover {
+            color: #ffd700;
+            border-bottom-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .term-popup {
+            position: absolute;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            padding: 1rem;
+            max-width: 300px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            display: none;
+        }
+        
+        .term-popup::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid #00d4ff;
+        }
+        
+        .term-popup h4 {
+            color: #00d4ff;
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+        }
+        
+        .term-popup p {
+            margin: 0;
+            color: #ffffff;
+        }
+        
+        .gold-rush {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+            color: #1a1a2e;
+        }
+        
+        .gold-rush::before {
+            content: "💰";
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2rem;
+            opacity: 0.3;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #00d4ff, #ffd700);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin: 2rem 0;
+            padding-left: 2rem;
+        }
+        
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -0.5rem;
+            top: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            background: #00d4ff;
+            border-radius: 50%;
+            border: 3px solid #1a1a2e;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .comparison-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
             }
-            
-            const txId = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-                .map(b => b.toString(16).padStart(2, '0')).join('');
-            
-            document.getElementById('tx-output').innerHTML = `
-                <strong>Transaction Built:</strong><br>
-                <strong>From:</strong> ${from}<br>
-                <strong>To:</strong> ${to}<br>
-                <strong>Amount:</strong> ${amount} BTC<br>
-                <strong>Transaction ID:</strong><br>
-                <code style="word-break: break-all; color: var(--primary);">${txId}</code><br>
-                <small style="color: var(--neon-gold);">Transaction ready for broadcast to the network</small>
+        }
+    </style>
+</head>
+<body>
+    <div class="academy-container">
+        <header class="academy-header">
+            <div class="academy-logo">
+                <h1>💰 From Pizza to Digital Gold</h1>
+                <p>The Evolution of Bitcoin's Value and the Cryptocurrency Ecosystem</p>
+            </div>
+        </header>
+
+        <main class="academy-main">
+            <section class="academy-section">
+                <h2>Cryptocurrency Fundamentals: Beyond Bitcoin</h2>
+                <p>While <span class="hot-term" data-term="bitcoin">BITCOIN</span> was the first <span class="hot-term" data-term="cryptocurrency">CRYPTOCURRENCY</span>, it opened the floodgates to an entire ecosystem of digital assets. Today, there are over 20,000 different cryptocurrencies, each with unique purposes and technologies.</p>
+                
+                <h3>What Makes a Cryptocurrency?</h3>
+                <p>A cryptocurrency is a <span class="hot-term" data-term="digital-asset">DIGITAL ASSET</span> that uses <span class="hot-term" data-term="cryptography">CRYPTOGRAPHY</span> for security and operates on a <span class="hot-term" data-term="decentralized-network">DECENTRALIZED NETWORK</span>. Unlike traditional money, cryptocurrencies are not controlled by governments or banks - they're governed by code and mathematics.</p>
+                
+                <h3>The Key Components</h3>
+                <p><span class="hot-term" data-term="blockchain">BLOCKCHAIN</span> technology provides the foundation - a distributed ledger that records all transactions transparently and immutably. <span class="hot-term" data-term="consensus-mechanisms">CONSENSUS MECHANISMS</span> ensure all participants agree on the state of the network without needing to trust each other.</p>
+                
+                <h3>Types of Cryptocurrencies</h3>
+                <p><span class="hot-term" data-term="payment-coins">PAYMENT COINS</span> like Bitcoin are designed primarily for transactions. <span class="hot-term" data-term="platform-coins">PLATFORM COINS</span> like Ethereum enable <span class="hot-term" data-term="smart-contracts">SMART CONTRACTS</span> and decentralized applications. <span class="hot-term" data-term="utility-tokens">UTILITY TOKENS</span> provide access to specific services or features within a blockchain ecosystem.</p>
+                
+                <h3>Digital Wallets and Security</h3>
+                <p>Your <span class="hot-term" data-term="digital-wallet">DIGITAL WALLET</span> is your gateway to the cryptocurrency world. It stores your <span class="hot-term" data-term="private-keys">PRIVATE KEYS</span> - the cryptographic proof that you own your digital assets. Think of it as a digital safe where you keep the keys to your crypto fortune.</p>
+                
+                <h3>The Crypto Economy</h3>
+                <p>Cryptocurrencies have created entirely new economic models. <span class="hot-term" data-term="decentralized-finance">DECENTRALIZED FINANCE (DEFI)</span> protocols enable lending, borrowing, and trading without traditional banks. <span class="hot-term" data-term="non-fungible-tokens">NON-FUNGIBLE TOKENS (NFTS)</span> represent unique digital assets like art, music, and virtual real estate.</p>
+                
+                <h3>Market Dynamics</h3>
+                <p>Cryptocurrency markets operate 24/7 and are known for their <span class="hot-term" data-term="volatility">VOLATILITY</span>. Prices can swing dramatically based on news, adoption, regulatory changes, and market sentiment. This volatility creates both opportunities and risks for investors.</p>
+                
+                <h3>Regulation and Adoption</h3>
+                <p>As cryptocurrencies gain mainstream adoption, <span class="hot-term" data-term="regulation">REGULATION</span> becomes increasingly important. Governments worldwide are developing frameworks to protect consumers while fostering innovation. Major companies and institutions are beginning to accept cryptocurrencies as payment and investment vehicles.</p>
+            </section>
+
+            <section class="story-section">
+                <h2>The $400 Million Pizza: Bitcoin's First Real Transaction</h2>
+                <p>On May 22, 2010, programmer Laszlo Hanyecz made history by purchasing two Papa John's pizzas for 10,000 bitcoins. At the time, those bitcoins were worth about $41. Today, they'd be worth over $400 million.</p>
+                
+                <div class="fun-fact">
+                    <h4>🍕 Bitcoin Pizza Day</h4>
+                    <p>May 22nd is celebrated as "Bitcoin Pizza Day" in the crypto community. It's a reminder of how far Bitcoin has come—from pizza money to digital gold. Laszlo's transaction proved that Bitcoin could be used for real-world purchases, not just theoretical value.</p>
+                </div>
+                
+                <div class="interactive-demo">
+                    <h3>💰 Interactive: Bitcoin Price Calculator</h3>
+                    <p>See how much those pizzas would be worth today</p>
+                    <button class="demo-button" onclick="calculatePizzaValue()">Calculate Pizza Value</button>
+                    <button class="demo-button" onclick="showBitcoinTimeline()">View Price History</button>
+                    <div id="pizza-demo" style="margin-top: 1rem; display: none;"></div>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>The Rise of Altcoins: Beyond Bitcoin</h2>
+                <p>While Bitcoin remains the king of cryptocurrencies, thousands of "altcoins" (alternative coins) have emerged, each offering different features and use cases.</p>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h3>🏆 Bitcoin (BTC)</h3>
+                        <p>The original cryptocurrency</p>
+                        <ul>
+                            <li>Store of value</li>
+                            <li>Digital gold</li>
+                            <li>Proof of Work</li>
+                            <li>21 million supply cap</li>
+                        </ul>
+                        <a href="https://bitcoin.org" class="hot-link" target="_blank">Learn More →</a>
+                    </div>
+                    
+                    <div class="comparison-card">
+                        <h3>⚡ Ethereum (ETH)</h3>
+                        <p>The programmable blockchain</p>
+                        <ul>
+                            <li>Smart contracts</li>
+                            <li>DeFi platform</li>
+                            <li>Proof of Stake</li>
+                            <li>Unlimited supply</li>
+                        </ul>
+                        <a href="https://ethereum.org" class="hot-link" target="_blank">Learn More →</a>
+                    </div>
+                </div>
+                
+                <div class="fun-fact">
+                    <h4>🎭 The Name Game</h4>
+                    <p>The term "altcoin" was coined in 2011 to describe any cryptocurrency that wasn't Bitcoin. Today, some prefer terms like "cryptocurrency" or "digital asset" as the space has evolved beyond simple alternatives to Bitcoin.</p>
+                </div>
+            </section>
+
+            <section class="gold-rush">
+                <h2>The Digital Gold Rush: Understanding Value</h2>
+                <p>Why do cryptocurrencies have value? It's a question that puzzles many newcomers. The answer lies in a combination of technology, economics, and human psychology.</p>
+                
+                <h3>The Value Proposition</h3>
+                <p>Cryptocurrencies derive value from their <span class="hot-term" data-term="utility">UTILITY</span> - what you can do with them. Bitcoin's value comes from its ability to transfer wealth globally without intermediaries. Ethereum's value comes from its ability to run decentralized applications and smart contracts.</p>
+                
+                <div class="interactive-demo">
+                    <h4>📊 Interactive: Market Cap Comparison</h4>
+                    <p>Compare the value of different cryptocurrencies</p>
+                    <button class="demo-button" onclick="showMarketComparison()">View Market Caps</button>
+                    <div id="market-demo" style="margin-top: 1rem; display: none;"></div>
+                </div>
+                
+                <div class="fun-fact">
+                    <h4>🌊 The Network Effect</h4>
+                    <p>A cryptocurrency becomes more valuable as more people use it. This is called the network effect - the more users, the more useful the network becomes, creating a positive feedback loop that drives adoption and value.</p>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>Wallets: Your Gateway to the Crypto World</h2>
+                <p>Think of a cryptocurrency wallet like a digital bank account, but with some key differences. Your wallet doesn't actually store your cryptocurrencies - it stores the private keys that prove you own them.</p>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4>2009: The First Wallet</h4>
+                        <p>Satoshi Nakamoto created the first Bitcoin wallet as part of the original Bitcoin software. It was a simple command-line interface that generated private keys and addresses.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>2011: Web Wallets Emerge</h4>
+                        <p>Services like Blockchain.info (now Blockchain.com) made it easier for non-technical users to store and manage their bitcoins through web-based interfaces.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>2013: Mobile Wallets</h4>
+                        <p>The first mobile cryptocurrency wallets appeared, allowing users to carry their digital assets in their pockets and make payments with their phones.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>Today: Hardware Wallets</h4>
+                        <p>Physical devices like Ledger and Trezor provide the highest level of security by keeping private keys offline and protected from hackers.</p>
+                    </div>
+                </div>
+                
+                <div class="interactive-demo">
+                    <h4>🔐 Interactive: Wallet Types Explorer</h4>
+                    <p>Learn about different types of cryptocurrency wallets</p>
+                    <button class="demo-button" onclick="showWalletTypes()">Explore Wallets</button>
+                    <div id="wallet-demo" style="margin-top: 1rem; display: none;"></div>
+                </div>
+            </section>
+
+            <section class="story-section">
+                <h2>The Mt. Gox Saga: Lessons in Security</h2>
+                <p>In 2014, Mt. Gox, once the world's largest Bitcoin exchange, collapsed after losing 850,000 bitcoins (worth about $450 million at the time) to hackers. This event taught the crypto community crucial lessons about security and the importance of controlling your own private keys.</p>
+                
+                <div class="fun-fact">
+                    <h4>🔒 Not Your Keys, Not Your Coins</h4>
+                    <p>The Mt. Gox disaster popularized the phrase "Not your keys, not your coins" - meaning if you don't control your private keys, you don't truly own your cryptocurrencies. This led to the development of more secure wallet solutions and the rise of decentralized exchanges.</p>
+                </div>
+                
+                <div class="interactive-demo">
+                    <h4>🛡️ Interactive: Security Best Practices</h4>
+                    <p>Learn how to keep your cryptocurrencies safe</p>
+                    <button class="demo-button" onclick="showSecurityTips()">Security Guide</button>
+                    <div id="security-demo" style="margin-top: 1rem; display: none;"></div>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>Lesson Quiz: The Digital Gold Rush</h2>
+                <p>Test your understanding of cryptocurrency fundamentals with this interactive quiz.</p>
+                
+                <div class="quiz-container">
+                    <div class="quiz-header">
+                        <h3 class="quiz-title">💰 Cryptocurrency Fundamentals Quiz</h3>
+                        <div class="quiz-meta">
+                            <div class="quiz-meta-item">
+                                <span>📝 10 Questions</span>
+                            </div>
+                            <div class="quiz-meta-item">
+                                <span>⏱️ 15 Minutes</span>
+                            </div>
+                            <div class="quiz-meta-item">
+                                <span>🎯 80% to Pass</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">1</div>
+                            <div class="question-text">
+                                What is the main difference between Bitcoin and Ethereum?
+                            </div>
+                        </div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="A">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Bitcoin is faster than Ethereum</div>
+                            </div>
+                            <div class="answer-option" data-answer="B">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Ethereum supports smart contracts while Bitcoin doesn't</div>
+                            </div>
+                            <div class="answer-option" data-answer="C">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Bitcoin is more expensive than Ethereum</div>
+                            </div>
+                            <div class="answer-option" data-answer="D">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Ethereum was created before Bitcoin</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-header">
+                            <div class="question-number">2</div>
+                            <div class="question-text">
+                                What does "Not your keys, not your coins" mean?
+                            </div>
+                        </div>
+                        <div class="answer-options">
+                            <div class="answer-option" data-answer="A">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">You need physical keys to access your crypto</div>
+                            </div>
+                            <div class="answer-option" data-answer="B">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">If you don't control your private keys, you don't truly own your crypto</div>
+                            </div>
+                            <div class="answer-option" data-answer="C">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">You need multiple keys to access your wallet</div>
+                            </div>
+                            <div class="answer-option" data-answer="D">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">Keys are more important than coins</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-navigation">
+                        <div class="quiz-progress">Question 2 of 10</div>
+                        <div class="quiz-buttons">
+                            <button class="quiz-btn quiz-btn-secondary">Previous</button>
+                            <button class="quiz-btn quiz-btn-primary">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>🔗 Deep Dive Resources</h2>
+                <p>Continue your exploration with these curated resources.</p>
+                
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <h3>📚 Cryptocurrency Guides</h3>
+                        <p>Comprehensive guides to understanding different cryptocurrencies and their use cases</p>
+                        <a href="#" class="btn-secondary">Read Guides</a>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>🎥 The Bitcoin Pizza Story</h3>
+                        <p>Watch documentaries about Bitcoin's early days and the famous pizza transaction</p>
+                        <a href="#" class="btn-secondary">Watch Videos</a>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>💻 Wallet Security</h3>
+                        <p>Learn about different wallet types and how to keep your cryptocurrencies secure</p>
+                        <a href="#" class="btn-secondary">Security Guide</a>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>🤝 Community Discussion</h3>
+                        <p>Join conversations about cryptocurrency adoption and the future of digital money</p>
+                        <a href="#" class="btn-secondary">Join Discussion</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="academy-section">
+                <h2>Next Steps: The Smart Contract Revolution</h2>
+                <p>Ready to explore how code can automate financial agreements? Let's dive into smart contracts and the Ethereum ecosystem.</p>
+                
+                <div class="lesson-navigation">
+                    <a href="../lesson-3/" class="btn-primary">Continue to Lesson 3: Smart Contracts & The Programmable Economy →</a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="academy-footer">
+            <p>&copy; 2024 BlockZone Academy. Exploring the evolution of digital money, one lesson at a time.</p>
+        </footer>
+    </div>
+
+    <script src="../../shared/academy-main.js"></script>
+    <script>
+        // Interactive demo functions
+        function calculatePizzaValue() {
+            const demo = document.getElementById('pizza-demo');
+            demo.innerHTML = `
+                <div style="background: #1e1e1e; padding: 1rem; border-radius: 8px; text-align: left;">
+                    <h4>🍕 The $400 Million Pizza</h4>
+                    <ul>
+                        <li><strong>Date:</strong> May 22, 2010</li>
+                        <li><strong>Bitcoins Spent:</strong> 10,000 BTC</li>
+                        <li><strong>Value at Time:</strong> ~$41</li>
+                        <li><strong>Value Today:</strong> ~$400,000,000</li>
+                        <li><strong>Pizza Cost:</strong> $25</li>
+                    </ul>
+                    <p><em>That's about $200 million per pizza! 🤑</em></p>
+                </div>
             `;
+            demo.style.display = 'block';
         }
 
-        function exploreBlock() {
-            const height = document.getElementById('block-height').value;
-            if (!height) return;
-            
-            const blockHash = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-                .map(b => b.toString(16).padStart(2, '0')).join('');
-            const timestamp = new Date(Date.now() - Math.random() * 86400000 * 30).toISOString();
-            const txCount = Math.floor(Math.random() * 3000) + 500;
-            
-            document.getElementById('block-output').innerHTML = `
-                <strong>Block #${height}</strong><br>
-                <strong>Hash:</strong><br>
-                <code style="word-break: break-all; color: var(--primary);">${blockHash}</code><br>
-                <strong>Timestamp:</strong> ${timestamp}<br>
-                <strong>Transactions:</strong> ${txCount}<br>
-                <strong>Size:</strong> ${(Math.random() * 2 + 0.5).toFixed(2)} MB<br>
-                <small style="color: var(--neon-cyan);">Block data retrieved from blockchain</small>
+        function showBitcoinTimeline() {
+            const demo = document.getElementById('pizza-demo');
+            demo.innerHTML = `
+                <div style="background: #1e1e1e; padding: 1rem; border-radius: 8px; text-align: left;">
+                    <h4>📈 Bitcoin Price Journey</h4>
+                    <ul>
+                        <li><strong>2010:</strong> $0.08 (Pizza Day)</li>
+                        <li><strong>2013:</strong> $1,000 (First major peak)</li>
+                        <li><strong>2017:</strong> $20,000 (Crypto boom)</li>
+                        <li><strong>2021:</strong> $69,000 (All-time high)</li>
+                        <li><strong>2024:</strong> $40,000+ (Current)</li>
+                    </ul>
+                    <p><em>From pizza money to digital gold in just 14 years!</em></p>
+                </div>
             `;
+            demo.style.display = 'block';
         }
 
-        function buildMerkleTree() {
-            const txList = document.getElementById('tx-list').value.trim().split('\n').filter(tx => tx.trim());
-            if (txList.length === 0) return;
-            
-            document.getElementById('merkle-output').innerHTML = `
-                <strong>Merkle Tree Built:</strong><br>
-                <strong>Transactions:</strong> ${txList.length}<br>
-                <strong>Tree Levels:</strong> ${Math.ceil(Math.log2(txList.length))}<br>
-                <strong>Root Hash:</strong><br>
-                <code style="word-break: break-all; color: var(--primary);">${Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b => b.toString(16).padStart(2, '0')).join('')}</code><br>
-                <small style="color: var(--neon-green);">Merkle tree provides efficient transaction verification</small>
+        function showMarketComparison() {
+            const demo = document.getElementById('market-demo');
+            demo.innerHTML = `
+                <div style="background: #1e1e1e; padding: 1rem; border-radius: 8px; text-align: left;">
+                    <h4>📊 Top Cryptocurrencies by Market Cap</h4>
+                    <ul>
+                        <li><strong>Bitcoin (BTC):</strong> $800+ billion</li>
+                        <li><strong>Ethereum (ETH):</strong> $300+ billion</li>
+                        <li><strong>BNB (BNB):</strong> $50+ billion</li>
+                        <li><strong>Solana (SOL):</strong> $20+ billion</li>
+                        <li><strong>Cardano (ADA):</strong> $15+ billion</li>
+                    </ul>
+                    <p><em>Market caps change constantly - this is just a snapshot!</em></p>
+                </div>
             `;
+            demo.style.display = 'block';
         }
 
-        function calculateDifficulty() {
-            const hashRate = document.getElementById('hash-rate').value;
-            if (!hashRate) return;
-            
-            const difficulty = (hashRate * 600 / 2**32).toExponential(2);
-            const nextAdjustment = Math.floor(Math.random() * 2016) + 1;
-            
-            document.getElementById('difficulty-output').innerHTML = `
-                <strong>Network Hash Rate:</strong> ${hashRate} TH/s<br>
-                <strong>Current Difficulty:</strong> ${difficulty}<br>
-                <strong>Block Time Target:</strong> 10 minutes<br>
-                <strong>Next Adjustment:</strong> ${nextAdjustment} blocks<br>
-                <small style="color: var(--neon-cyan);">Difficulty adjusts every 2016 blocks (~2 weeks)</small>
+        function showWalletTypes() {
+            const demo = document.getElementById('wallet-demo');
+            demo.innerHTML = `
+                <div style="background: #1e1e1e; padding: 1rem; border-radius: 8px; text-align: left;">
+                    <h4>🔐 Types of Cryptocurrency Wallets</h4>
+                    <ul>
+                        <li><strong>Hardware Wallets:</strong> Physical devices (Ledger, Trezor) - Most secure</li>
+                        <li><strong>Software Wallets:</strong> Desktop/mobile apps - Good balance of security and convenience</li>
+                        <li><strong>Web Wallets:</strong> Browser-based - Convenient but less secure</li>
+                        <li><strong>Paper Wallets:</strong> Physical printouts of keys - Offline but vulnerable to physical damage</li>
+                        <li><strong>Exchange Wallets:</strong> Stored on exchanges - Convenient but you don't control the keys</li>
+                    </ul>
+                    <p><em>Remember: "Not your keys, not your coins!"</em></p>
+                </div>
             `;
+            demo.style.display = 'block';
         }
 
-        function calculateInflation() {
-            const initial = parseFloat(document.getElementById('initial-amount').value);
-            const rate = parseFloat(document.getElementById('inflation-rate').value);
-            const years = parseInt(document.getElementById('years').value);
-            
-            if (!initial || !rate || !years) return;
-            
-            const inflatedValue = initial * Math.pow(1 + rate/100, years);
-            const purchasingPower = initial / Math.pow(1 + rate/100, years);
-            const bitcoinSupply = Math.min(21000000, 50 * 210000 * (1 - Math.pow(0.5, Math.floor(years * 52.18 / 210000))));
-            
-            document.getElementById('inflation-output').innerHTML = `
-                <strong>Fiat Currency Impact:</strong><br>
-                Initial: $${initial.toLocaleString()}<br>
-                After ${years} years: $${inflatedValue.toLocaleString()}<br>
-                Purchasing Power: $${purchasingPower.toLocaleString()}<br>
-                <strong>Loss:</strong> <span style="color: var(--neon-red);">${((1 - purchasingPower/initial) * 100).toFixed(1)}%</span><br><br>
-                <strong>Bitcoin Supply:</strong><br>
-                After ${years} years: ${bitcoinSupply.toLocaleString()} BTC<br>
-                <strong>Max Supply:</strong> <span style="color: var(--primary);">21,000,000 BTC (Fixed Forever)</span>
+        function showSecurityTips() {
+            const demo = document.getElementById('security-demo');
+            demo.innerHTML = `
+                <div style="background: #1e1e1e; padding: 1rem; border-radius: 8px; text-align: left;">
+                    <h4>🛡️ Cryptocurrency Security Best Practices</h4>
+                    <ul>
+                        <li><strong>Use Hardware Wallets:</strong> For large amounts, use physical devices</li>
+                        <li><strong>Backup Your Keys:</strong> Store private keys securely in multiple locations</li>
+                        <li><strong>Use Strong Passwords:</strong> Unique, complex passwords for all accounts</li>
+                        <li><strong>Enable 2FA:</strong> Two-factor authentication on all accounts</li>
+                        <li><strong>Verify Addresses:</strong> Double-check addresses before sending</li>
+                        <li><strong>Keep Software Updated:</strong> Regular updates patch security vulnerabilities</li>
+                        <li><strong>Be Wary of Phishing:</strong> Never share private keys or passwords</li>
+                    </ul>
+                    <p><em>Security is your responsibility in the crypto world!</em></p>
+                </div>
             `;
+            demo.style.display = 'block';
         }
+
+        // Term popup functionality
+        const termDefinitions = {
+            'bitcoin': {
+                title: 'Bitcoin',
+                description: 'The first and most valuable cryptocurrency, created by Satoshi Nakamoto in 2009. A decentralized digital currency that operates without a central bank or administrator.'
+            },
+            'cryptocurrency': {
+                title: 'Cryptocurrency',
+                description: 'Digital or virtual currency that uses cryptography for security and operates on decentralized networks like blockchain.'
+            },
+            'digital-asset': {
+                title: 'Digital Asset',
+                description: 'Any asset that exists in digital form and has value. Cryptocurrencies, NFTs, and digital tokens are all examples of digital assets.'
+            },
+            'cryptography': {
+                title: 'Cryptography',
+                description: 'The practice of secure communication in the presence of adversaries. In cryptocurrencies, cryptography is used to secure transactions and control the creation of new units.'
+            },
+            'decentralized-network': {
+                title: 'Decentralized Network',
+                description: 'A network where control is distributed across many participants rather than concentrated in a single authority. No single entity controls the network.'
+            },
+            'blockchain': {
+                title: 'Blockchain',
+                description: 'A distributed ledger technology where data is stored in blocks that are cryptographically linked together, creating an immutable chain of records.'
+            },
+            'consensus-mechanisms': {
+                title: 'Consensus Mechanisms',
+                description: 'Methods used by blockchain networks to achieve agreement on the state of the ledger. Examples include Proof of Work and Proof of Stake.'
+            },
+            'payment-coins': {
+                title: 'Payment Coins',
+                description: 'Cryptocurrencies designed primarily for transactions and payments. Bitcoin is the most famous example of a payment coin.'
+            },
+            'platform-coins': {
+                title: 'Platform Coins',
+                description: 'Cryptocurrencies that power blockchain platforms capable of running smart contracts and decentralized applications. Ethereum is the most prominent example.'
+            },
+            'smart-contracts': {
+                title: 'Smart Contracts',
+                description: 'Self-executing contracts with terms written in code. They automatically execute when conditions are met, without intermediaries.'
+            },
+            'utility-tokens': {
+                title: 'Utility Tokens',
+                description: 'Cryptocurrencies that provide access to specific services or features within a blockchain ecosystem. They have utility beyond just being a store of value.'
+            },
+            'digital-wallet': {
+                title: 'Digital Wallet',
+                description: 'Software that stores your private keys and allows you to send and receive cryptocurrencies. Your wallet doesn\'t actually store coins - it stores the keys to access them.'
+            },
+            'private-keys': {
+                title: 'Private Keys',
+                description: 'Secret cryptographic keys that prove ownership of cryptocurrency addresses. Whoever controls the private key controls the cryptocurrencies.'
+            },
+            'decentralized-finance': {
+                title: 'Decentralized Finance (DeFi)',
+                description: 'Financial services built on blockchain technology that operate without traditional intermediaries like banks. Includes lending, borrowing, trading, and more.'
+            },
+            'non-fungible-tokens': {
+                title: 'Non-Fungible Tokens (NFTs)',
+                description: 'Unique digital assets that represent ownership of specific items like art, music, videos, or virtual real estate. Each NFT is one-of-a-kind.'
+            },
+            'volatility': {
+                title: 'Volatility',
+                description: 'The degree of variation in cryptocurrency prices over time. Cryptocurrency markets are known for their high volatility compared to traditional assets.'
+            },
+            'regulation': {
+                title: 'Regulation',
+                description: 'Government rules and oversight of cryptocurrency markets and activities. Regulation aims to protect consumers while fostering innovation.'
+            },
+            'utility': {
+                title: 'Utility',
+                description: 'The usefulness or practical value of a cryptocurrency. Utility can come from its ability to perform specific functions or provide access to services.'
+            }
+        };
+
+        // Create popup element
+        const popup = document.createElement('div');
+        popup.className = 'term-popup';
+        document.body.appendChild(popup);
+
+        // Add event listeners to hot terms
+        document.addEventListener('DOMContentLoaded', function() {
+            const hotTerms = document.querySelectorAll('.hot-term');
+            
+            hotTerms.forEach(term => {
+                term.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const termKey = this.getAttribute('data-term');
+                    const definition = termDefinitions[termKey];
+                    
+                    if (definition) {
+                        popup.innerHTML = `
+                            <h4>${definition.title}</h4>
+                            <p>${definition.description}</p>
+                        `;
+                        
+                        // Position popup
+                        const rect = this.getBoundingClientRect();
+                        popup.style.left = rect.left + 'px';
+                        popup.style.top = (rect.bottom + 10) + 'px';
+                        popup.style.display = 'block';
+                    }
+                });
+            });
+            
+            // Hide popup when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('hot-term')) {
+                    popup.style.display = 'none';
+                }
+            });
+        });
+
+        // Quiz functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const answerOptions = document.querySelectorAll('.answer-option');
+            
+            answerOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.closest('.question');
+                    question.querySelectorAll('.answer-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                });
+            });
+        });
     </script>
 </body>
 </html>

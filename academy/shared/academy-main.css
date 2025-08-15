@@ -1,0 +1,193 @@
+/* BlockZone Academy - Main Styles */
+:root {
+    --academy-primary: #00d4ff;
+    --academy-secondary: #00b8e6;
+    --academy-accent: #00ff00;
+    --academy-dark: #0a0a0a;
+    --academy-darker: #050505;
+    --academy-light: #1a1a1a;
+    --academy-lighter: #2a2a2a;
+    --academy-text: #ffffff;
+    --academy-text-secondary: #cccccc;
+    --academy-border: #333333;
+    --academy-success: #00ff00;
+    --academy-warning: #ffaa00;
+    --academy-error: #ff4444;
+}
+
+.academy-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--academy-darker) 0%, var(--academy-dark) 50%, var(--academy-light) 100%);
+    color: var(--academy-text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+}
+
+/* Header Styles */
+.academy-header {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--academy-border);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.academy-logo h1 {
+    color: var(--academy-primary);
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+    text-shadow: 0 0 15px var(--academy-primary);
+}
+
+.academy-logo p {
+    color: var(--academy-text-secondary);
+    margin: 0.25rem 0 0 0;
+    font-size: 0.9rem;
+}
+
+.academy-nav {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.nav-link {
+    color: var(--academy-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+}
+
+.nav-link:hover {
+    color: var(--academy-primary);
+    background: rgba(0, 212, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Main Content */
+.academy-main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.academy-section {
+    margin-bottom: 4rem;
+    padding: 2rem;
+    background: rgba(26, 26, 26, 0.5);
+    border-radius: 15px;
+    border: 1px solid var(--academy-border);
+    backdrop-filter: blur(5px);
+}
+
+.academy-section h2 {
+    color: var(--academy-primary);
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    text-shadow: 0 0 10px var(--academy-primary);
+}
+
+.academy-section p {
+    color: var(--academy-text-secondary);
+    font-size: 1.1rem;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 2rem auto;
+}
+
+/* Button Styles */
+.btn-primary, .btn-secondary {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, var(--academy-primary), var(--academy-secondary));
+    color: var(--academy-dark);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--academy-primary);
+    border: 2px solid var(--academy-primary);
+}
+
+.btn-secondary:hover {
+    background: rgba(0, 212, 255, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2);
+}
+
+/* Footer */
+.academy-footer {
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid var(--academy-border);
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--academy-text-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .academy-header {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .academy-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    .academy-main {
+        padding: 1rem;
+    }
+    
+    .academy-section {
+        padding: 1.5rem;
+    }
+    
+    .academy-section h2 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .academy-logo h1 {
+        font-size: 1.5rem;
+    }
+    
+    .academy-section h2 {
+        font-size: 1.75rem;
+    }
+    
+    .btn-primary, .btn-secondary {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+} 

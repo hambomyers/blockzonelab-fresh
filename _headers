@@ -1,20 +1,55 @@
+# BlockZone Lab Platform v2.0.0 - Cloudflare Pages Headers
+
+# Main platform pages
 /*
   X-Frame-Options: DENY
-  X-XSS-Protection: 1; mode=block
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
 
-/*.css
-  Content-Type: text/css
-
-/*.js
-  Content-Type: application/javascript
-
-/*.json
+# API routes
+/api/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, POST, OPTIONS
+  Access-Control-Allow-Headers: Content-Type, Authorization
   Content-Type: application/json
 
+# Game assets
+/games/*
+  Cache-Control: public, max-age=31536000
+
+# Static assets
 /assets/*
   Cache-Control: public, max-age=31536000
 
-/public/*
+# Service worker
+/sw.js
+  Cache-Control: no-cache
+  Service-Worker-Allowed: /
+
+# Manifest
+/manifest.json
+  Content-Type: application/manifest+json
+
+# HTML files - no cache for immediate updates (v2.0)
+/*.html
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+  
+# CSS files - short cache with must-revalidate (v2.0)
+/*.css
+  Content-Type: text/css
+  Cache-Control: public, max-age=60, must-revalidate
+  Pragma: no-cache
+
+# JS files - short cache with must-revalidate (v2.0)
+/*.js
+  Content-Type: application/javascript
+  Cache-Control: public, max-age=60, must-revalidate
+  Pragma: no-cache
+
+/games/neondrop/*
   Cache-Control: public, max-age=31536000
+  Cross-Origin-Embedder-Policy: require-corp
+  Cross-Origin-Opener-Policy: same-origin
