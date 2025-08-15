@@ -27,6 +27,7 @@ import { OverlayManager } from '/shared/core/overlay-manager.js';
 import { GameStateMachine, GameState } from '/shared/core/game-states.js';
 import { BlockchainManager } from '/shared/wrapper/BlockchainManager.js';
 import { PaywallManager } from '/shared/components/PaywallManager.js';
+
 // Inline EventBus for performance optimization
 class EventBus {
   constructor() { this.listeners = {}; }
@@ -226,6 +227,19 @@ class NeonDrop {
             this.loadAdvancedSystemsInBackground();
         }, 100);
         
+        // Initialize PaywallManager (critical for payments)
+        setTimeout(async () => {
+            try {
+                console.log('💳 Initializing PaywallManager...');
+                this.paywallManager = new PaywallManager();
+                // CRITICAL: Make PaywallManager globally accessible for HTML onclick handlers
+                window.paywallManager = this.paywallManager;
+                console.log('✅ PaywallManager initialized successfully and assigned to window');
+            } catch (error) {
+                console.error('❌ Failed to initialize PaywallManager:', error);
+            }
+        }, 500);
+
         // Initialize blockchain (non-blocking)
         setTimeout(async () => {
             // Create blockchain manager first
