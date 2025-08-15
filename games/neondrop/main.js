@@ -361,18 +361,11 @@ class NeonDrop {
                 this.seedDate = today;
                 this.engine.rng = new ProfessionalRNG(seedData.processed);
                 
-                // Initialize Mercy Curve FLOAT system with cached seed
-                this.floatSystem = new MercyCurveFloat(seedData.seed);
-                window.floatSystem = this.floatSystem; // Make globally accessible for testing
-                console.log('🎮 Mercy Curve FLOAT system initialized (cached)');
-                
-                // Test the FLOAT system with a few calls
-                console.log('🧪 Testing FLOAT system:');
-                for (let i = 0; i < 5; i++) {
-                  const testHeight = i * 4; // Simulate increasing stack height
-                  const isFloat = this.floatSystem.shouldBeFloat(testHeight);
-                  console.log(`  Test ${i+1}: height=${testHeight}, isFloat=${isFloat}`);
-                }
+                // Initialize Mercy Curve FLOAT system with daily package
+                this.floatSystem = new MercyCurveFloat(seedData);
+                window.floatSystem = this.floatSystem;
+                this.engine.floatSystem = this.floatSystem;
+                console.log(`✅ Daily seed ${seedData.seed} loaded with ${seedData.floatSequence ? seedData.floatSequence.length : 0} predetermined FLOATs`);
                 
                 return seedData;
             }
@@ -380,35 +373,79 @@ class NeonDrop {
             console.warn('Cache read failed, generating fresh seed');
         }
         
-        // Generate new seed efficiently
+        // Generate new daily package with FLOAT sequence
         const seed = this.hashString(today);
         const processed = seed * 1689048361;
         
-        // Cache for future use
+        // Generate deterministic FLOAT sequence from daily seed
+        const floatSequence = this.generateDailyFloatSequence(seed);
+        
+        const dailyPackage = {
+            date: today,
+            seed: seed,
+            processed: processed,
+            floatSequence: floatSequence,
+            timestamp: Date.now()
+        };
+        
+        // Cache the complete daily package
         try {
-            localStorage.setItem(cachedKey, JSON.stringify({ seed, processed, date: today }));
+            localStorage.setItem(cachedKey, JSON.stringify(dailyPackage));
         } catch (error) {
             console.warn('Cache write failed');
         }
         
+        console.log(`🌙 Daily package generated for ${today}:`, dailyPackage);
+        
+        // Initialize systems
         this.dailySeed = seed;
         this.seedDate = today;
         this.engine.rng = new ProfessionalRNG(processed);
         
-        // Initialize Mercy Curve FLOAT system with daily seed
-        this.floatSystem = new MercyCurveFloat(seed);
-        window.floatSystem = this.floatSystem; // Make globally accessible for testing
-        console.log('✅ Daily seed generated and cached');
-        console.log('🎮 Mercy Curve FLOAT system initialized');
+        // Initialize FLOAT system with daily package
+        this.floatSystem = new MercyCurveFloat(dailyPackage);
+        window.floatSystem = this.floatSystem;
+        this.engine.floatSystem = this.floatSystem;
         
-        // Test the FLOAT system with a few calls
-        console.log('🧪 Testing FLOAT system:');
-        for (let i = 0; i < 5; i++) {
-          const testHeight = i * 4; // Simulate increasing stack height
-          const isFloat = this.floatSystem.shouldBeFloat(testHeight);
-          console.log(`  Test ${i+1}: height=${testHeight}, isFloat=${isFloat}`);
+        console.log(`✅ Daily seed ${seed} generated with ${floatSequence.length} predetermined FLOATs`);
+        return dailyPackage;
+    }
+    
+    // Generate deterministic FLOAT sequence from daily seed
+    generateDailyFloatSequence(dailySeed) {
+        const sequence = [];
+        let rng = dailySeed;
+        let lastFloatIndex = -10;
+        
+        // Generate 1000 predetermined FLOAT decisions
+        for (let i = 0; i < 1000; i++) {
+            rng = (rng * 1103515245 + 12345) & 0x7fffffff;
+            
+            // Estimate difficulty progression
+            const estimatedHeight = Math.floor(i / 40) + (rng % 3);
+            
+            // Mercy curve: 5% base → 20% at height 18+
+            const mercyPercent = 5 + Math.min(estimatedHeight / 18, 1) * 15;
+            
+            // Enforce minimum gap
+            const gapFromLast = i - lastFloatIndex;
+            
+            // Deterministic roll
+            const roll = rng % 100;
+            
+            if (roll < mercyPercent && gapFromLast >= 10) {
+                sequence.push(1);
+                lastFloatIndex = i;
+            } else {
+                sequence.push(0);
+            }
         }
-        return { seed, processed };
+        
+        // Log distribution for debugging
+        const totalFloats = sequence.reduce((a, b) => a + b, 0);
+        console.log(`📊 Daily FLOAT distribution: ${totalFloats}/1000 (${(totalFloats/10).toFixed(1)}%)`);
+        
+        return sequence;
     }
     
     // Helper method for fast string hashing
