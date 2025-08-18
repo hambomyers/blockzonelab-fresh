@@ -1522,21 +1522,20 @@ class NeonDrop {
                         },
                         onViewLeaderboard: () => {
                             console.log('📊 View leaderboard clicked');
-                            // Show the full leaderboard overlay with real data from Cloudflare worker
+                            // Show the full leaderboard overlay with real data from PlayerProfile API
                             this.overlayManager.showLeaderboard({
-                                scores: [], // Will be populated from API call
-                                playerRank: null, // Will be populated from API call
+                                scores: window.playerProfile?.leaderboardData?.scores || [],
+                                playerRank: window.playerProfile?.leaderboardData?.playerRank || null,
                                 onClose: () => {
                                     console.log('📊 Leaderboard closed');
                                 },
                                 onRefresh: async () => {
                                     console.log('🔄 Leaderboard refresh requested');
                                     try {
-                                        // Fetch real leaderboard data from Cloudflare worker
-                                        const response = await fetch('https://api.blockzonelab.com/api/leaderboard');
-                                        if (response.ok) {
-                                            const leaderboardData = await response.json();
-                                            console.log('✅ Real leaderboard data fetched:', leaderboardData);
+                                        // Use PlayerProfile's real leaderboard API
+                                        if (window.playerProfile && window.playerProfile.getLeaderboardData) {
+                                            const leaderboardData = await window.playerProfile.getLeaderboardData(true); // Force refresh
+                                            console.log('✅ Real leaderboard data fetched via PlayerProfile:', leaderboardData);
                                             
                                             // Re-show leaderboard with fresh real data
                                             this.overlayManager.showLeaderboard({
@@ -1546,7 +1545,7 @@ class NeonDrop {
                                                 onRefresh: () => this.onViewLeaderboard()
                                             });
                                         } else {
-                                            console.error('Failed to fetch leaderboard:', response.status);
+                                            console.error('PlayerProfile not available for leaderboard');
                                         }
                                     } catch (error) {
                                         console.error('Failed to refresh leaderboard:', error);
@@ -1554,13 +1553,12 @@ class NeonDrop {
                                 }
                             });
                             
-                            // Immediately fetch and show real leaderboard data
+                            // Immediately fetch and show real leaderboard data via PlayerProfile
                             setTimeout(async () => {
                                 try {
-                                    const response = await fetch('https://api.blockzonelab.com/api/leaderboard');
-                                    if (response.ok) {
-                                        const leaderboardData = await response.json();
-                                        console.log('✅ Initial leaderboard data fetched:', leaderboardData);
+                                    if (window.playerProfile && window.playerProfile.getLeaderboardData) {
+                                        const leaderboardData = await window.playerProfile.getLeaderboardData(true); // Force refresh
+                                        console.log('✅ Initial leaderboard data fetched via PlayerProfile:', leaderboardData);
                                         
                                         // Update the overlay with real data
                                         this.overlayManager.showLeaderboard({
@@ -1571,7 +1569,7 @@ class NeonDrop {
                                         });
                                     }
                                 } catch (error) {
-                                    console.error('Failed to fetch initial leaderboard:', error);
+                                    console.error('Failed to fetch initial leaderboard via PlayerProfile:', error);
                                 }
                             }, 100);
                         },
