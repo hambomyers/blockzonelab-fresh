@@ -18,7 +18,7 @@ This directory contains the smart contracts for the BlockZone Lab gaming platfor
 #### Daily Leaderboard System
 - **1 Free Game Per Day** - Resets at 11 PM EST daily
 - **$0.25 Per Individual Game** - Pay-as-you-play option
-- **$2.75 Unlimited Daily Pass** - Play unlimited until 11 PM EST reset
+- **$2.50 Unlimited Daily Pass** - Play unlimited until 11 PM EST reset
 - **10% Platform Fee** - Lowest in Web3 gaming industry
 - **Single 24-Hour Cycle** - One tournament per day for maximum engagement
 
@@ -78,7 +78,7 @@ npm run deploy:testnet
 
 ### PaymentProcessor.sol
 - `processIndividualGamePayment(payer)` - Process $0.25 payment
-- `processUnlimitedDailyPayment(payer)` - Process $2.75 payment
+- `processUnlimitedDailyPayment(payer)` - Process $2.50 payment
 - `processQuickChallengePayment(payer)` - Process $1.00 payment
 - `processHighRollerChallengePayment(payer)` - Process $5.00 payment
 

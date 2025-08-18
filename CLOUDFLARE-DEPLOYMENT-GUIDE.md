@@ -1,10 +1,10 @@
 # Cloudflare Pages Deployment Guide for BlockZone Lab
 
-## **Fixed Issues Summary**
+## **Current Configuration Status**
 
 ✅ **CSS Loading**: Fixed by importing CSS directly in main.js  
 ✅ **Asset Paths**: Configured proper base URL and asset handling  
-✅ **Environment Variables**: Added VITE_ prefix for client-side access  
+✅ **Environment Variables**: Configured in vite.config.js for client-side access  
 ✅ **Build Configuration**: Optimized for production deployment  
 ✅ **Static Assets**: Properly configured public directory handling  
 
@@ -17,7 +17,7 @@
 - **Root directory**: `/` (leave empty)
 
 ### **Environment Variables**
-Add these to your Cloudflare Pages dashboard:
+Your Vite config automatically handles these, but you can override them in Cloudflare Pages:
 
 #### **Required Variables (Client-side accessible)**
 ```
@@ -26,12 +26,12 @@ VITE_SONIC_LABS_API_URL=https://api.soniclabs.xyz
 VITE_BLOCKCHAIN_NETWORK=sonic-testnet
 VITE_LEADERBOARD_SCOPE=global
 VITE_KV_NAMESPACE=LEADERBOARD_KV
-VITE_ENABLE_DEV_MODE=false
-VITE_ENABLE_PERFORMANCE_LOGGING=true
 ```
 
 #### **Optional Variables (Client-side accessible)**
 ```
+VITE_ENABLE_DEV_MODE=false
+VITE_ENABLE_PERFORMANCE_LOGGING=true
 VITE_SONIC_LABS_API_KEY=your_api_key_here
 VITE_ENABLE_REGIONAL_LEADERBOARDS=false
 VITE_DEFAULT_REGION=global
@@ -47,8 +47,8 @@ PRIVATE_KEY=your_private_key_here
 ```
 
 ### **Build Environment**
-- **Node.js version**: 18.x or higher
-- **NPM version**: 9.x or higher
+- **Node.js version**: 14.x or higher (as specified in package.json)
+- **NPM version**: 6.x or higher
 
 ## **Deployment Steps**
 
@@ -68,7 +68,7 @@ ls -la dist/
 ```bash
 # Commit your changes
 git add .
-git commit -m "Fix Vite production deployment issues"
+git commit -m "Update deployment configuration"
 git push origin main
 ```
 
@@ -76,8 +76,32 @@ git push origin main
 1. Go to Cloudflare Dashboard → Pages
 2. Connect your GitHub repository
 3. Configure build settings as above
-4. Add environment variables
+4. Add environment variables (optional - Vite config handles defaults)
 5. Deploy
+
+## **Available Build Scripts**
+
+Your package.json includes these useful scripts:
+
+```bash
+# Standard build
+npm run build
+
+# Production optimized build
+npm run build:optimized
+
+# Build with analysis
+npm run build:analyze
+
+# Preview production build
+npm run preview
+
+# Test API connectivity
+npm run test-api
+
+# Performance measurement
+npm run measure-performance
+```
 
 ## **Verification Checklist**
 
@@ -104,12 +128,12 @@ git push origin main
 - **Fix**: Ensure CSS is imported in main.js (already fixed)
 
 #### **2. Environment Variables Not Working**
-- **Cause**: Missing VITE_ prefix
-- **Fix**: Add VITE_ prefix to all client-side variables
+- **Cause**: Variables not properly configured in vite.config.js
+- **Fix**: Check vite.config.js define section (already configured)
 
 #### **3. Asset 404 Errors**
 - **Cause**: Incorrect base URL or asset paths
-- **Fix**: Verify base: '/' in vite.config.js
+- **Fix**: Verify base: '/' in vite.config.js (already set)
 
 #### **4. Build Failures**
 - **Cause**: Missing dependencies or configuration
@@ -125,6 +149,12 @@ npm run preview
 
 # Check for environment variable issues
 npm run build:analyze
+
+# Test API connectivity
+npm run test-api
+
+# Measure performance
+npm run measure-performance
 ```
 
 ## **Performance Optimizations**
@@ -134,8 +164,9 @@ npm run build:analyze
 - ✅ JavaScript bundling and minification
 - ✅ Asset optimization
 - ✅ Proper caching headers
+- ✅ Vite build optimization
 
-### **Additional Optimizations**
+### **Additional Optimizations Available**
 - Image optimization (WebP format)
 - Font preloading
 - Critical CSS inlining
