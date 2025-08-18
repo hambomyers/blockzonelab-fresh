@@ -1818,24 +1818,18 @@ class NeonDrop {
      * Get leaderboard data for the current game
      */
     getLeaderboardData() {
-        // For now, return sample data
-        // In the future, this should fetch from your actual leaderboard API
-        return [
-            { name: 'Player 1', score: 50000, isCurrentPlayer: false },
-            { name: 'Player 2', score: 45000, isCurrentPlayer: false },
-            { name: 'Player 3', score: 40000, isCurrentPlayer: false },
-            { name: 'Player 4', score: 35000, isCurrentPlayer: false },
-            { name: 'Player 5', score: 30000, isCurrentPlayer: false }
-        ];
+        // TODO: Fetch from actual leaderboard API
+        // For now, return null to avoid showing fake data
+        return null;
     }
 
     /**
      * Get the current player's rank
      */
     getPlayerRank() {
-        // For now, return a random rank
-        // In the future, this should calculate based on actual leaderboard data
-        return Math.floor(Math.random() * 10) + 1;
+        // TODO: Calculate based on actual leaderboard data
+        // For now, return null to avoid showing fake data
+        return null;
     }
 
     /**
