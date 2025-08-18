@@ -848,7 +848,7 @@ export class OverlayManager {
     if (challenge2Btn) {
       challenge2Btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        console.log('💰 $2 Challenge button clicked for score:', score);
+        // $2 Challenge button clicked
         if (onChallenge2) {
           onChallenge2(score, 2);
         } else {
@@ -863,7 +863,7 @@ export class OverlayManager {
     if (challenge5Btn) {
       challenge5Btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        console.log('💎 $5 Challenge button clicked for score:', score);
+        // $5 Challenge button clicked
         if (onChallenge5) {
           onChallenge5(score, 5);
         } else {
@@ -878,7 +878,7 @@ export class OverlayManager {
     if (shareScoreBtn) {
       shareScoreBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        console.log('📤 Share Score button clicked for score:', score);
+        // Share Score button clicked
         if (onShareScore) {
           onShareScore(score);
         } else {
@@ -893,7 +893,7 @@ export class OverlayManager {
    * Default challenge creation logic
    */
   createChallenge(score, amount) {
-    console.log(`🎯 Creating $${amount} challenge for score: ${score}`);
+    // Creating challenge for score
     // You can implement your challenge logic here
     // For now, just show a message
     alert(`🎯 $${amount} Challenge Created!\n\nScore: ${score.toLocaleString()}\n\nChallenge your friends to beat this score!`);
@@ -903,7 +903,7 @@ export class OverlayManager {
    * Default score sharing logic
    */
   shareScore(score) {
-    console.log('📤 Sharing score:', score);
+    // Sharing score
     
     // Try to use native sharing if available
     if (navigator.share) {
@@ -912,7 +912,7 @@ export class OverlayManager {
         text: `I scored ${score.toLocaleString()} points in NeonDrop! Can you beat my score?`,
         url: window.location.href
       }).catch(err => {
-        console.log('Share failed:', err);
+        // Share failed
         this.fallbackShare(score);
       });
     } else {
@@ -947,44 +947,39 @@ export class OverlayManager {
    * Set up game over button handlers
    */
   setupGameOverHandlers(onPlayAgain, onViewLeaderboard) {
-    console.log('🔧 Setting up game over button handlers...');
+    // Setting up game over button handlers
     
     const playAgainBtn = document.querySelector('[data-action="🔄-play-again"]');
     const leaderboardBtn = document.querySelector('[data-action="📊-view-leaderboard"]');
     const gamesBtn = document.querySelector('[data-action="🎮-games"]');
     const homeBtn = document.querySelector('[data-action="🏠-home"]');
 
-    console.log('🔍 Found buttons:', {
-      playAgain: playAgainBtn,
-      leaderboard: leaderboardBtn,
-      games: gamesBtn,
-      home: homeBtn
-    });
+    // Found buttons
 
     if (playAgainBtn) {
       playAgainBtn.addEventListener('click', () => {
-        console.log('🔄 Play Again button clicked');
+        // Play Again button clicked
         if (onPlayAgain) onPlayAgain();
       });
     }
 
     if (leaderboardBtn) {
       leaderboardBtn.addEventListener('click', () => {
-        console.log('📊 Leaderboard button clicked');
+        // Leaderboard button clicked
         if (onViewLeaderboard) onViewLeaderboard();
       });
     }
 
     if (gamesBtn) {
       gamesBtn.addEventListener('click', () => {
-        console.log('🎮 Games button clicked');
+        // Games button clicked
         window.location.href = '/games/';
       });
     }
 
     if (homeBtn) {
       homeBtn.addEventListener('click', () => {
-        console.log('🏠 Home button clicked');
+        // Home button clicked
         window.location.href = '/';
       });
     }
@@ -994,7 +989,7 @@ export class OverlayManager {
    * Set up game over button handlers for the actual buttons created by showCustomOverlay
    */
   setupGameOverButtonHandlers(onPlayAgain, onViewLeaderboard) {
-    console.log('🔧 Setting up game over button handlers for action buttons...');
+    // Setting up game over button handlers for action buttons
     
     // When leaderboard exists, button order is: [LEADERBOARD, PLAY AGAIN, GAMES, HOME]
     // When no leaderboard, button order is: [PLAY AGAIN, GAMES, HOME]
@@ -1015,38 +1010,32 @@ export class OverlayManager {
       homeBtn = document.querySelector('.action-btn-2');        // Third button
     }
 
-    console.log('🔍 Found action buttons:', {
-      hasLeaderboard,
-      playAgain: playAgainBtn,
-      leaderboard: leaderboardBtn,
-      games: gamesBtn,
-      home: homeBtn
-    });
+    // Found action buttons
 
     if (playAgainBtn) {
       playAgainBtn.addEventListener('click', () => {
-        console.log('🔄 Play Again button clicked');
+        // Play Again button clicked
         if (onPlayAgain) onPlayAgain();
       });
     }
 
     if (leaderboardBtn && onViewLeaderboard) {
       leaderboardBtn.addEventListener('click', () => {
-        console.log('📊 Leaderboard button clicked');
+        // Leaderboard button clicked
         onViewLeaderboard();
       });
     }
 
     if (gamesBtn) {
       gamesBtn.addEventListener('click', () => {
-        console.log('🎮 Games button clicked');
+        // Games button clicked
         window.location.href = '/games/';
       });
     }
 
     if (homeBtn) {
       homeBtn.addEventListener('click', () => {
-        console.log('🏠 Home button clicked');
+        // Home button clicked
         window.location.href = '/';
       });
     }
