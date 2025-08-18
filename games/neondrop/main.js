@@ -1452,11 +1452,28 @@ class NeonDrop {
                 try {
                     // Get player info for the overlay from PlayerProfile (same structure as profile.html)
                     let playerName = 'Player';
-                    if (window.playerProfile && window.playerProfile.profile) {
-                        playerName = window.playerProfile.profile.display_name || 
-                                   window.playerProfile.profile.username || 
-                                   window.playerProfile.profile.player_id || 
-                                   'Player';
+                    
+                    // Ensure PlayerProfile is loaded and has data
+                    if (window.playerProfile) {
+                        try {
+                            // Try to get current player ID and load profile if needed
+                            const playerId = window.identityManager?.getPlayerId?.() || 
+                                           window.playerProfile.getCurrentPlayerId?.();
+                            
+                            if (playerId && (!window.playerProfile.profile || !window.playerProfile.profile.display_name)) {
+                                // Profile not loaded yet, load it now
+                                await window.playerProfile.loadProfile(playerId);
+                            }
+                            
+                            if (window.playerProfile.profile) {
+                                playerName = window.playerProfile.profile.display_name || 
+                                           window.playerProfile.profile.username || 
+                                           window.playerProfile.profile.player_id || 
+                                           'Player';
+                            }
+                        } catch (error) {
+                            console.warn('Failed to load player profile:', error);
+                        }
                     }
                     
                     // Update leaderboard data when game ends
