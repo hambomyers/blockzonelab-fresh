@@ -996,13 +996,27 @@ export class OverlayManager {
   setupGameOverButtonHandlers(onPlayAgain, onViewLeaderboard) {
     console.log('🔧 Setting up game over button handlers for action buttons...');
     
-    // Find buttons by their action-btn classes
-    const playAgainBtn = document.querySelector('.action-btn-0'); // First button (PLAY AGAIN)
-    const leaderboardBtn = document.querySelector('.action-btn-1'); // Second button (VIEW LEADERBOARD) if exists
-    const gamesBtn = document.querySelector('.action-btn-1'); // Second button (GAMES) if no leaderboard
-    const homeBtn = document.querySelector('.action-btn-2'); // Third button (HOME) if no leaderboard, or fourth if leaderboard exists
+    // When leaderboard exists, button order is: [LEADERBOARD, PLAY AGAIN, GAMES, HOME]
+    // When no leaderboard, button order is: [PLAY AGAIN, GAMES, HOME]
+    const hasLeaderboard = !!onViewLeaderboard;
+    
+    let playAgainBtn, leaderboardBtn, gamesBtn, homeBtn;
+    
+    if (hasLeaderboard) {
+      // With leaderboard: [LEADERBOARD, PLAY AGAIN, GAMES, HOME]
+      leaderboardBtn = document.querySelector('.action-btn-0'); // First button
+      playAgainBtn = document.querySelector('.action-btn-1');   // Second button
+      gamesBtn = document.querySelector('.action-btn-2');       // Third button
+      homeBtn = document.querySelector('.action-btn-3');        // Fourth button
+    } else {
+      // Without leaderboard: [PLAY AGAIN, GAMES, HOME]
+      playAgainBtn = document.querySelector('.action-btn-0');   // First button
+      gamesBtn = document.querySelector('.action-btn-1');       // Second button
+      homeBtn = document.querySelector('.action-btn-2');        // Third button
+    }
 
     console.log('🔍 Found action buttons:', {
+      hasLeaderboard,
       playAgain: playAgainBtn,
       leaderboard: leaderboardBtn,
       games: gamesBtn,
