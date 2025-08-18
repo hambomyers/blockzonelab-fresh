@@ -728,7 +728,7 @@ export class OverlayManager {
       {
         text: '🔄 REFRESH',
         class: 'primary',
-        onClick: onRefresh ? onRefresh : 'window.overlayManager.refreshLeaderboard()'
+        onClick: onRefresh ? onRefresh : 'window.overlayManager.hideCurrent()'
       },
       {
         text: 'CLOSE',
