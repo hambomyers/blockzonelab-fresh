@@ -1450,11 +1450,15 @@ class NeonDrop {
                 // Use new overlay manager to show game over with consistent styling
                 
                 try {
-                    // Get player info for the overlay from PlayerProfile (same structure as profile.html)
+                    // Get player info for the overlay - use IdentityManager's displayName (Hambo#274F format)
                     let playerName = 'Player';
                     
-                    // Ensure PlayerProfile is loaded and has data
-                    if (window.playerProfile) {
+                    // First try IdentityManager which has the "Hambo#274F" format
+                    if (window.identityManager && window.identityManager.getPlayerName) {
+                        playerName = window.identityManager.getPlayerName() || 'Player';
+                    }
+                    // Fallback to PlayerProfile if IdentityManager doesn't have it
+                    else if (window.playerProfile) {
                         try {
                             // Try to get current player ID and load profile if needed
                             const playerId = window.identityManager?.getPlayerId?.() || 
