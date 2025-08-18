@@ -1446,6 +1446,7 @@ class NeonDrop {
             this.eventBus.on('gameOverUIReady', async (data) => {
                 const { score } = data;
                 
+                console.log('🎮 Game Over UI Ready - Getting player info...');
                 
                 // Use new overlay manager to show game over with consistent styling
                 
@@ -1456,31 +1457,48 @@ class NeonDrop {
                     // Ensure IdentityManager is initialized and has player data
                     if (window.identityManager) {
                         try {
+                            console.log('🔍 IdentityManager found, checking initialization...');
+                            
                             // If IdentityManager isn't initialized yet, initialize it
                             if (!window.identityManager.isInitialized) {
+                                console.log('🔄 Initializing IdentityManager...');
                                 await window.identityManager.initialize();
                             }
+                            
+                            console.log('🔍 IdentityManager state:', {
+                                isInitialized: window.identityManager.isInitialized,
+                                player: window.identityManager.player,
+                                hasGetPlayerName: !!window.identityManager.getPlayerName
+                            });
                             
                             // Get the displayName which should be "Hambo#274F" format
                             if (window.identityManager.player && window.identityManager.player.displayName) {
                                 playerName = window.identityManager.player.displayName;
+                                console.log('✅ Got player name from IdentityManager.player.displayName:', playerName);
                             } else if (window.identityManager.getPlayerName) {
                                 playerName = window.identityManager.getPlayerName() || 'Player';
+                                console.log('✅ Got player name from IdentityManager.getPlayerName():', playerName);
                             }
                         } catch (error) {
                             console.warn('Failed to get player name from IdentityManager:', error);
                         }
+                    } else {
+                        console.warn('⚠️ IdentityManager not found on window');
                     }
                     
                     // Fallback to PlayerProfile if IdentityManager doesn't have it
                     if (playerName === 'Player' && window.playerProfile) {
+                        console.log('🔄 Falling back to PlayerProfile...');
                         try {
                             // Try to get current player ID and load profile if needed
                             const playerId = window.identityManager?.getPlayerId?.() || 
                                            window.playerProfile.getCurrentPlayerId?.();
                             
+                            console.log('🔍 Player ID from fallback:', playerId);
+                            
                             if (playerId && (!window.playerProfile.profile || !window.playerProfile.profile.display_name)) {
                                 // Profile not loaded yet, load it now
+                                console.log('🔄 Loading player profile...');
                                 await window.playerProfile.loadProfile(playerId);
                             }
                             
@@ -1489,11 +1507,14 @@ class NeonDrop {
                                            window.playerProfile.profile.username || 
                                            window.playerProfile.profile.player_id || 
                                            'Player';
+                                console.log('✅ Got player name from PlayerProfile:', playerName);
                             }
                         } catch (error) {
                             console.warn('Failed to load player profile:', error);
                         }
                     }
+                    
+                    console.log('🎯 Final player name for overlay:', playerName);
                     
                     // Submit score to backend if we have a player ID
                     const playerId = window.identityManager?.getPlayerId?.() || 

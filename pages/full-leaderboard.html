@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Leaderboard - BlockZone Lab</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Complete BlockZone Lab tournament leaderboard - view all player rankings and scores">
+    <meta name="keywords" content="leaderboard, tournament rankings, gaming scores, neon drop">
+    
+    <!-- Professional Design System CSS -->
+    <link rel="stylesheet" href="../assets/css/design-system.css">
+    <link rel="stylesheet" href="../shared/hero-shared.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+    
+    <!-- Web3 Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.8.1/ethers.umd.min.js" type="application/javascript"></script>
+    
+    <style>
+        /* CRITICAL RENDERING PATH - Minimal styles for instant visual feedback */
+        :root {
+            --primary: #00ff41;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            
+            /* Neon Drop Color Palette */
+            --neon-cyan: #00d4ff;
+            --neon-green: #00ff00;
+            --neon-red: #ff6b6b;
+            --neon-gold: #ffd700;
+            --dark-blue-1: #1a1a2e;
+            --dark-blue-2: #16213e;
+            --dark-blue-3: #0f3460;
+            
+            /* Neutral Grays */
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+        }
+        
+        /* CRITICAL NAVIGATION - STANDARDIZED */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .navbar.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .navbar-container {
+            width: 100%;
+            margin: 0;
+            padding: 0 2rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 32px;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            transform: translateY(-10px);
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+        
+        /* HERO SECTION - USES SHARED CSS */
+        .hero-section.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Leaderboard page specific - match landing page spacing */
+        .leaderboard-page .hero-brand {
+            margin-bottom: calc(2rem - 30px); /* Match landing page spacing exactly */
+        }
+        
+        /* MAIN CONTENT - SAME STYLING AS GAME OVER OVERLAY */
+        .main-content {
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 2rem 0;
+            color: var(--text-primary);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* EXACT SAME OVERLAY FRAME STYLING AS GAME OVER */
+        .leaderboard-frame {
+            background: linear-gradient(145deg, var(--dark-blue-1) 0%, var(--dark-blue-2) 50%, var(--dark-blue-3) 100%);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 1200px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 
+                0 0 64px rgba(0, 212, 255, 0.4),
+                0 20px 64px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+            animation: cardSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 4rem auto;
+        }
+        
+        .leaderboard-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        /* EXACT SAME NEON DROP CHICLET ANIMATION */
+        .neon-drop-title {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+        }
+        
+        .chiclet-word {
+            display: flex;
+            gap: 0px;
+        }
+        
+        .chiclet-spacer {
+            width: 19px;
+            height: 19px;
+        }
+        
+        .chiclet {
+            width: 19px;
+            height: 19px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bungee', monospace;
+            font-weight: bold;
+            font-size: 23px;
+            line-height: 1;
+            border-radius: 2px;
+            position: relative;
+            text-align: center;
+            text-shadow: 1px 1px 0 #000000;
+            transform: translateY(-24px) scale(0.3);
+            opacity: 0;
+            transition: transform 0.3s ease;
+            animation: chicletEntrance 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        
+        .chiclet:hover {
+            transform: translateY(0) scale(1.05);
+        }
+        
+        .chiclet.neon {
+            background: #FFFF00;
+            color: transparent;
+            box-shadow: 
+                inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+                inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+                0 0 10px rgba(255, 255, 0, 0.5);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background: linear-gradient(135deg, #FFFF00 0%, #FFD700 50%, #FFA500 100%);
+        }
+        
+        .chiclet.drop {
+            background: #8A2BE2;
+            color: transparent;
+            box-shadow: 
+                inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+                inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+                0 0 10px rgba(138, 43, 226, 0.5);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background: linear-gradient(135deg, #8A2BE2 0%, #9932CC 50%, #DA70D6 100%);
+        }
+        
+        .chiclet:nth-child(1) { animation-delay: 0.1s; }
+        .chiclet:nth-child(2) { animation-delay: 0.2s; }
+        .chiclet:nth-child(3) { animation-delay: 0.3s; }
+        .chiclet:nth-child(4) { animation-delay: 0.4s; }
+        .chiclet:nth-child(5) { animation-delay: 0.5s; }
+        .chiclet:nth-child(6) { animation-delay: 0.6s; }
+        .chiclet:nth-child(7) { animation-delay: 0.7s; }
+        .chiclet:nth-child(8) { animation-delay: 0.8s; }
+        
+        /* EXACT SAME OVERLAY TITLE STYLING */
+        .overlay-title {
+            font-size: 29px;
+            font-weight: bold;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 12px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+            margin-top: 16px;
+            animation: neonGlow 2s ease-in-out infinite;
+        }
+        
+        .overlay-subtitle {
+            color: #a0a0a0;
+            font-size: 16px;
+            margin-top: 10px;
+            font-weight: 300;
+        }
+        
+        /* LEADERBOARD CONTENT STYLING */
+        .leaderboard-content {
+            margin: 24px 0;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 0 10px;
+        }
+        
+        .leaderboard-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        .leaderboard-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--neon-gold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .tournament-info {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        
+        .leaderboard-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .leaderboard-row:hover {
+            border-color: var(--neon-gold);
+            background: rgba(255, 215, 0, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .leaderboard-row.current-player {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+        
+        .rank-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 80px;
+        }
+        
+        .rank-medal {
+            font-size: 1.2rem;
+        }
+        
+        .rank-number {
+            font-weight: bold;
+            color: var(--neon-gold);
+            font-size: 1.1rem;
+        }
+        
+        .player-info {
+            flex: 1;
+            margin-left: 1rem;
+            text-align: left;
+        }
+        
+        .player-name {
+            font-weight: bold;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+        
+        .player-score {
+            color: var(--neon-cyan);
+            font-weight: bold;
+            font-size: 1.2rem;
+            min-width: 120px;
+            text-align: right;
+        }
+        
+        /* PAGINATION STYLING */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        .page-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 8px 13px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 60px;
+            text-align: center;
+            font-family: 'Bungee', monospace;
+        }
+        
+        .page-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .page-btn.active {
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, #0099cc 100%);
+            color: #000000;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* EXACT SAME OVERLAY ACTIONS STYLING */
+        .overlay-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .overlay-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #cccccc;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 8px 13px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 64px;
+            text-align: center;
+            font-family: 'Bungee', monospace;
+        }
+        
+        .overlay-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .overlay-btn.primary {
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, #0099cc 100%);
+            color: #000000;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+        
+        .overlay-btn.primary:hover {
+            background: linear-gradient(135deg, #00b8e6 0%, #0088b3 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+        }
+        
+        /* EXACT SAME OVERLAY CLOSE STYLING */
+        .overlay-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: var(--neon-cyan);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .overlay-close:hover {
+            background: rgba(0, 212, 255, 0.1);
+            transform: scale(1.1);
+        }
+        
+        /* LOADING AND ERROR STATES */
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 255, 0, 0.3);
+            border-top: 4px solid var(--neon-green);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 2rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--neon-red);
+        }
+        
+        /* EXACT SAME ANIMATIONS AS OVERLAY */
+        @keyframes fadeIn { 
+            from { opacity: 0; } 
+            to { opacity: 1; } 
+        }
+        
+        @keyframes cardSlideIn {
+            from { 
+                opacity: 0; 
+                transform: scale(0.8) translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1) translateY(0); 
+            }
+        }
+        
+        @keyframes neonGlow { 
+            0%, 100% { 
+                text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor; 
+            }
+            50% { 
+                text-shadow: 0 0 20px currentColor, 0 0 30px currentColor, 0 0 40px currentColor; 
+            }
+        }
+        
+        @keyframes chicletEntrance {
+            0% { 
+                transform: translateY(-30px) scale(0.3) rotate(10deg); 
+                opacity: 0; 
+            }
+            60% { 
+                transform: translateY(2px) scale(1.1) rotate(-3deg); 
+                opacity: 0.8; 
+            }
+            100% { 
+                transform: translateY(0) scale(1) rotate(0deg); 
+                opacity: 1; 
+            }
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* MINI LOGO AT BOTTOM - 1/10th size of main logo */
+        .mini-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 0;
+            background: transparent;
+        }
+        
+        .mini-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.9px; /* 3x bigger (was 0.3px) */
+        }
+        
+        .mini-logo-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px; /* 3x bigger (was 6px) */
+            height: 18px; /* 3x bigger (was 6px) */
+            border-radius: 0.9px; /* 3x bigger (was 0.3px) */
+            font-size: 23.4px; /* 3x bigger (was 7.8px) */
+            font-weight: bold;
+            color: #000;
+            background: #00ff41;
+            border: 0.6px solid #ff4444; /* 3x bigger (was 0.2px) */
+            box-shadow: none;
+            transition: all 0.3s ease;
+            font-family: 'Minion Pro', 'Minion Pro Bold', 'Times New Roman', serif;
+        }
+        
+        .mini-logo-letter:nth-child(6) {
+            /* The "Z" - make it look like the favicon */
+            background: #FFFF00;
+            border: 0.6px solid #ff4444;
+            color: #ff4444;
+            box-shadow: none;
+            font-size: 25.2px; /* 3x bigger (was 8.4px) */
+        }
+        
+        .mini-logo-letter:nth-child(10) {
+            /* The space - make it green like the others */
+            background: #00ff41;
+            border: 0.6px solid #ff4444;
+            box-shadow: none;
+            width: 18px; /* 3x bigger (was 6px) */
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .leaderboard-frame {
+                padding: 20px 15px;
+                border-radius: 20px;
+                width: 95%;
+            }
+            
+            .chiclet {
+                width: 20px;
+                height: 20px;
+                font-size: 24px;
+            }
+            
+            .chiclet-spacer {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .overlay-title {
+                font-size: 28px;
+            }
+            
+            .leaderboard-content {
+                max-height: 500px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .leaderboard-frame {
+                padding: 15px 10px;
+                border-radius: 15px;
+                width: 98%;
+            }
+            
+            .chiclet {
+                width: 18px;
+                height: 18px;
+                font-size: 20px;
+            }
+            
+            .chiclet-spacer {
+                width: 18px;
+                height: 18px;
+            }
+            
+            .overlay-title {
+                font-size: 24px;
+            }
+            
+            .overlay-actions {
+                gap: 8px;
+            }
+            
+            .overlay-btn {
+                padding: 6px 10px;
+                font-size: 9px;
+                min-width: 56px;
+            }
+            
+            .leaderboard-content {
+                max-height: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body class="leaderboard-page">
+    <!-- Navigation - Fixed and Optimized -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <ul class="navbar-nav">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/games/" class="nav-link">Games</a></li>
+                <li><a href="/academy/" class="nav-link">Academy</a></li>
+                <li><a href="/pages/business-model.html" class="nav-link">Business</a></li>
+                <li><a href="/pages/whitepaper.html" class="nav-link">Whitepaper</a></li>
+                <li><a href="/pages/user-profile.html" class="nav-link">Support</a></li>
+                <li><a href="/pages/profile.html" class="nav-link">Profile</a></li>
+                <li><a href="/pages/full-leaderboard.html" class="nav-link active">Leaderboard</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Critical Content First -->
+    <section class="hero-section" id="heroSection">
+        <div class="hero-content">
+            <!-- Large Hero Brand -->
+            <div class="hero-brand">
+                <span class="hero-brand-letter">B</span>
+                <span class="hero-brand-letter">l</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">c</span>
+                <span class="hero-brand-letter">k</span>
+                <span class="hero-brand-letter">Z</span>
+                <span class="hero-brand-letter">o</span>
+                <span class="hero-brand-letter">n</span>
+                <span class="hero-brand-letter">e</span>
+                <span class="hero-brand-letter"> </span>
+                <span class="hero-brand-letter">L</span>
+                <span class="hero-brand-letter">a</span>
+                <span class="hero-brand-letter">b</span>
+            </div>
+            <div class="hero-subtitle">
+                <span>LEADERBOARD</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content - EXACT SAME FRAME AS GAME OVER OVERLAY -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Loading State -->
+            <div class="loading-state" id="loadingState">
+                <div class="loading-spinner"></div>
+                <h3>Loading tournament leaderboard...</h3>
+                <p>Fetching the latest scores from the blockchain...</p>
+            </div>
+            
+            <!-- Error State -->
+            <div class="error-state" id="errorState" style="display: none;">
+                <h3>❌ Leaderboard Error</h3>
+                <p id="errorMessage">Failed to load the leaderboard. Please try again later.</p>
+                <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.8rem 1.5rem; background: var(--neon-green); color: var(--bg-primary); border: none; border-radius: 8px; cursor: pointer;">Retry</button>
+            </div>
+            
+            <!-- EXACT SAME LEADERBOARD FRAME AS GAME OVER OVERLAY -->
+            <div class="leaderboard-frame" id="leaderboardFrame" style="display: none;">
+                <button class="overlay-close" onclick="window.location.href='/pages/profile.html'">×</button>
+                
+                <div class="overlay-header">
+                    <!-- EXACT SAME NEON DROP CHICLET ANIMATION -->
+                    <div class="neon-drop-title">
+                        <div class="chiclet-word">
+                            <div class="chiclet neon">N</div>
+                            <div class="chiclet neon">E</div>
+                            <div class="chiclet neon">O</div>
+                            <div class="chiclet neon">N</div>
+                        </div>
+                        <div class="chiclet-spacer"></div>
+                        <div class="chiclet-word">
+                            <div class="chiclet drop">D</div>
+                            <div class="chiclet drop">R</div>
+                            <div class="chiclet drop">O</div>
+                            <div class="chiclet drop">P</div>
+                        </div>
+                    </div>
+                    
+                    <div class="overlay-title">TOURNAMENT LEADERBOARD</div>
+                    <div class="overlay-subtitle">Daily Challenge • Complete Rankings</div>
+                </div>
+                
+                <div class="leaderboard-content" id="leaderboardContent">
+                    <!-- Leaderboard rows will be populated by JavaScript -->
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination" id="pagination">
+                    <!-- Pagination buttons will be populated by JavaScript -->
+                </div>
+                
+                <!-- EXACT SAME OVERLAY ACTIONS STYLING -->
+                <div class="overlay-actions">
+                    <button class="overlay-btn primary" onclick="refreshLeaderboard()">🔄 REFRESH</button>
+                    <button class="overlay-btn" onclick="window.location.href='/pages/profile.html'">🏠 PROFILE</button>
+                    <button class="overlay-btn" onclick="window.location.href='/games/'">🎮 GAMES</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mini Logo at Bottom - 1/10th size of main logo -->
+    <div class="mini-logo-container">
+        <div class="mini-logo">
+            <span class="mini-logo-letter">B</span>
+            <span class="mini-logo-letter">l</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">c</span>
+            <span class="mini-logo-letter">k</span>
+            <span class="mini-logo-letter">Z</span>
+            <span class="mini-logo-letter">o</span>
+            <span class="mini-logo-letter">n</span>
+            <span class="mini-logo-letter">e</span>
+            <span class="mini-logo-letter"> </span>
+            <span class="mini-logo-letter">L</span>
+            <span class="mini-logo-letter">a</span>
+            <span class="mini-logo-letter">b</span>
+        </div>
+    </div>
+
+    <script>
+        // Navbar animation
+        const navbar = document.getElementById('navbar');
+        setTimeout(() => navbar.classList.add('loaded'), 100);
+
+        // Hero section animation
+        const heroSection = document.getElementById('heroSection');
+        setTimeout(() => heroSection.classList.add('loaded'), 300);
+
+        // Global functions
+        function refreshLeaderboard() {
+            console.log('🔄 Refreshing leaderboard...');
+            if (window.fullLeaderboardPage) {
+                window.fullLeaderboardPage.loadLeaderboard();
+            }
+        }
+
+        // Full Leaderboard Page functionality
+        class FullLeaderboardPage {
+            constructor() {
+                this.playerProfile = null;
+                this.identityManager = null;
+                this.playerId = null;
+                this.currentPage = 1;
+                this.scoresPerPage = 25;
+                this.allScores = [];
+                this.totalPages = 1;
+            }
+            
+            async initialize() {
+                try {
+                    console.log('🏆 Initializing Full Leaderboard Page...');
+                    
+                    // Import required modules
+                    const { PlayerProfile } = await import('../shared/components/PlayerProfile.js');
+                    const { IdentityManager } = await import('../shared/core/IdentityManager.js');
+                    
+                    // Initialize identity system
+                    this.identityManager = new IdentityManager();
+                    await this.identityManager.initialize();
+                    
+                    if (!this.identityManager.hasValidIdentity()) {
+                        this.showError('No player identity found. Please play a game first to create your profile.');
+                        return;
+                    }
+                    
+                    this.playerId = this.identityManager.getPlayerId();
+                    console.log('👤 Loading leaderboard for player:', this.playerId);
+                    
+                    // Initialize PlayerProfile
+                    this.playerProfile = new PlayerProfile();
+                    await this.playerProfile.initialize(this.playerId);
+                    
+                    // Load leaderboard data
+                    await this.loadLeaderboard();
+                    
+                } catch (error) {
+                    console.error('❌ Leaderboard initialization failed:', error);
+                    this.showError('Failed to load the leaderboard. Please try again later.');
+                }
+            }
+            
+            async loadLeaderboard() {
+                try {
+                    console.log('🏆 Loading complete leaderboard...');
+                    
+                    // Show loading state
+                    document.getElementById('loadingState').style.display = 'block';
+                    document.getElementById('leaderboardFrame').style.display = 'none';
+                    
+                    // Get all leaderboard data
+                    const leaderboardData = await this.playerProfile.getLeaderboardData(true);
+                    this.allScores = leaderboardData.scores || [];
+                    
+                    console.log('📊 Loaded scores:', this.allScores.length);
+                    
+                    // Calculate pagination
+                    this.totalPages = Math.ceil(this.allScores.length / this.scoresPerPage);
+                    this.currentPage = Math.min(this.currentPage, this.totalPages);
+                    
+                    // Render the current page
+                    this.renderLeaderboard();
+                    this.renderPagination();
+                    
+                    // Show leaderboard frame
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('leaderboardFrame').style.display = 'block';
+                    
+                } catch (error) {
+                    console.error('❌ Failed to load leaderboard:', error);
+                    this.showError('Failed to load the leaderboard. Please try again later.');
+                }
+            }
+            
+            renderLeaderboard() {
+                const leaderboardContent = document.getElementById('leaderboardContent');
+                const startIndex = (this.currentPage - 1) * this.scoresPerPage;
+                const endIndex = startIndex + this.scoresPerPage;
+                const pageScores = this.allScores.slice(startIndex, endIndex);
+                
+                if (pageScores.length === 0) {
+                    leaderboardContent.innerHTML = '<div class="loading-placeholder">No leaderboard data available</div>';
+                    return;
+                }
+                
+                let html = '';
+                pageScores.forEach((score, index) => {
+                    const globalIndex = startIndex + index;
+                    const isCurrentPlayer = score.player_id === this.playerId || score.id === this.playerId;
+                    const medal = globalIndex === 0 ? '🥇' : globalIndex === 1 ? '🥈' : globalIndex === 2 ? '🥉' : '';
+                    const rankClass = isCurrentPlayer ? 'leaderboard-row current-player' : 'leaderboard-row';
+                    
+                    html += `
+                        <div class="${rankClass}">
+                            <div class="rank-info">
+                                <span class="rank-medal">${medal}</span>
+                                <span class="rank-number">#${globalIndex + 1}</span>
+                            </div>
+                            <div class="player-info">
+                                <div class="player-name">${score.display_name || score.player_name || score.name || 'Unknown Player'}</div>
+                            </div>
+                            <div class="player-score">${score.score.toLocaleString()}</div>
+                        </div>
+                    `;
+                });
+                
+                leaderboardContent.innerHTML = html;
+            }
+            
+            renderPagination() {
+                const pagination = document.getElementById('pagination');
+                
+                if (this.totalPages <= 1) {
+                    pagination.style.display = 'none';
+                    return;
+                }
+                
+                let html = '';
+                
+                // Previous button
+                html += `
+                    <button class="page-btn" onclick="window.fullLeaderboardPage.goToPage(${this.currentPage - 1})" 
+                            ${this.currentPage === 1 ? 'disabled' : ''}>
+                        ◀ PREV
+                    </button>
+                `;
+                
+                // Page numbers
+                const startPage = Math.max(1, this.currentPage - 2);
+                const endPage = Math.min(this.totalPages, this.currentPage + 2);
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    html += `
+                        <button class="page-btn ${i === this.currentPage ? 'active' : ''}" 
+                                onclick="window.fullLeaderboardPage.goToPage(${i})">
+                            ${i}
+                        </button>
+                    `;
+                }
+                
+                // Next button
+                html += `
+                    <button class="page-btn" onclick="window.fullLeaderboardPage.goToPage(${this.currentPage + 1})" 
+                            ${this.currentPage === this.totalPages ? 'disabled' : ''}>
+                        NEXT ▶
+                    </button>
+                `;
+                
+                pagination.innerHTML = html;
+            }
+            
+            goToPage(page) {
+                if (page < 1 || page > this.totalPages) return;
+                
+                this.currentPage = page;
+                this.renderLeaderboard();
+                this.renderPagination();
+                
+                // Scroll to top of leaderboard content
+                document.getElementById('leaderboardContent').scrollTop = 0;
+            }
+            
+            showError(message) {
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('leaderboardFrame').style.display = 'none';
+                document.getElementById('errorState').style.display = 'block';
+                document.getElementById('errorMessage').textContent = message;
+            }
+        }
+        
+        // Initialize full leaderboard page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', async () => {
+            const fullLeaderboardPage = new FullLeaderboardPage();
+            window.fullLeaderboardPage = fullLeaderboardPage; // Make it globally accessible
+            await fullLeaderboardPage.initialize();
+        });
+    </script>
+</body>
+</html> 
