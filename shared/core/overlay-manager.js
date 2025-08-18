@@ -449,7 +449,7 @@ export class OverlayManager {
         ${actions.length > 0 ? `
           <div class="overlay-actions">
             ${actions.map(action => `
-              <button class="overlay-btn ${action.class || ''}" onclick="${action.onClick}">
+              <button class="overlay-btn ${action.class || ''}" data-action="${action.text.toLowerCase().replace(/\s+/g, '-')}">
                 ${action.text}
               </button>
             `).join('')}
@@ -651,26 +651,22 @@ export class OverlayManager {
           const actions = [
         {
           text: '🔄 PLAY AGAIN',
-          class: 'primary',
-          onClick: onPlayAgain ? onPlayAgain : 'window.overlayManager.hideCurrent()'
+          class: 'primary'
         },
         {
           text: '🎮 GAMES',
-          class: 'secondary',
-          onClick: 'window.paywallManager ? window.paywallManager.showPaymentOptions("neondrop", {}, null) : window.location.href="/games/"'
+          class: 'secondary'
         },
         {
           text: '🏠 HOME',
-          class: 'secondary',
-          onClick: 'window.location.href="/"'
+          class: 'secondary'
         }
       ];
     
     if (onViewLeaderboard) {
       actions.unshift({
         text: '📊 VIEW LEADERBOARD',
-        class: 'secondary',
-        onClick: onViewLeaderboard
+        class: 'secondary'
       });
     }
     
@@ -682,9 +678,10 @@ export class OverlayManager {
       showNeonDrop: true
     });
     
-    // Set up challenge button handlers after overlay is created
+    // Set up all button handlers after overlay is created
     setTimeout(() => {
       this.setupChallengeHandlers(score, onChallenge2, onChallenge5, onShareScore);
+      this.setupGameOverHandlers(onPlayAgain, onViewLeaderboard);
     }, 100);
   }
 
@@ -1003,5 +1000,56 @@ export class OverlayManager {
    */
   isVisible() {
     return this.overlayContainer && this.overlayContainer.style.display === 'flex';
+  }
+
+  /**
+   * Set up game over button handlers
+   */
+  setupGameOverHandlers(onPlayAgain, onViewLeaderboard) {
+    console.log('🔧 Setting up game over button handlers...');
+    
+    const playAgainBtn = document.querySelector('[data-action="🔄-play-again"]');
+    const leaderboardBtn = document.querySelector('[data-action="📊-view-leaderboard"]');
+    const gamesBtn = document.querySelector('[data-action="🎮-games"]');
+    const homeBtn = document.querySelector('[data-action="🏠-home"]');
+
+    console.log('🔍 Found buttons:', {
+      playAgain: playAgainBtn,
+      leaderboard: leaderboardBtn,
+      games: gamesBtn,
+      home: homeBtn
+    });
+
+    if (playAgainBtn) {
+      playAgainBtn.addEventListener('click', () => {
+        console.log('🔄 Play Again button clicked');
+        if (onPlayAgain) onPlayAgain();
+      });
+    }
+
+    if (leaderboardBtn) {
+      leaderboardBtn.addEventListener('click', () => {
+        console.log('📊 Leaderboard button clicked');
+        if (onViewLeaderboard) onViewLeaderboard();
+      });
+    }
+
+    if (gamesBtn) {
+      gamesBtn.addEventListener('click', () => {
+        console.log('🎮 Games button clicked');
+        if (window.paywallManager) {
+          window.paywallManager.showPaymentOptions('neondrop', {}, null);
+        } else {
+          window.location.href = '/games/';
+        }
+      });
+    }
+
+    if (homeBtn) {
+      homeBtn.addEventListener('click', () => {
+        console.log('🏠 Home button clicked');
+        window.location.href = '/';
+      });
+    }
   }
 }
