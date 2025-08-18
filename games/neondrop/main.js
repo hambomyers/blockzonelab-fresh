@@ -1495,6 +1495,40 @@ class NeonDrop {
                         }
                     }
                     
+                    // Submit score to backend if we have a player ID
+                    const playerId = window.identityManager?.getPlayerId?.() || 
+                                   window.playerProfile?.getCurrentPlayerId?.();
+                    
+                    if (playerId && score > 0) {
+                        try {
+                            console.log('🏆 Submitting score to backend:', { playerId, score, playerName });
+                            const response = await fetch('https://api.blockzonelab.com/api/game-over', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    score: score,
+                                    playerId: playerId,
+                                    gameData: {
+                                        playerName: playerName,
+                                        gameType: 'neon_drop',
+                                        timestamp: Date.now()
+                                    }
+                                })
+                            });
+                            
+                            if (response.ok) {
+                                const result = await response.json();
+                                console.log('✅ Score submitted successfully:', result);
+                            } else {
+                                console.error('❌ Score submission failed:', response.status);
+                            }
+                        } catch (error) {
+                            console.error('❌ Score submission error:', error);
+                        }
+                    }
+                    
                     // Update leaderboard data when game ends
                     if (window.playerProfile && window.playerProfile.getLeaderboardData) {
                         try {
