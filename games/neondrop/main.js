@@ -1831,32 +1831,7 @@ class NeonDrop {
         });
     }
 
-    /**
-     * Get leaderboard data for the current game
-     */
-    getLeaderboardData() {
-        // TODO: Fetch from actual leaderboard API
-        // For now, return null to avoid showing fake data
-        return null;
-    }
-
-    /**
-     * Get the current player's rank
-     */
-    getPlayerRank() {
-        // TODO: Calculate based on actual leaderboard data
-        // For now, return null to avoid showing fake data
-        return null;
-    }
-
-    /**
-     * Refresh leaderboard data
-     */
-    refreshLeaderboardData() {
-        console.log('🔄 Refreshing leaderboard data...');
-        // In the future, this should fetch fresh data from your API
-        return this.getLeaderboardData();
-    }
+    // REMOVED: All fake leaderboard functions - now using PlayerProfile API
 
 
 }

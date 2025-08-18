@@ -656,8 +656,8 @@ export class OverlayManager {
   showLeaderboard(data) {
     const { scores, playerRank, onClose, onRefresh } = data;
     
-    // Generate sample leaderboard data if none provided (for testing)
-    const leaderboardScores = scores || this.generateSampleLeaderboard();
+    // Use real leaderboard data from PlayerProfile API
+    const leaderboardScores = scores || [];
     
     const content = `
       <div style="
@@ -746,31 +746,7 @@ export class OverlayManager {
     });
   }
   
-  /**
-   * Generate sample leaderboard data for testing
-   */
-  generateSampleLeaderboard() {
-    return [
-      { name: 'Champion#1', score: 18950, isCurrentPlayer: false },
-      { name: 'Player#12345', score: 15420, isCurrentPlayer: true },
-      { name: 'Gamer#789', score: 12890, isCurrentPlayer: false },
-      { name: 'Pro#456', score: 11200, isCurrentPlayer: false },
-      { name: 'Newbie#999', score: 8900, isCurrentPlayer: false },
-      { name: 'SpeedRunner#777', score: 7650, isCurrentPlayer: false },
-      { name: 'Casual#333', score: 6200, isCurrentPlayer: false },
-      { name: 'Beginner#111', score: 4800, isCurrentPlayer: false }
-    ];
-  }
-  
-  /**
-   * Refresh leaderboard data
-   */
-  refreshLeaderboard() {
-    console.log('🔄 Refreshing leaderboard...');
-    // You can implement actual refresh logic here
-    // For now, just show a message
-    alert('🔄 Leaderboard refreshed! (This would fetch new data from your API)');
-  }
+  // REMOVED: All fake leaderboard functions - now using PlayerProfile API
 
   /**
    * Show a settings overlay
