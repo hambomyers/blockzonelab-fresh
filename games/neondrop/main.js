@@ -417,11 +417,8 @@ class NeonDrop {
             this.setupMinimalInput()
         ]);
         
-        // 🚀 CRITICAL FIX: Connect game over system to engine for API calls
-        if (this.gameOverHandler && this.engine) {
-            console.log('🔗 Connecting game over system to engine for API calls');
-            this.engine.setGameOverSystem(this.gameOverHandler);
-        }
+        // 🚀 CRITICAL FIX: New overlay manager handles game over - no legacy systems needed
+        console.log('✅ New overlay manager handles all game over functionality');
         
         // WIN 6: BATCH DOM UPDATES (3-5ms win) - Only do UI setup once
         this.setupUIBatched();
