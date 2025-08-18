@@ -591,12 +591,8 @@ export default {
           const leaderboard = await env.SCORES.get(leaderboardKey, 'json');
           
           if (!leaderboard || !leaderboard.scores) {
-            // Return fallback data
-            return new Response(JSON.stringify([
-              { name: 'Champion', score: 85000, rank: 1 },
-              { name: 'Master', score: 72000, rank: 2 },
-              { name: 'Expert', score: 58000, rank: 3 }
-            ].slice(0, limit)), { headers: corsHeaders });
+            // Return empty array - no fake data
+            return new Response(JSON.stringify([]), { headers: corsHeaders });
           }
           
           // Sort by score and take top N
@@ -613,11 +609,7 @@ export default {
           
         } catch (error) {
           console.error('❌ Top players fetch error:', error);
-          return new Response(JSON.stringify([
-            { name: 'Champion', score: 85000, rank: 1 },
-            { name: 'Master', score: 72000, rank: 2 },
-            { name: 'Expert', score: 58000, rank: 3 }
-          ].slice(0, limit)), { headers: corsHeaders });
+          return new Response(JSON.stringify([]), { headers: corsHeaders });
         }
       }
 
@@ -640,9 +632,9 @@ export default {
           
           if (!leaderboard || !leaderboard.scores) {
             return new Response(JSON.stringify({
-              rank: "Top 50%",
-              position: 50,
-              total: 100
+              rank: "Not ranked",
+              position: null,
+              total: 0
             }), { headers: corsHeaders });
           }
           
@@ -683,9 +675,9 @@ export default {
         } catch (error) {
           console.error('❌ Player rank fetch error:', error);
           return new Response(JSON.stringify({
-            rank: "Top 50%",
-            position: 50,
-            total: 100
+            rank: "Error",
+            position: null,
+            total: 0
           }), { headers: corsHeaders });
         }
       }
