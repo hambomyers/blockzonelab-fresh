@@ -637,6 +637,9 @@ class NeonDrop {
         // Create overlay manager with new consistent styling
         this.overlayManager = new OverlayManager(this.eventBus);
         
+        // Expose overlay manager globally for HTML access
+        window.overlayManager = this.overlayManager;
+        
         // No need for old GameOverSystem - new overlay manager handles everything
         console.log('✅ New overlay manager created with consistent frame styling');
         

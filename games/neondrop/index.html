@@ -395,8 +395,44 @@
             handleGameOver(score) {
                 console.log('🎮 Game over - score:', score);
                 
-                // Let the existing game over system handle everything
-                // Our progressive UI can enhance it if needed
+                // Use our new overlay manager instead of the old system
+                if (window.overlayManager) {
+                    window.overlayManager.showGameOver({
+                        score: score,
+                        playerName: window.identityManager?.getCurrentPlayer()?.displayName || 'Player',
+                        leaderboardData: null,
+                        onPlayAgain: () => {
+                            console.log('🔄 Play again clicked');
+                            window.location.reload();
+                        },
+                        onViewLeaderboard: () => {
+                            console.log('📊 View leaderboard clicked');
+                            window.overlayManager.showLeaderboard({
+                                scores: [],
+                                playerRank: null,
+                                onClose: () => window.overlayManager.hideCurrent(),
+                                onRefresh: () => console.log('🔄 Leaderboard refresh')
+                            });
+                        },
+                        onChallenge2: (score, amount) => {
+                            console.log(`💰 $${amount} challenge created for score: ${score}`);
+                        },
+                        onChallenge5: (score, amount) => {
+                            console.log(`💎 $${amount} challenge created for score: ${score}`);
+                        },
+                        onShareScore: (score) => {
+                            console.log('📤 Share score clicked for score:', score);
+                        }
+                    });
+                } else {
+                    console.warn('❌ Overlay manager not available, falling back to basic handling');
+                    // Fallback: just reload the game
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                }
+                
+                // Progressive UI enhancement if available
                 if (this.progressiveUI && score > 1000) {
                     setTimeout(() => {
                         this.progressiveUI.showHighScoreCelebration(score);
