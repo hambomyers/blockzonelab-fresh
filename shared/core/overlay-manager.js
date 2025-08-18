@@ -448,8 +448,8 @@ export class OverlayManager {
         
         ${actions.length > 0 ? `
           <div class="overlay-actions">
-            ${actions.map(action => `
-              <button class="overlay-btn ${action.class || ''}" data-action="${action.text.toLowerCase().replace(/\s+/g, '-')}">
+            ${actions.map((action, index) => `
+              <button class="overlay-btn ${action.class || ''} action-btn-${index}">
                 ${action.text}
               </button>
             `).join('')}
@@ -473,7 +473,6 @@ export class OverlayManager {
     const { 
       score, 
       playerName, 
-      leaderboardData, 
       onPlayAgain, 
       onViewLeaderboard,
       onChallenge2,
@@ -494,55 +493,21 @@ export class OverlayManager {
         
         ${playerName ? `
           <div style="
-            font-size: 14px;
+            font-size: 16px;
             color: #ffffff;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             font-family: 'Bungee', monospace;
-          ">👤 ${playerName}</div>
+            text-align: center;
+          ">🎮 ${playerName}'s Score</div>
         ` : ''}
         
         <div style="
           font-size: 12px;
           color: #00ff88;
           font-family: 'Bungee', monospace;
+          text-align: center;
         ">⏰ Next Tournament: 11:15 PM EST</div>
       </div>
-      
-      ${leaderboardData ? `
-        <div style="
-          background: rgba(0, 212, 255, 0.1);
-          border: 1px solid #00d4ff;
-          border-radius: 12px;
-          padding: 12px;
-          margin-bottom: 15px;
-        ">
-          <div style="
-            font-size: 18px;
-            color: #00d4ff;
-            margin-bottom: 15px;
-            font-weight: bold;
-            text-align: center;
-          ">🏆 LEADERBOARD</div>
-          
-          <div style="font-size: 14px; color: #ffffff; text-align: center;">
-            ${leaderboardData.map((entry, index) => `
-              <div style="
-                color: #ffffff;
-                margin-bottom: 8px;
-                font-size: 14px;
-                font-weight: bold;
-                text-align: center;
-                padding: 4px;
-                background: rgba(0,0,0,0.3);
-                border-radius: 4px;
-              ">
-                ${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`} 
-                ${entry.name || 'No Data'} - ${entry.score || 'No Data'} pts
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      ` : ''}
       
       <!-- CHALLENGE FRIENDS SECTION -->
       <div style="

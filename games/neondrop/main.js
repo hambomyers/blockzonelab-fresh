@@ -1453,14 +1453,19 @@ class NeonDrop {
                     // Get player info for the overlay
                     const playerName = this.identityManager?.getCurrentPlayer()?.displayName || 'Player';
                     
-                    // Get leaderboard data if available
-                    const leaderboardData = this.getLeaderboardData ? this.getLeaderboardData() : null;
+                    // Update leaderboard data when game ends
+                    if (window.playerProfile && window.playerProfile.getLeaderboardData) {
+                        try {
+                            await window.playerProfile.getLeaderboardData(true); // Force refresh
+                        } catch (error) {
+                            console.warn('Failed to refresh leaderboard:', error);
+                        }
+                    }
                     
                     // Show game over with new consistent frame styling
                     this.overlayManager.showGameOver({
                         score: score,
                         playerName: playerName,
-                        leaderboardData: leaderboardData,
                         onPlayAgain: () => {
                             console.log('🔄 Play again clicked - going back to paywall');
                             // Hide the game over overlay
@@ -1475,17 +1480,29 @@ class NeonDrop {
                         },
                         onViewLeaderboard: () => {
                             console.log('📊 View leaderboard clicked');
-                            // Show the full leaderboard overlay
+                            // Show the full leaderboard overlay with real data
                             this.overlayManager.showLeaderboard({
-                                scores: leaderboardData || this.getLeaderboardData(),
-                                playerRank: this.getPlayerRank(),
+                                scores: window.playerProfile?.leaderboardData?.scores || [],
+                                playerRank: window.playerProfile?.leaderboardData?.playerRank || null,
                                 onClose: () => {
                                     console.log('📊 Leaderboard closed');
                                 },
-                                onRefresh: () => {
+                                onRefresh: async () => {
                                     console.log('🔄 Leaderboard refresh requested');
-                                    // You can implement actual refresh logic here
-                                    this.refreshLeaderboardData();
+                                    if (window.playerProfile && window.playerProfile.getLeaderboardData) {
+                                        try {
+                                            await window.playerProfile.getLeaderboardData(true); // Force refresh
+                                            // Re-show leaderboard with fresh data
+                                            this.overlayManager.showLeaderboard({
+                                                scores: window.playerProfile?.leaderboardData?.scores || [],
+                                                playerRank: window.playerProfile?.leaderboardData?.playerRank || null,
+                                                onClose: () => this.overlayManager.hideCurrent(),
+                                                onRefresh: () => this.onViewLeaderboard()
+                                            });
+                                        } catch (error) {
+                                            console.error('Failed to refresh leaderboard:', error);
+                                        }
+                                    }
                                 }
                             });
                         },
