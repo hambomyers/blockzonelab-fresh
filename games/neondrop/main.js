@@ -1522,31 +1522,58 @@ class NeonDrop {
                         },
                         onViewLeaderboard: () => {
                             console.log('📊 View leaderboard clicked');
-                            // Show the full leaderboard overlay with real data
+                            // Show the full leaderboard overlay with real data from Cloudflare worker
                             this.overlayManager.showLeaderboard({
-                                scores: window.playerProfile?.leaderboardData?.scores || [],
-                                playerRank: window.playerProfile?.leaderboardData?.playerRank || null,
+                                scores: [], // Will be populated from API call
+                                playerRank: null, // Will be populated from API call
                                 onClose: () => {
                                     console.log('📊 Leaderboard closed');
                                 },
                                 onRefresh: async () => {
                                     console.log('🔄 Leaderboard refresh requested');
-                                    if (window.playerProfile && window.playerProfile.getLeaderboardData) {
-                                        try {
-                                            await window.playerProfile.getLeaderboardData(true); // Force refresh
-                                            // Re-show leaderboard with fresh data
+                                    try {
+                                        // Fetch real leaderboard data from Cloudflare worker
+                                        const response = await fetch('https://api.blockzonelab.com/api/leaderboard');
+                                        if (response.ok) {
+                                            const leaderboardData = await response.json();
+                                            console.log('✅ Real leaderboard data fetched:', leaderboardData);
+                                            
+                                            // Re-show leaderboard with fresh real data
                                             this.overlayManager.showLeaderboard({
-                                                scores: window.playerProfile?.leaderboardData?.scores || [],
-                                                playerRank: window.playerProfile?.leaderboardData?.playerRank || null,
+                                                scores: leaderboardData.scores || [],
+                                                playerRank: leaderboardData.playerRank || null,
                                                 onClose: () => this.overlayManager.hideCurrent(),
                                                 onRefresh: () => this.onViewLeaderboard()
                                             });
-                                        } catch (error) {
-                                            console.error('Failed to refresh leaderboard:', error);
+                                        } else {
+                                            console.error('Failed to fetch leaderboard:', response.status);
                                         }
+                                    } catch (error) {
+                                        console.error('Failed to refresh leaderboard:', error);
                                     }
                                 }
                             });
+                            
+                            // Immediately fetch and show real leaderboard data
+                            setTimeout(async () => {
+                                try {
+                                    const response = await fetch('https://api.blockzonelab.com/api/leaderboard');
+                                    if (response.ok) {
+                                        const leaderboardData = await response.json();
+                                        console.log('✅ Initial leaderboard data fetched:', leaderboardData);
+                                        
+                                        // Update the overlay with real data
+                                        this.overlayManager.showLeaderboard({
+                                            scores: leaderboardData.scores || [],
+                                            playerRank: leaderboardData.playerRank || null,
+                                            onClose: () => this.overlayManager.hideCurrent(),
+                                            onRefresh: () => this.onViewLeaderboard()
+                                        });
+                                    }
+                                } catch (error) {
+                                    console.error('Failed to fetch initial leaderboard:', error);
+                                }
+                            }, 100);
                         },
                         onChallenge2: (score, amount) => {
                             console.log(`💰 $${amount} challenge created for score: ${score}`);
