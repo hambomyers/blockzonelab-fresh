@@ -646,7 +646,7 @@ export class OverlayManager {
     // Set up all button handlers after overlay is created
     setTimeout(() => {
       this.setupChallengeHandlers(score, onChallenge2, onChallenge5, onShareScore);
-      this.setupGameOverHandlers(onPlayAgain, onViewLeaderboard);
+      this.setupGameOverButtonHandlers(onPlayAgain, onViewLeaderboard);
     }, 100);
   }
 
@@ -972,6 +972,54 @@ export class OverlayManager {
       leaderboardBtn.addEventListener('click', () => {
         console.log('📊 Leaderboard button clicked');
         if (onViewLeaderboard) onViewLeaderboard();
+      });
+    }
+
+    if (gamesBtn) {
+      gamesBtn.addEventListener('click', () => {
+        console.log('🎮 Games button clicked');
+        window.location.href = '/games/';
+      });
+    }
+
+    if (homeBtn) {
+      homeBtn.addEventListener('click', () => {
+        console.log('🏠 Home button clicked');
+        window.location.href = '/';
+      });
+    }
+  }
+
+  /**
+   * Set up game over button handlers for the actual buttons created by showCustomOverlay
+   */
+  setupGameOverButtonHandlers(onPlayAgain, onViewLeaderboard) {
+    console.log('🔧 Setting up game over button handlers for action buttons...');
+    
+    // Find buttons by their action-btn classes
+    const playAgainBtn = document.querySelector('.action-btn-0'); // First button (PLAY AGAIN)
+    const leaderboardBtn = document.querySelector('.action-btn-1'); // Second button (VIEW LEADERBOARD) if exists
+    const gamesBtn = document.querySelector('.action-btn-1'); // Second button (GAMES) if no leaderboard
+    const homeBtn = document.querySelector('.action-btn-2'); // Third button (HOME) if no leaderboard, or fourth if leaderboard exists
+
+    console.log('🔍 Found action buttons:', {
+      playAgain: playAgainBtn,
+      leaderboard: leaderboardBtn,
+      games: gamesBtn,
+      home: homeBtn
+    });
+
+    if (playAgainBtn) {
+      playAgainBtn.addEventListener('click', () => {
+        console.log('🔄 Play Again button clicked');
+        if (onPlayAgain) onPlayAgain();
+      });
+    }
+
+    if (leaderboardBtn && onViewLeaderboard) {
+      leaderboardBtn.addEventListener('click', () => {
+        console.log('📊 Leaderboard button clicked');
+        onViewLeaderboard();
       });
     }
 
