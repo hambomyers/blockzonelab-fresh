@@ -648,23 +648,23 @@ export class OverlayManager {
       </div>
     `;
     
-    const actions = [
-      {
-        text: '🔄 PLAY AGAIN',
-        class: 'primary',
-        onClick: onPlayAgain ? onPlayAgain : 'window.overlayManager.hideCurrent()'
-      },
-      {
-        text: '🎮 GAMES',
-        class: 'secondary',
-        onClick: 'window.location.href="/games/"'
-      },
-      {
-        text: '🏠 HOME',
-        class: 'secondary',
-        onClick: 'window.location.href="/"'
-      }
-    ];
+          const actions = [
+        {
+          text: '🔄 PLAY AGAIN',
+          class: 'primary',
+          onClick: onPlayAgain ? onPlayAgain : 'window.overlayManager.hideCurrent()'
+        },
+        {
+          text: '🎮 GAMES',
+          class: 'secondary',
+          onClick: 'window.paywallManager ? window.paywallManager.showPaymentOptions("neondrop", {}, null) : window.location.href="/games/"'
+        },
+        {
+          text: '🏠 HOME',
+          class: 'secondary',
+          onClick: 'window.location.href="/"'
+        }
+      ];
     
     if (onViewLeaderboard) {
       actions.unshift({
@@ -692,7 +692,10 @@ export class OverlayManager {
    * Show a leaderboard overlay
    */
   showLeaderboard(data) {
-    const { scores, playerRank, onClose } = data;
+    const { scores, playerRank, onClose, onRefresh } = data;
+    
+    // Generate sample leaderboard data if none provided (for testing)
+    const leaderboardScores = scores || this.generateSampleLeaderboard();
     
     const content = `
       <div style="
@@ -711,7 +714,7 @@ export class OverlayManager {
         ">🏆 DAILY LEADERBOARD</div>
         
         <div style="font-size: 14px; color: #ffffff; text-align: center;">
-          ${scores && scores.length > 0 ? scores.map((entry, index) => `
+          ${leaderboardScores.map((entry, index) => `
             <div style="
               color: #ffffff;
               margin-bottom: 8px;
@@ -726,9 +729,7 @@ export class OverlayManager {
               ${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`} 
               ${entry.name || 'Anonymous'} - ${entry.score || '0'} pts
             </div>
-          `).join('') : `
-            <div style="color: #888; font-style: italic;">No scores available yet</div>
-          `}
+          `).join('')}
         </div>
         
         ${playerRank ? `
@@ -745,10 +746,28 @@ export class OverlayManager {
             🎯 Your Rank: ${playerRank}
           </div>
         ` : ''}
+        
+        <div style="
+          margin-top: 15px;
+          padding: 10px;
+          background: rgba(255, 170, 0, 0.1);
+          border: 1px solid #ffaa00;
+          border-radius: 8px;
+          color: #ffaa00;
+          font-size: 12px;
+          text-align: center;
+        ">
+          🏁 Tournament ends at 11:00 PM EST
+        </div>
       </div>
     `;
     
     const actions = [
+      {
+        text: '🔄 REFRESH',
+        class: 'primary',
+        onClick: onRefresh ? onRefresh : 'window.overlayManager.refreshLeaderboard()'
+      },
       {
         text: 'CLOSE',
         class: 'secondary',
@@ -763,6 +782,32 @@ export class OverlayManager {
       actions: actions,
       showNeonDrop: true
     });
+  }
+  
+  /**
+   * Generate sample leaderboard data for testing
+   */
+  generateSampleLeaderboard() {
+    return [
+      { name: 'Champion#1', score: 18950, isCurrentPlayer: false },
+      { name: 'Player#12345', score: 15420, isCurrentPlayer: true },
+      { name: 'Gamer#789', score: 12890, isCurrentPlayer: false },
+      { name: 'Pro#456', score: 11200, isCurrentPlayer: false },
+      { name: 'Newbie#999', score: 8900, isCurrentPlayer: false },
+      { name: 'SpeedRunner#777', score: 7650, isCurrentPlayer: false },
+      { name: 'Casual#333', score: 6200, isCurrentPlayer: false },
+      { name: 'Beginner#111', score: 4800, isCurrentPlayer: false }
+    ];
+  }
+  
+  /**
+   * Refresh leaderboard data
+   */
+  refreshLeaderboard() {
+    console.log('🔄 Refreshing leaderboard...');
+    // You can implement actual refresh logic here
+    // For now, just show a message
+    alert('🔄 Leaderboard refreshed! (This would fetch new data from your API)');
   }
 
   /**

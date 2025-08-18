@@ -1462,12 +1462,32 @@ class NeonDrop {
                         playerName: playerName,
                         leaderboardData: leaderboardData,
                         onPlayAgain: () => {
-                            console.log('🔄 Play again clicked - starting new game');
-                            this.startNewGame();
+                            console.log('🔄 Play again clicked - going back to paywall');
+                            // Hide the game over overlay
+                            this.overlayManager.hideCurrent();
+                            // Go back to paywall for another game
+                            if (window.paywallManager) {
+                                window.paywallManager.showPaymentOptions('neondrop', {}, null);
+                            } else {
+                                // Fallback: redirect to games page
+                                window.location.href = '/games/';
+                            }
                         },
                         onViewLeaderboard: () => {
                             console.log('📊 View leaderboard clicked');
-                            // You can implement full leaderboard view here
+                            // Show the full leaderboard overlay
+                            this.overlayManager.showLeaderboard({
+                                scores: leaderboardData || this.getLeaderboardData(),
+                                playerRank: this.getPlayerRank(),
+                                onClose: () => {
+                                    console.log('📊 Leaderboard closed');
+                                },
+                                onRefresh: () => {
+                                    console.log('🔄 Leaderboard refresh requested');
+                                    // You can implement actual refresh logic here
+                                    this.refreshLeaderboardData();
+                                }
+                            });
                         },
                         onChallenge2: (score, amount) => {
                             console.log(`💰 $${amount} challenge created for score: ${score}`);
