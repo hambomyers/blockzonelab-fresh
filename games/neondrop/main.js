@@ -1453,12 +1453,27 @@ class NeonDrop {
                     // Get player info for the overlay - use IdentityManager's displayName (Hambo#274F format)
                     let playerName = 'Player';
                     
-                    // First try IdentityManager which has the "Hambo#274F" format
-                    if (window.identityManager && window.identityManager.getPlayerName) {
-                        playerName = window.identityManager.getPlayerName() || 'Player';
+                    // Ensure IdentityManager is initialized and has player data
+                    if (window.identityManager) {
+                        try {
+                            // If IdentityManager isn't initialized yet, initialize it
+                            if (!window.identityManager.isInitialized) {
+                                await window.identityManager.initialize();
+                            }
+                            
+                            // Get the displayName which should be "Hambo#274F" format
+                            if (window.identityManager.player && window.identityManager.player.displayName) {
+                                playerName = window.identityManager.player.displayName;
+                            } else if (window.identityManager.getPlayerName) {
+                                playerName = window.identityManager.getPlayerName() || 'Player';
+                            }
+                        } catch (error) {
+                            console.warn('Failed to get player name from IdentityManager:', error);
+                        }
                     }
+                    
                     // Fallback to PlayerProfile if IdentityManager doesn't have it
-                    else if (window.playerProfile) {
+                    if (playerName === 'Player' && window.playerProfile) {
                         try {
                             // Try to get current player ID and load profile if needed
                             const playerId = window.identityManager?.getPlayerId?.() || 
