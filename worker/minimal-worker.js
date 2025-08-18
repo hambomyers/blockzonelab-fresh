@@ -557,10 +557,23 @@ export default {
             }), { headers: corsHeaders });
           }
           
+          // Map the scores to include proper field names for frontend compatibility
+          const mappedScores = (leaderboard.scores || []).map((entry, index) => ({
+            id: entry.player_id,
+            player_id: entry.player_id,
+            display_name: entry.display_name,
+            player_name: entry.display_name, // For compatibility
+            name: entry.display_name, // For compatibility with overlay manager
+            score: entry.score,
+            timestamp: entry.timestamp,
+            submitted_at: entry.submitted_at,
+            rank: index + 1
+          }));
+          
           return new Response(JSON.stringify({
             game_type: gameType,
             period: period,
-            scores: leaderboard.scores || [],
+            scores: mappedScores,
             last_updated: leaderboard.last_updated || new Date().toISOString()
           }), { headers: corsHeaders });
           
