@@ -1450,26 +1450,13 @@ class NeonDrop {
                 // Use new overlay manager to show game over with consistent styling
                 
                 try {
-                    // Get player info for the overlay from PlayerProfile
+                    // Get player info for the overlay from PlayerProfile (same structure as profile.html)
                     let playerName = 'Player';
-                    console.log('🔍 Debug - Available player data:', {
-                        playerProfile: window.playerProfile,
-                        profile: window.playerProfile?.profile,
-                        identityManager: window.identityManager,
-                        currentPlayer: window.identityManager?.getCurrentPlayer?.()
-                    });
-                    
                     if (window.playerProfile && window.playerProfile.profile) {
                         playerName = window.playerProfile.profile.display_name || 
                                    window.playerProfile.profile.username || 
                                    window.playerProfile.profile.player_id || 
                                    'Player';
-                        console.log('✅ Using PlayerProfile name:', playerName);
-                    } else if (window.identityManager && window.identityManager.getCurrentPlayer) {
-                        playerName = window.identityManager.getCurrentPlayer()?.displayName || 'Player';
-                        console.log('✅ Using IdentityManager name:', playerName);
-                    } else {
-                        console.log('⚠️ No player data found, using default:', playerName);
                     }
                     
                     // Update leaderboard data when game ends
