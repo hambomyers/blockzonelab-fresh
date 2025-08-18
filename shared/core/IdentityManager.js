@@ -141,6 +141,11 @@ export class IdentityManager {
             
             if (response.ok) {
                 const player = await response.json();
+                console.log('🔍 Backend returned player data:', JSON.stringify(player, null, 2));
+                console.log('🔍 Player object keys:', Object.keys(player));
+                console.log('🔍 Player displayName:', player.displayName);
+                console.log('🔍 Player username:', player.username);
+                console.log('🔍 Player id:', player.id);
                 // // console.log('📡 Backend returned existing player:', player.displayName); // Removed for production performance
                 return player;
             } else if (response.status === 404) {
@@ -251,6 +256,11 @@ export class IdentityManager {
     }
 
     getPlayerName() {
+        console.log('🔍 getPlayerName() called:', {
+            hasPlayer: !!this.player,
+            player: this.player,
+            displayName: this.player?.displayName
+        });
         return this.player ? this.player.displayName : null;
     }
 

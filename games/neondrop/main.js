@@ -1479,6 +1479,15 @@ class NeonDrop {
                                 playerName = window.identityManager.getPlayerName() || 'Player';
                                 console.log('✅ Got player name from IdentityManager.getPlayerName():', playerName);
                             }
+                            
+                            // Debug: Log the complete player object
+                            if (window.identityManager.player) {
+                                console.log('🔍 Complete player object:', JSON.stringify(window.identityManager.player, null, 2));
+                                console.log('🔍 Player object keys:', Object.keys(window.identityManager.player));
+                                console.log('🔍 Player displayName property:', window.identityManager.player.displayName);
+                                console.log('🔍 Player username property:', window.identityManager.player.username);
+                                console.log('🔍 Player id property:', window.identityManager.player.id);
+                            }
                         } catch (error) {
                             console.warn('Failed to get player name from IdentityManager:', error);
                         }
