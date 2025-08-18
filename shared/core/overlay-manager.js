@@ -470,7 +470,16 @@ export class OverlayManager {
    * Show a game over overlay with consistent styling
    */
   showGameOver(data) {
-    const { score, playerName, leaderboardData, onPlayAgain, onViewLeaderboard } = data;
+    const { 
+      score, 
+      playerName, 
+      leaderboardData, 
+      onPlayAgain, 
+      onViewLeaderboard,
+      onChallenge2,
+      onChallenge5,
+      onShareScore
+    } = data;
     
     const content = `
       <div style="margin-bottom: 20px;">
@@ -534,6 +543,109 @@ export class OverlayManager {
           </div>
         </div>
       ` : ''}
+      
+      <!-- CHALLENGE FRIENDS SECTION -->
+      <div style="
+        background: rgba(0, 255, 136, 0.1);
+        border: 1px solid #00ff88;
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 15px;
+      ">
+        <div style="
+          font-size: 18px;
+          color: #00ff88;
+          margin-bottom: 15px;
+          font-weight: bold;
+          text-align: center;
+        ">⚡ CHALLENGE FRIENDS</div>
+        
+        <div style="
+          font-size: 14px;
+          color: #ffffff;
+          margin-bottom: 15px;
+          text-align: center;
+        ">Save this game and challenge others!</div>
+        
+        <div style="
+          display: flex;
+          justify-content: space-around;
+          margin-bottom: 15px;
+          flex-wrap: wrap;
+          gap: 10px;
+        ">
+          <button id="challenge2Btn" style="
+            background: rgba(0, 255, 136, 0.2);
+            border: 2px solid #00ff88;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            font-family: 'Bungee', monospace;
+          "
+          onmouseover="this.style.background='rgba(0, 255, 136, 0.3)'; this.style.transform='scale(1.05)'"
+          onmouseout="this.style.background='rgba(0, 255, 136, 0.2)'; this.style.transform='scale(1)'">
+            <div style="
+              font-size: 16px;
+              color: #00ff88;
+              font-weight: bold;
+            ">💰 $2 Challenge</div>
+            <div style="
+              font-size: 12px;
+              color: #ffffff;
+            ">Winner gets $3.60</div>
+          </button>
+          
+          <button id="challenge5Btn" style="
+            background: rgba(0, 255, 136, 0.2);
+            border: 2px solid #00ff88;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            font-family: 'Bungee', monospace;
+          "
+          onmouseover="this.style.background='rgba(0, 255, 136, 0.3)'; this.style.transform='scale(1.05)'"
+          onmouseout="this.style.background='rgba(0, 255, 136, 0.2)'; this.style.transform='scale(1)'">
+            <div style="
+              font-size: 16px;
+              color: #00ff88;
+              font-weight: bold;
+            ">💎 $5 Challenge</div>
+            <div style="
+              font-size: 12px;
+              color: #ffffff;
+            ">Winner gets $9.00</div>
+          </button>
+        </div>
+        
+        <div style="
+          display: flex;
+          gap: 10px;
+          justify-content: center;
+          flex-wrap: wrap;
+        ">
+          <button id="shareScoreBtn" style="
+            background: none;
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Bungee', monospace;
+          "
+          onmouseover="this.style.backgroundColor='rgba(0, 255, 136, 0.1)'"
+          onmouseout="this.style.backgroundColor='transparent'">
+            Share Score
+          </button>
+        </div>
+      </div>
     `;
     
     const actions = [
@@ -569,6 +681,11 @@ export class OverlayManager {
       actions: actions,
       showNeonDrop: true
     });
+    
+    // Set up challenge button handlers after overlay is created
+    setTimeout(() => {
+      this.setupChallengeHandlers(score, onChallenge2, onChallenge5, onShareScore);
+    }, 100);
   }
 
   /**
@@ -739,6 +856,103 @@ export class OverlayManager {
     }
   }
 
+  /**
+   * Set up challenge button handlers for the game over overlay
+   */
+  setupChallengeHandlers(score, onChallenge2, onChallenge5, onShareScore) {
+    // $2 Challenge button
+    const challenge2Btn = document.getElementById('challenge2Btn');
+    if (challenge2Btn) {
+      challenge2Btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.log('💰 $2 Challenge button clicked for score:', score);
+        if (onChallenge2) {
+          onChallenge2(score, 2);
+        } else {
+          // Default challenge logic
+          this.createChallenge(score, 2);
+        }
+      });
+    }
+    
+    // $5 Challenge button
+    const challenge5Btn = document.getElementById('challenge5Btn');
+    if (challenge5Btn) {
+      challenge5Btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.log('💎 $5 Challenge button clicked for score:', score);
+        if (onChallenge5) {
+          onChallenge5(score, 5);
+        } else {
+          // Default challenge logic
+          this.createChallenge(score, 5);
+        }
+      });
+    }
+    
+    // Share Score button
+    const shareScoreBtn = document.getElementById('shareScoreBtn');
+    if (shareScoreBtn) {
+      shareScoreBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.log('📤 Share Score button clicked for score:', score);
+        if (onShareScore) {
+          onShareScore(score);
+        } else {
+          // Default share logic
+          this.shareScore(score);
+        }
+      });
+    }
+  }
+  
+  /**
+   * Default challenge creation logic
+   */
+  createChallenge(score, amount) {
+    console.log(`🎯 Creating $${amount} challenge for score: ${score}`);
+    // You can implement your challenge logic here
+    // For now, just show a message
+    alert(`🎯 $${amount} Challenge Created!\n\nScore: ${score.toLocaleString()}\n\nChallenge your friends to beat this score!`);
+  }
+  
+  /**
+   * Default score sharing logic
+   */
+  shareScore(score) {
+    console.log('📤 Sharing score:', score);
+    
+    // Try to use native sharing if available
+    if (navigator.share) {
+      navigator.share({
+        title: 'NeonDrop Challenge',
+        text: `I scored ${score.toLocaleString()} points in NeonDrop! Can you beat my score?`,
+        url: window.location.href
+      }).catch(err => {
+        console.log('Share failed:', err);
+        this.fallbackShare(score);
+      });
+    } else {
+      this.fallbackShare(score);
+    }
+  }
+  
+  /**
+   * Fallback sharing method
+   */
+  fallbackShare(score) {
+    const shareText = `I scored ${score.toLocaleString()} points in NeonDrop! Can you beat my score?`;
+    const shareUrl = window.location.href;
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(`${shareText}\n\n${shareUrl}`).then(() => {
+      alert('📋 Score copied to clipboard!\n\nPaste it anywhere to share your achievement!');
+    }).catch(() => {
+      // Fallback to prompt
+      prompt('Copy this text to share your score:', `${shareText}\n\n${shareUrl}`);
+    });
+  }
+  
   /**
    * Check if any overlay is currently visible
    */

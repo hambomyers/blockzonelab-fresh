@@ -100,7 +100,7 @@ import { GameEngine } from './core/game-engine.js';
 import { AudioSystem } from './core/audio-system.js';
 import { Renderer } from './core/renderer.js';
 import { Config, GAME_CONFIG } from './config.js';
-import { GameOverSystem } from './game-over.js';
+
 import { ViewportManager } from './core/viewport-manager.js';
 import { ProfessionalRNG } from './core/game-engine.js';
 import './core/mercy-float.js'; // Import MercyCurveFloat class
@@ -637,12 +637,11 @@ class NeonDrop {
     
     // Create overlay systems in parallel
     async createOverlaySystems() {
-        // Create overlay manager and game over system immediately (required for game over)
+        // Create overlay manager with new consistent styling
         this.overlayManager = new OverlayManager(this.eventBus);
-        this.gameOverHandler = new GameOverSystem(this.eventBus);
         
-        // Register game over overlay immediately
-        this.overlayManager.registerOverlay('gameOver', this.gameOverHandler);
+        // No need for old GameOverSystem - new overlay manager handles everything
+        console.log('✅ New overlay manager created with consistent frame styling');
         
         return true;
     }
@@ -1448,13 +1447,48 @@ class NeonDrop {
                 const { score } = data;
                 
                 
-                // Use overlay manager to show game over
+                // Use new overlay manager to show game over with consistent styling
                 
                 try {
-                    await this.overlayManager.show('gameOver', { score, level: 0, lines: 0, time: 0 });
-                    console.log('✅ overlayManager.show() completed successfully');
+                    // Get player info for the overlay
+                    const playerName = this.identityManager?.getCurrentPlayer()?.displayName || 'Player';
+                    
+                    // Get leaderboard data if available
+                    const leaderboardData = this.getLeaderboardData ? this.getLeaderboardData() : null;
+                    
+                    // Show game over with new consistent frame styling
+                    this.overlayManager.showGameOver({
+                        score: score,
+                        playerName: playerName,
+                        leaderboardData: leaderboardData,
+                        onPlayAgain: () => {
+                            console.log('🔄 Play again clicked - starting new game');
+                            this.startNewGame();
+                        },
+                        onViewLeaderboard: () => {
+                            console.log('📊 View leaderboard clicked');
+                            // You can implement full leaderboard view here
+                        },
+                        onChallenge2: (score, amount) => {
+                            console.log(`💰 $${amount} challenge created for score: ${score}`);
+                            // Implement your $2 challenge logic here
+                            this.createChallenge(score, amount);
+                        },
+                        onChallenge5: (score, amount) => {
+                            console.log(`💎 $${amount} challenge created for score: ${score}`);
+                            // Implement your $5 challenge logic here
+                            this.createChallenge(score, amount);
+                        },
+                        onShareScore: (score) => {
+                            console.log('📤 Share score clicked for score:', score);
+                            // Implement your share logic here
+                            this.shareScore(score);
+                        }
+                    });
+                    
+                    console.log('✅ New overlay manager game over displayed successfully');
                 } catch (error) {
-                    console.error('❌ overlayManager.show() failed:', error);
+                    console.error('❌ New overlay manager game over failed:', error);
                 }
             });
         }
@@ -1697,6 +1731,67 @@ class NeonDrop {
                 }
             }, 300);
         }
+    }
+
+    /**
+     * Create a challenge for friends to beat the score
+     */
+    createChallenge(score, amount) {
+        console.log(`🎯 Creating $${amount} challenge for score: ${score}`);
+        
+        // You can implement your actual challenge logic here
+        // For example, creating a challenge link, sending to backend, etc.
+        
+        // For now, show a success message
+        const message = `🎯 $${amount} Challenge Created!\n\n` +
+                       `Score: ${score.toLocaleString()}\n` +
+                       `Challenge your friends to beat this score!\n\n` +
+                       `Challenge ID: ${Date.now()}`;
+        
+        alert(message);
+        
+        // You could also:
+        // - Generate a challenge link
+        // - Send challenge data to your backend
+        // - Open a challenge creation modal
+        // - etc.
+    }
+    
+    /**
+     * Share the player's score
+     */
+    shareScore(score) {
+        console.log('📤 Sharing score:', score);
+        
+        // Try to use native sharing if available
+        if (navigator.share) {
+            navigator.share({
+                title: 'NeonDrop Challenge',
+                text: `I scored ${score.toLocaleString()} points in NeonDrop! Can you beat my score?`,
+                url: window.location.href
+            }).catch(err => {
+                console.log('Share failed:', err);
+                this.fallbackShare(score);
+            });
+        } else {
+            this.fallbackShare(score);
+        }
+    }
+    
+    /**
+     * Fallback sharing method
+     */
+    fallbackShare(score) {
+        const shareText = `I scored ${score.toLocaleString()} points in NeonDrop! Can you beat my score?`;
+        const shareUrl = window.location.href;
+        
+        // Copy to clipboard
+        navigator.clipboard.writeText(`${shareText}\n\n${shareUrl}`).then(() => {
+            alert('📋 Score copied to clipboard!\n\nPaste it anywhere to share your achievement!');
+        }).catch(() => {
+            // Fallback to prompt
+            prompt('Copy this text to share your score:', `${shareText}\n\n${shareUrl}`);
+        });
     }
 
 
