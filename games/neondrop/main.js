@@ -1557,8 +1557,15 @@ class NeonDrop {
                             setTimeout(async () => {
                                 try {
                                     if (window.playerProfile && window.playerProfile.getLeaderboardData) {
+                                        // Force clear any cached data first
+                                        if (window.playerProfile.clearCache) {
+                                            window.playerProfile.clearCache();
+                                            console.log('🧹 Cleared PlayerProfile cache');
+                                        }
+                                        
                                         const leaderboardData = await window.playerProfile.getLeaderboardData(true); // Force refresh
                                         console.log('✅ Initial leaderboard data fetched via PlayerProfile:', leaderboardData);
+                                        console.log('🔍 Raw scores data:', leaderboardData.scores);
                                         
                                         // Update the overlay with real data
                                         this.overlayManager.showLeaderboard({

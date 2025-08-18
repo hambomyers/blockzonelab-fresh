@@ -689,7 +689,7 @@ export class OverlayManager {
               ${entry.isCurrentPlayer ? 'border: 1px solid #00ff00; background: rgba(0,255,0,0.1);' : ''}
             ">
               ${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`} 
-              ${entry.name || 'Anonymous'} - ${entry.score || '0'} pts
+              ${entry.name || 'Unknown Player'} - ${entry.score || '0'} pts
             </div>
           `).join('')}
         </div>
