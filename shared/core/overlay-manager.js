@@ -1037,11 +1037,7 @@ export class OverlayManager {
     if (gamesBtn) {
       gamesBtn.addEventListener('click', () => {
         console.log('🎮 Games button clicked');
-        if (window.paywallManager) {
-          window.paywallManager.showPaymentOptions('neondrop', {}, null);
-        } else {
-          window.location.href = '/games/';
-        }
+        window.location.href = '/games/';
       });
     }
 
