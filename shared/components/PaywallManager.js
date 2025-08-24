@@ -166,7 +166,7 @@ export class PaywallManager {
             return false;
         }
         
-        // DEVELOPMENT: Bypass paywall but run all checks
+        // DEVELOPMENT: Show paywall but allow easy bypass
         if (environment === 'development') {
             //  // Removed for production performance
             if (playerStatus && playerStatus.can_play_free) {
@@ -174,8 +174,8 @@ export class PaywallManager {
                 await this.startGameDirectly(gameId, { ...options, isFreeGame: true });
                 return true;
             }
-            // 
-            return true;
+            // Show paywall in development mode (don't bypass entirely)
+            // console.log('🔧 DEV MODE: Showing paywall for testing');
         }
         
         // PRODUCTION: Full paywall logic with real payment processing
