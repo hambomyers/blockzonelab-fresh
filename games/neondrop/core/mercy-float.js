@@ -38,9 +38,9 @@ class MercyCurveFloat {
     if (finalDecision) {
       this.totalFloatsGiven++;
       const reason = baseDecision ? 'sequence' : `mercy@${stackHeight}`;
-      DEBUG.log(`✨ FLOAT #${this.totalFloatsGiven} at piece ${index + 1} (height: ${stackHeight}, ${mercyPercent.toFixed(1)}%, ${reason})`);
+      console.log(`✨ FLOAT #${this.totalFloatsGiven} at piece ${index + 1} (height: ${stackHeight}, ${mercyPercent.toFixed(1)}%, ${reason})`);
     } else {
-      DEBUG.log(`🔹 Normal piece #${index + 1} (height: ${stackHeight}, mercy: ${mercyPercent.toFixed(1)}%)`);
+      console.log(`🔹 Normal piece #${index + 1} (height: ${stackHeight}, mercy: ${mercyPercent.toFixed(1)}%)`);
     }
     
     return finalDecision;
