@@ -420,7 +420,7 @@ class NeonDrop {
             this.cleanupOldUI();
         }, 500);
         
-        // Load advanced systems (audio, overlays, etc.)
+        // Load advanced systems (audio already loaded, just load overlays)
         setTimeout(() => {
             this.loadAdvancedSystemsInBackground();
         }, 100);
@@ -804,19 +804,14 @@ class NeonDrop {
                 // Create state machine for game state management
                 this.stateMachine = new GameStateMachine(this.eventBus);
                 
-                // Initialize audio system
-                console.log('🎵 Initializing audio system...');
-                this.audio = new AudioSystem(this.config);
-                this.audio.init();
-                console.log('✅ Audio system initialized');
+                // Audio system already initialized in background loading
+                console.log('🎵 Audio system already available');
                 
-                // Store globally for access
-                window.audioSystem = this.audio;
-                console.log('✅ Audio system stored globally');
-                
-                // Update game engine with audio
-                this.engine.setAudioSystem(this.audio);
-                console.log('✅ Audio system connected to game engine');
+                // Update game engine with existing audio
+                if (this.audio) {
+                    this.engine.setAudioSystem(this.audio);
+                    console.log('✅ Audio system connected to game engine');
+                }
                 
                 // Lazy load visual effects systems
                 this.loadNonCriticalSystems();
