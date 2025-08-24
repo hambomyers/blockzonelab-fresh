@@ -349,7 +349,21 @@ class NeonDrop {
             // Always load audio system first (it's needed for gameplay)
             if (!window.audioSystem) {
                 console.log('🎵 Loading audio system...');
-                this.initAudioSystem();
+                try {
+                    // Create audio system directly (not through delayed background method)
+                    this.audio = new AudioSystem(this.config);
+                    this.audio.init();
+                    window.audioSystem = this.audio;
+                    
+                    // Connect to game engine
+                    if (this.engine) {
+                        this.engine.setAudioSystem(this.audio);
+                    }
+                    
+                    console.log('✅ Audio system loaded and ready');
+                } catch (error) {
+                    console.error('❌ Failed to load audio system:', error);
+                }
             }
             
             // Only load other systems when truly idle, not during gameplay
@@ -795,6 +809,10 @@ class NeonDrop {
                 this.audio = new AudioSystem(this.config);
                 this.audio.init();
                 console.log('✅ Audio system initialized');
+                
+                // Store globally for access
+                window.audioSystem = this.audio;
+                console.log('✅ Audio system stored globally');
                 
                 // Update game engine with audio
                 this.engine.setAudioSystem(this.audio);
