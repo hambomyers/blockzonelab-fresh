@@ -1,3 +1,67 @@
+// Debug Control System - Add at the very top of main.js
+const DEBUG = {
+    enabled: localStorage.getItem('debug') === 'true' || 
+             window.location.search.includes('debug=true'),
+    log: function(...args) {
+        if (this.enabled) console.log(...args);
+    },
+    warn: function(...args) {
+        if (this.enabled) console.warn(...args);
+    },
+    table: function(data) {
+        if (this.enabled) console.table(data);
+    }
+};
+
+// Global helper functions for console
+window.debugMode = (enable) => {
+    localStorage.setItem('debug', enable ? 'true' : 'false');
+    console.log(`Debug mode ${enable ? 'enabled' : 'disabled'}. Refresh to apply.`);
+};
+
+window.clearCache = () => {
+    const today = new Date().toISOString().split('T')[0];
+    localStorage.removeItem(`dailySeed_${today}`);
+    console.log('Daily cache cleared. Refresh to regenerate.');
+};
+
+window.showStats = () => {
+    const player = window.IdentityManager?.player;
+    if (!player) {
+        console.log('No player data available');
+        return;
+    }
+    console.table({
+        'Display Name': player.displayName,
+        'Games Played': player.games_played || 0,
+        'High Score': player.high_score || 0,
+        'Total Score': player.total_score || 0,
+        'Quark Balance': player.quark_balance || 0
+    });
+};
+
+// Environment Configuration
+const ENV = {
+    IS_DEV: window.location.hostname.includes('pages.dev') || 
+            window.location.hostname === 'localhost' ||
+            window.location.hostname.includes('127.0.0.1'),
+    IS_PROD: window.location.hostname === 'blockconelab.com' || 
+             window.location.hostname === 'www.blockconelab.com',
+    IS_TEST: window.location.search.includes('test=true'),
+    BUILD_TIME: new Date().toISOString(),
+    VERSION: '2.1.0' // Increment this
+};
+
+// Display environment in console once
+console.log(`🌍 Environment: ${ENV.IS_DEV ? 'Development' : 'Production'} | Version: ${ENV.VERSION}`);
+
+// Conditional features based on environment
+if (ENV.IS_DEV) {
+    // Dev-only features
+    window.ENV = ENV; // Expose for debugging
+    console.log('🔧 Dev mode active - debug commands available: debugMode(), clearCache(), showStats()');
+}
+
 // === CORRECTED ULTRA-FAST INITIALIZATION ===
 
 // 1. Keep console logs during dev (you need them!)
@@ -279,12 +343,39 @@ class NeonDrop {
 
     // WIN 3: SKIP NON-CRITICAL BACKGROUND LOADING (moved to after game starts)
     scheduleBackgroundLoading() {
-        console.log('🔄 Background loading scheduled for after game starts...');
+        console.log('📅 Scheduling non-critical systems for idle time...');
         
-        // Schedule background loading after game is playable
-        setTimeout(() => {
-            this.initBackgroundSystems();
-        }, 1000); // Wait 1 second after game starts
+        const loadBackgroundSystems = () => {
+            // Only load when truly idle, not during gameplay
+            if (window.gameState === 'menu' || window.gameState === 'paused') {
+                console.log('🔄 Loading background systems during idle time...');
+                
+                // Initialize audio system
+                if (!window.audioSystem) {
+                    this.initAudioSystem();
+                }
+                
+                // Initialize blockchain
+                if (!window.blockchainInitialized) {
+                    this.initBlockchainInBackground();
+                }
+                
+                // Load tournament data
+                if (!window.tournamentDataLoaded) {
+                    this.loadTournamentData();
+                }
+            } else {
+                // Game is active, wait and try again
+                setTimeout(loadBackgroundSystems, 1000);
+            }
+        };
+        
+        // Use requestIdleCallback if available, otherwise setTimeout
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(loadBackgroundSystems, { timeout: 3000 });
+        } else {
+            setTimeout(loadBackgroundSystems, 100);
+        }
         
         console.log('✅ Background loading scheduled');
     }
@@ -433,81 +524,48 @@ class NeonDrop {
     
     // OPTIMIZED: Fast daily seed generation with caching
     async generateDailySeedFast() {
-        console.log('🎲 Generating daily seed (optimized with caching)...');
-        
-        // Check for cached seed first
         const today = new Date().toISOString().split('T')[0];
-        const cachedKey = `dailySeed_${today}`;
+        const cacheKey = `dailySeed_${today}`;
+        const cached = localStorage.getItem(cacheKey);
         
-        try {
-            const cached = localStorage.getItem(cachedKey);
-            if (cached) {
-                const seedData = JSON.parse(cached);
-                
-                // Validate that cached data has FLOAT sequence (new format)
-                if (!seedData.floatSequence || seedData.floatSequence.length === 0) {
-                    console.warn('🔄 Cached data missing FLOAT sequence - regenerating daily package');
-                    localStorage.removeItem(cachedKey); // Clear old cache
-                } else {
-                    console.log('✅ Using cached daily package (0ms lookup)');
-                    this.dailySeed = seedData.seed;
-                    this.seedDate = today;
-                    this.engine.rng = new ProfessionalRNG(seedData.processed);
-                    
-                    // Initialize Mercy Curve FLOAT system with daily package
-                    this.floatSystem = new MercyCurveFloat(seedData);
-                    window.floatSystem = this.floatSystem;
-                    this.engine.floatSystem = this.floatSystem;
-                    
-                    // Clean Architecture: Install FLOAT-aware piece generation wrapper
-                    this.createFloatAwarePieceGenerator();
-                    
-                    console.log(`✅ Daily seed ${seedData.seed} loaded with ${seedData.floatSequence.length} predetermined FLOATs`);
-                    
-                    return seedData;
+        if (cached) {
+            try {
+                const parsed = JSON.parse(cached);
+                // Version check and complete data validation
+                if (parsed.version === 2 && parsed.seed && parsed.floatSequence && parsed.date === today) {
+                    DEBUG.log('✅ Using fully cached daily seed with FLOAT sequence');
+                    return parsed;
                 }
+            } catch (e) {
+                DEBUG.warn('Cache parse error, regenerating:', e);
             }
-        } catch (error) {
-            console.warn('Cache read failed, generating fresh daily package');
         }
         
-        // Generate new daily package with FLOAT sequence
+        // Generate new complete package
+        DEBUG.log('🔄 Generating complete daily package with FLOAT sequence...');
         const seed = this.hashString(today);
-        const processed = seed * 1689048361;
         
-        // Generate deterministic FLOAT sequence from daily seed
-        const floatSequence = this.generateDailyFloatSequence(seed);
+        // Generate the FLOAT sequence that was missing from cache
+        const rng = new ProfessionalRNG(seed);
+        const floatSequence = [];
+        for (let i = 0; i < 1000; i++) {
+            const height = Math.floor(rng.next() * 20);
+            const mercyChance = 5 + height; // 5% base + 1% per height level
+            if (rng.next() * 100 < mercyChance) {
+                floatSequence.push(i);
+            }
+        }
         
         const dailyPackage = {
-            date: today,
             seed: seed,
-            processed: processed,
-            floatSequence: floatSequence,
-            timestamp: Date.now()
+            floatSequence: floatSequence, // NOW INCLUDED IN CACHE
+            date: today,
+            version: 2, // Increment to invalidate old caches
+            generated: Date.now()
         };
         
-        // Cache the complete daily package
-        try {
-            localStorage.setItem(cachedKey, JSON.stringify(dailyPackage));
-        } catch (error) {
-            console.warn('Cache write failed');
-        }
-        
-        console.log(`🌙 Daily package generated for ${today}:`, dailyPackage);
-        
-        // Initialize systems
-        this.dailySeed = seed;
-        this.seedDate = today;
-        this.engine.rng = new ProfessionalRNG(processed);
-        
-        // Initialize FLOAT system with daily package
-        this.floatSystem = new MercyCurveFloat(dailyPackage);
-        window.floatSystem = this.floatSystem;
-        this.engine.floatSystem = this.floatSystem;
-        
-        // Clean architecture: FLOAT system will be integrated via proper interface
-        
-        console.log(`✅ Daily seed ${seed} generated with ${floatSequence.length} predetermined FLOATs`);
+        localStorage.setItem(cacheKey, JSON.stringify(dailyPackage));
+        DEBUG.log(`📊 Daily package cached: ${floatSequence.length} FLOATs predetermined`);
         return dailyPackage;
     }
     
@@ -1344,6 +1402,30 @@ class NeonDrop {
         console.log('NeonDrop shutdown');
     }
 
+    // Add cleanup function
+    cleanupGame() {
+        DEBUG.log('🧹 Cleaning up game resources...');
+        
+        // Clear timers
+        if (window.gameTimers) {
+            window.gameTimers.forEach(timer => clearInterval(timer));
+            window.gameTimers = [];
+        }
+        
+        // Clear animations
+        if (window.animationFrameId) {
+            cancelAnimationFrame(window.animationFrameId);
+            window.animationFrameId = null;
+        }
+        
+        // Reset game-specific variables
+        window.floatCollectedThisGame = 0;
+        window.currentPieceCount = 0;
+        
+        // Don't clear persistent data like player profile or daily seed
+        DEBUG.log('✅ Cleanup complete');
+    }
+
     // Reset to menu (for "Play Again" from game over)
     async startNewGame() {
         console.log('Resetting to menu');
@@ -1451,76 +1533,19 @@ class NeonDrop {
                 // Use new overlay manager to show game over with consistent styling
                 
                 try {
-                    // Get player info for the overlay - use IdentityManager's displayName (Hambo#274F format)
+                    // Simplify the excessive identity validation
                     let playerName = 'Player';
                     
-                    // Ensure IdentityManager is initialized and has player data
-                    if (window.identityManager) {
-                        try {
-                            console.log('🔍 IdentityManager found, checking initialization...');
-                            
-                            // If IdentityManager isn't initialized yet, initialize it
-                            if (!window.identityManager.isInitialized) {
-                                console.log('🔄 Initializing IdentityManager...');
-                                await window.identityManager.initialize();
-                            }
-                            
-                            console.log('🔍 IdentityManager state:', {
-                                isInitialized: window.identityManager.isInitialized,
-                                player: window.identityManager.player,
-                                hasGetPlayerName: !!window.identityManager.getPlayerName
-                            });
-                            
-                            // Get the displayName which should be "Hambo#274F" format
-                            if (window.identityManager.player && window.identityManager.player.displayName) {
-                                playerName = window.identityManager.player.displayName;
-                                console.log('✅ Got player name from IdentityManager.player.displayName:', playerName);
-                            } else if (window.identityManager.getPlayerName) {
-                                playerName = window.identityManager.getPlayerName() || 'Player';
-                                console.log('✅ Got player name from IdentityManager.getPlayerName():', playerName);
-                            }
-                            
-                            // Debug: Log the complete player object
-                            if (window.identityManager.player) {
-                                console.log('🔍 Complete player object:', JSON.stringify(window.identityManager.player, null, 2));
-                                console.log('🔍 Player object keys:', Object.keys(window.identityManager.player));
-                                console.log('🔍 Player displayName property:', window.identityManager.player.displayName);
-                                console.log('🔍 Player username property:', window.identityManager.player.username);
-                                console.log('🔍 Player id property:', window.identityManager.player.id);
-                            }
-                        } catch (error) {
-                            console.warn('Failed to get player name from IdentityManager:', error);
-                        }
+                    // Single check for identity manager
+                    const player = window.IdentityManager?.player;
+                    if (player) {
+                        playerName = player.displayName || player.username || 'Anonymous';
+                        DEBUG.log('Player for game over:', { 
+                            name: playerName, 
+                            id: player.id 
+                        });
                     } else {
-                        console.warn('⚠️ IdentityManager not found on window');
-                    }
-                    
-                    // Fallback to PlayerProfile if IdentityManager doesn't have it
-                    if (playerName === 'Player' && window.playerProfile) {
-                        console.log('🔄 Falling back to PlayerProfile...');
-                        try {
-                            // Try to get current player ID and load profile if needed
-                            const playerId = window.identityManager?.getPlayerId?.() || 
-                                           window.playerProfile.getCurrentPlayerId?.();
-                            
-                            console.log('🔍 Player ID from fallback:', playerId);
-                            
-                            if (playerId && (!window.playerProfile.profile || !window.playerProfile.profile.display_name)) {
-                                // Profile not loaded yet, load it now
-                                console.log('🔄 Loading player profile...');
-                                await window.playerProfile.loadProfile(playerId);
-                            }
-                            
-                            if (window.playerProfile.profile) {
-                                playerName = window.playerProfile.profile.display_name || 
-                                           window.playerProfile.profile.username || 
-                                           window.playerProfile.profile.player_id || 
-                                           'Player';
-                                console.log('✅ Got player name from PlayerProfile:', playerName);
-                            }
-                        } catch (error) {
-                            console.warn('Failed to load player profile:', error);
-                        }
+                        console.warn('⚠️ No player data available');
                     }
                     
                     console.log('🎯 Final player name for overlay:', playerName);
@@ -1532,27 +1557,79 @@ class NeonDrop {
                     if (playerId && score > 0) {
                         try {
                             console.log('🏆 Submitting score to backend:', { playerId, score, playerName });
-                            const response = await fetch('https://api.blockzonelab.com/api/game-over', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    score: score,
-                                    playerId: playerId,
-                                    gameData: {
-                                        playerName: playerName,
-                                        gameType: 'neon_drop',
-                                        timestamp: Date.now()
-                                    }
-                                })
-                            });
                             
-                            if (response.ok) {
-                                const result = await response.json();
-                                console.log('✅ Score submitted successfully:', result);
+                            // Get current player data for stats update
+                            const player = window.IdentityManager?.player;
+                            if (player) {
+                                // Calculate updated stats
+                                const updatedStats = {
+                                    games_played: (player.games_played || 0) + 1,
+                                    total_score: (player.total_score || 0) + score,
+                                    high_score: Math.max(player.high_score || 0, score),
+                                    last_played: Date.now(),
+                                    last_score: score
+                                };
+                                
+                                // Send to backend with proper stats
+                                const response = await fetch('https://api.blockzonelab.com/api/game-over', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        score: score,
+                                        playerId: playerId,
+                                        gameData: {
+                                            playerName: playerName,
+                                            gameType: 'neon_drop',
+                                            timestamp: Date.now(),
+                                            float_collected: window.floatCollectedThisGame || 0,
+                                            ...updatedStats
+                                        }
+                                    })
+                                });
+                                
+                                if (response.ok) {
+                                    const result = await response.json();
+                                    console.log('✅ Score submitted successfully:', result);
+                                    
+                                    // Update local player object
+                                    Object.assign(player, updatedStats);
+                                    
+                                    // Update IdentityManager's cached player
+                                    window.IdentityManager.player = player;
+                                    
+                                    // Update localStorage
+                                    localStorage.setItem('playerProfile', JSON.stringify(player));
+                                    
+                                    DEBUG.log('📊 Updated player stats:', updatedStats);
+                                } else {
+                                    console.error('❌ Score submission failed:', response.status);
+                                }
                             } else {
-                                console.error('❌ Score submission failed:', response.status);
+                                // Fallback: submit without stats update
+                                const response = await fetch('https://api.blockzonelab.com/api/game-over', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        score: score,
+                                        playerId: playerId,
+                                        gameData: {
+                                            playerName: playerName,
+                                            gameType: 'neon_drop',
+                                            timestamp: Date.now()
+                                        }
+                                    })
+                                });
+                                
+                                if (response.ok) {
+                                    const result = await response.json();
+                                    console.log('✅ Score submitted successfully:', result);
+                                } else {
+                                    console.error('❌ Score submission failed:', response.status);
+                                }
                             }
                         } catch (error) {
                             console.error('❌ Score submission error:', error);

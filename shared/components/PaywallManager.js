@@ -12,6 +12,9 @@
 
 import { IdentityManager } from '../core/IdentityManager.js';
 
+// Environment detection for payment processing
+const PAYMENT_ENV = window.location.hostname === 'blockconelab.com' ? 'production' : 'test';
+
 // Global singleton instance
 let globalPaywallManager = null;
 
@@ -1542,8 +1545,7 @@ export class PaywallManager {
      * Complete infrastructure ready for real payment integration
      */
     async processPayment(paymentMethod, amount, options = {}) {
-        const environment = this.detectEnvironment();
-        console.log(`💳 Processing payment: ${paymentMethod} for $${amount} in ${environment} environment`);
+        console.log(`💳 Processing payment: ${paymentMethod} for $${amount} in ${PAYMENT_ENV} environment`);
         
         // Show processing status
         this.showPaymentStatus('processing', 'Processing payment...');
@@ -1577,22 +1579,16 @@ export class PaywallManager {
             }
             
             // 5. Environment-specific payment processing
-            if (environment === 'production') {
+            if (PAYMENT_ENV === 'production') {
                 // REAL PAYMENT FLOW: Apple Pay → Landing Wallet → Sonic Labs → USDC.E
                 console.log('🌐 PRODUCTION: Processing real payment via Sonic Network');
                 const result = await this.processRealPayment(paymentMethod, amount, options, walletAddress);
                 return result;
                 
-            } else if (environment === 'test') {
-                // TEST PAYMENT FLOW: Simulate full Apple Pay → USDC.E flow
-                console.log('🧪 TEST: Simulating Apple Pay → Sonic Labs → USDC.E flow');
-                const result = await this.simulatePayment(paymentMethod, amount, options, walletAddress);
-                return result;
-                
             } else {
-                // DEVELOPMENT: Bypass payment but log everything
-                console.log('🛠️ DEVELOPMENT: Bypassing payment for development');
-                const result = await this.bypassPayment(paymentMethod, amount, options, walletAddress);
+                // TEST PAYMENT FLOW: Simulate full Apple Pay → USDC.E flow
+                console.log(`🧪 TEST: Simulating Apple Pay → Sonic Labs → USDC.E flow`);
+                const result = await this.simulatePayment(paymentMethod, amount, options, walletAddress);
                 return result;
             }
             

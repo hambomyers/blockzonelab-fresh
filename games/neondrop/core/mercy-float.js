@@ -11,7 +11,6 @@ class MercyCurveFloat {
     this.pieceCount = 0;
     this.totalFloatsGiven = 0;
     
-    console.log(`🌙 FLOAT system initialized for ${this.date}`);
     this.logDistribution();
   }
   
@@ -39,9 +38,9 @@ class MercyCurveFloat {
     if (finalDecision) {
       this.totalFloatsGiven++;
       const reason = baseDecision ? 'sequence' : `mercy@${stackHeight}`;
-      console.log(`✨ FLOAT #${this.totalFloatsGiven} at piece ${index + 1} (height: ${stackHeight}, ${mercyPercent.toFixed(1)}%, ${reason})`);
+      DEBUG.log(`✨ FLOAT #${this.totalFloatsGiven} at piece ${index + 1} (height: ${stackHeight}, ${mercyPercent.toFixed(1)}%, ${reason})`);
     } else {
-      console.log(`🔹 Normal piece #${index + 1} (height: ${stackHeight}, mercy: ${mercyPercent.toFixed(1)}%)`);
+      DEBUG.log(`🔹 Normal piece #${index + 1} (height: ${stackHeight}, mercy: ${mercyPercent.toFixed(1)}%)`);
     }
     
     return finalDecision;
@@ -76,10 +75,12 @@ class MercyCurveFloat {
     const first500 = this.sequence.slice(0, 500).reduce((a, b) => a + b, 0);
     const total = this.sequence.reduce((a, b) => a + b, 0);
     
+    // Keep important initialization logs outside DEBUG
+    console.log(`🌙 FLOAT system initialized for ${this.date}`);
     console.log(`📊 Today's FLOAT Distribution:
-      First 100 pieces: ${first100} FLOATs (${first100}%)
-      First 500 pieces: ${first500} FLOATs (${(first500/5).toFixed(1)}%)
-      All 1000 pieces: ${total} FLOATs (${(total/10).toFixed(1)}%)
+      First 100 pieces: ${first100} FLOATs (${(first100/100*100).toFixed(1)}%)
+      First 500 pieces: ${first500} FLOATs (${(first500/500*100).toFixed(1)}%)
+      All 1000 pieces: ${total} FLOATs (${(total/1000*100).toFixed(1)}%)
     `);
     
     // Find first few FLOATs
