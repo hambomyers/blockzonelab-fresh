@@ -346,14 +346,15 @@ class NeonDrop {
         console.log('📅 Scheduling non-critical systems for idle time...');
         
         const loadBackgroundSystems = () => {
-            // Only load when truly idle, not during gameplay
+            // Always load audio system first (it's needed for gameplay)
+            if (!window.audioSystem) {
+                console.log('🎵 Loading audio system...');
+                this.initAudioSystem();
+            }
+            
+            // Only load other systems when truly idle, not during gameplay
             if (window.gameState === 'menu' || window.gameState === 'paused') {
                 console.log('🔄 Loading background systems during idle time...');
-                
-                // Initialize audio system
-                if (!window.audioSystem) {
-                    this.initAudioSystem();
-                }
                 
                 // Initialize blockchain
                 if (!window.blockchainInitialized) {
@@ -365,10 +366,13 @@ class NeonDrop {
                     this.loadTournamentData();
                 }
             } else {
-                // Game is active, wait and try again
+                // Game is active, wait and try again for non-critical systems
                 setTimeout(loadBackgroundSystems, 1000);
             }
         };
+        
+        // Initialize game state for background loading
+        window.gameState = 'menu';
         
         // Use requestIdleCallback if available, otherwise setTimeout
         if ('requestIdleCallback' in window) {
@@ -1430,6 +1434,9 @@ class NeonDrop {
     async startNewGame() {
         console.log('Resetting to menu');
         
+        // Update game state for background loading
+        window.gameState = 'menu';
+        
         // Validate identity before starting (skip if in bypass mode)
         if (!window.skipValidation) {
             try {
@@ -1469,6 +1476,9 @@ class NeonDrop {
     async startGame() {
         console.log('Starting game from menu');
         
+        // Update game state for background loading
+        window.gameState = 'playing';
+        
         if (this.engine) {
             this.engine.startGame();
             console.log('Game started successfully');
@@ -1478,6 +1488,9 @@ class NeonDrop {
     // Clean menu return
     returnToMenu() {
         console.log('Returning to menu');
+        
+        // Update game state for background loading
+        window.gameState = 'menu';
         
         // Hide any active overlays
         this.overlayManager.hideCurrent();
@@ -1520,6 +1533,9 @@ class NeonDrop {
             this.eventBus.on('gameOver', (data) => {
                 const { score, level, lines, time } = data;
                 
+                // Update game state for background loading
+                window.gameState = 'game_over';
+                
                 this.stateMachine.transitionToGameState(GameState.GAME_OVER);
                 // Don't show UI yet - wait for renderer to complete sequence
             });
@@ -1536,8 +1552,8 @@ class NeonDrop {
                     // Simplify the excessive identity validation
                     let playerName = 'Player';
                     
-                    // Single check for identity manager
-                    const player = window.IdentityManager?.player;
+                    // Single check for identity manager (fix case mismatch)
+                    const player = window.identityManager?.player || window.IdentityManager?.player;
                     if (player) {
                         playerName = player.displayName || player.username || 'Anonymous';
                         DEBUG.log('Player for game over:', { 
@@ -1558,8 +1574,8 @@ class NeonDrop {
                         try {
                             console.log('🏆 Submitting score to backend:', { playerId, score, playerName });
                             
-                            // Get current player data for stats update
-                            const player = window.IdentityManager?.player;
+                            // Get current player data for stats update (fix case mismatch)
+                            const player = window.identityManager?.player || window.IdentityManager?.player;
                             if (player) {
                                 // Calculate updated stats
                                 const updatedStats = {
@@ -1596,8 +1612,13 @@ class NeonDrop {
                                     // Update local player object
                                     Object.assign(player, updatedStats);
                                     
-                                    // Update IdentityManager's cached player
-                                    window.IdentityManager.player = player;
+                                    // Update IdentityManager's cached player (fix case mismatch)
+                                    if (window.identityManager) {
+                                        window.identityManager.player = player;
+                                    }
+                                    if (window.IdentityManager) {
+                                        window.IdentityManager.player = player;
+                                    }
                                     
                                     // Update localStorage
                                     localStorage.setItem('playerProfile', JSON.stringify(player));
