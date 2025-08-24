@@ -139,7 +139,13 @@ export class InputController {
         }
 
         const state = this.getCurrentGameState();
-        const gameplayPhases = ['PLAYING', 'LOCKING', 'COUNTDOWN', 'PAUSED'];
+        
+        // BLOCK ALL INPUT DURING COUNTDOWN - pieces get stuck at top otherwise!
+        if (state.phase === 'COUNTDOWN') {
+            return false;
+        }
+        
+        const gameplayPhases = ['PLAYING', 'LOCKING', 'PAUSED'];
         const gameOverPhases = ['GAME_OVER', 'GAME_OVER_SEQUENCE'];
         
         if (gameOverPhases.includes(state.phase)) {
@@ -175,9 +181,12 @@ export class InputController {
                 break;
             case 'PLAYING':
             case 'LOCKING':
-            case 'COUNTDOWN':
                 this.handleGameplayInput(action);
                 break;
+            case 'COUNTDOWN':
+                // BLOCK ALL INPUT DURING COUNTDOWN - wait for it to finish!
+                console.log('⏰ COUNTDOWN ACTIVE - blocking all input until countdown finishes');
+                return;
             case 'PAUSED':
                 this.handlePausedInput(action);
                 break;
