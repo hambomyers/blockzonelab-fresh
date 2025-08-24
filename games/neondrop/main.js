@@ -549,9 +549,9 @@ class NeonDrop {
         const rng = new ProfessionalRNG(seed);
         const floatSequence = [];
         for (let i = 0; i < 1000; i++) {
-            const height = Math.floor(rng.next() * 20);
+            const height = Math.floor(rng.random() * 20);
             const mercyChance = 5 + height; // 5% base + 1% per height level
-            if (rng.next() * 100 < mercyChance) {
+            if (rng.random() * 100 < mercyChance) {
                 floatSequence.push(i);
             }
         }
