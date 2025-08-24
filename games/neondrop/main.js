@@ -375,9 +375,10 @@ class NeonDrop {
                     this.initBlockchainInBackground();
                 }
                 
-                // Load tournament data
+                // Load tournament data (placeholder for now)
                 if (!window.tournamentDataLoaded) {
-                    this.loadTournamentData();
+                    // this.loadTournamentData(); // TODO: Implement tournament system
+                    window.tournamentDataLoaded = true;
                 }
             } else {
                 // Game is active, wait and try again for non-critical systems
@@ -525,6 +526,18 @@ class NeonDrop {
             this.createOverlaySystems(),
             this.setupMinimalInput()
         ]);
+        
+        // 🚀 CRITICAL: Initialize mercy system with daily seed
+        const dailyPackage = criticalSystems[0];
+        if (dailyPackage && dailyPackage.floatSequence) {
+            this.floatSystem = new MercyCurveFloat(dailyPackage);
+            console.log(`🌙 Mercy system initialized with ${dailyPackage.floatSequence.length} predetermined FLOATs`);
+            
+            // Install FLOAT-aware piece generation
+            this.createFloatAwarePieceGenerator();
+        } else {
+            console.error('❌ Failed to initialize mercy system - no daily package');
+        }
         
         // 🚀 CRITICAL FIX: New overlay manager handles game over - no legacy systems needed
         console.log('✅ New overlay manager handles all game over functionality');
