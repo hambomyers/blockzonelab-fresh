@@ -4,6 +4,51 @@
  * Direct, predictable input handling with DAS auto-repeat and FLOAT diagonal movement
  */
 
+/**
+ * GAME STATE INTERCEPTOR: Clean & robust countdown input blocking
+ * Monitors game state and blocks input during countdown without modifying minified code
+ */
+class GameStateInterceptor {
+    constructor() {
+        this.gameStartTime = 0;
+        this.countdownDuration = 3000; // 3 seconds
+        this.isCountdownActive = false;
+        this.lastGameState = null;
+    }
+    
+    startCountdown() {
+        this.gameStartTime = Date.now();
+        this.isCountdownActive = true;
+        console.log('⏰ COUNTDOWN STARTED - blocking input for 3 seconds');
+    }
+    
+    shouldBlockInput(currentState) {
+        // Check if we just transitioned from MENU to PLAYING (game start)
+        if (this.lastGameState === 'MENU' && currentState === 'PLAYING') {
+            this.startCountdown();
+        }
+        
+        // Update last known state
+        this.lastGameState = currentState;
+        
+        // Block input during countdown
+        if (this.isCountdownActive) {
+            const elapsed = Date.now() - this.gameStartTime;
+            if (elapsed >= this.countdownDuration) {
+                this.isCountdownActive = false;
+                console.log('✅ COUNTDOWN COMPLETE - input unlocked');
+                return false;
+            }
+            
+            const remaining = Math.ceil((this.countdownDuration - elapsed) / 1000);
+            console.log(`⏰ COUNTDOWN ACTIVE - blocking input (${remaining}s remaining)`);
+            return true; // Still in countdown
+        }
+        
+        return false; // No countdown active
+    }
+}
+
 export class InputController {
     constructor(onAction, getState, config) {
         this.onAction = onAction;
@@ -19,6 +64,9 @@ export class InputController {
             initial: 200,  // Initial delay before auto-repeat starts
             repeat: 50     // Speed of auto-repeat (gets faster)
         };
+        
+        // GAME STATE INTERCEPTOR: Clean & robust countdown input blocking
+        this.stateInterceptor = new GameStateInterceptor();
         
         // Setup listeners
         this.setupListeners();
@@ -140,16 +188,9 @@ export class InputController {
 
         const state = this.getCurrentGameState();
         
-        // DEBUG: Log the actual game state to see what's happening
-        if (state.phase === 'PLAYING' && state.countdownTimer > 0) {
-            console.log('⏰ COUNTDOWN TIMER ACTIVE:', state.countdownTimer, 'ms remaining');
-            return false; // Block input during countdown timer
-        }
-        
-        // BLOCK ALL INPUT DURING COUNTDOWN - pieces get stuck at top otherwise!
-        if (state.phase === 'COUNTDOWN') {
-            console.log('⏰ COUNTDOWN PHASE ACTIVE - blocking all input');
-            return false;
+        // GAME STATE INTERCEPTOR: Block input during countdown
+        if (this.stateInterceptor.shouldBlockInput(state.phase)) {
+            return false; // Input blocked during countdown
         }
         
         const gameplayPhases = ['PLAYING', 'LOCKING', 'PAUSED'];
@@ -190,10 +231,6 @@ export class InputController {
             case 'LOCKING':
                 this.handleGameplayInput(action);
                 break;
-            case 'COUNTDOWN':
-                // BLOCK ALL INPUT DURING COUNTDOWN - wait for it to finish!
-                console.log('⏰ COUNTDOWN ACTIVE - blocking all input until countdown finishes');
-                return;
             case 'PAUSED':
                 this.handlePausedInput(action);
                 break;
