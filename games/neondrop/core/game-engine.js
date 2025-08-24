@@ -318,7 +318,19 @@ return this.particleSystem.getParticles()
 }tick(t){
 this.update(t)
 }isInputBlocked(){
-return this.gameOverLockout.active?Date.now()-this.gameOverLockout.startTime>=this.gameOverLockout.duration?(this.gameOverLockout.canStartNewGame=!0,this.state.gameState===a.GAME_OVER_SEQUENCE):!0:!1
+// Check for game over lockout
+if(this.gameOverLockout.active){
+return Date.now()-this.gameOverLockout.startTime>=this.gameOverLockout.duration?
+(this.gameOverLockout.canStartNewGame=!0,this.state.gameState===a.GAME_OVER_SEQUENCE):
+!0;
+}
+
+// BLOCK INPUT DURING COUNTDOWN STATES
+if([a.MENU_TO_COUNTDOWN,a.COUNTDOWN,a.COUNTDOWN_TO_PLAYING].includes(this.state.gameState)){
+return true;
+}
+
+return false;
 }canStartNewGame(){
 return this.gameOverLockout.canStartNewGame||this.state.gameState===a.GAME_OVER
 }resetGameOverLockout(){
