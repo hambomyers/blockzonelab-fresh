@@ -140,8 +140,15 @@ export class InputController {
 
         const state = this.getCurrentGameState();
         
+        // DEBUG: Log the actual game state to see what's happening
+        if (state.phase === 'PLAYING' && state.countdownTimer > 0) {
+            console.log('⏰ COUNTDOWN TIMER ACTIVE:', state.countdownTimer, 'ms remaining');
+            return false; // Block input during countdown timer
+        }
+        
         // BLOCK ALL INPUT DURING COUNTDOWN - pieces get stuck at top otherwise!
         if (state.phase === 'COUNTDOWN') {
+            console.log('⏰ COUNTDOWN PHASE ACTIVE - blocking all input');
             return false;
         }
         
