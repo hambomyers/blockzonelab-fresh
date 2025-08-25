@@ -27,6 +27,16 @@ class MercyCurveFloat {
       mercyPercent = 8 + (heightFactor * 17); // 8% to 25%
     }
     
+    // ENHANCED: Ensure we maintain FLOAT density even at high speeds
+    // If we're falling behind on FLOAT distribution, increase mercy chance
+    const currentFloatRate = this.totalFloatsGiven / Math.max(this.pieceCount, 1);
+    const targetFloatRate = 0.15; // Target 15% FLOAT rate overall
+    
+    if (currentFloatRate < targetFloatRate && stackHeight >= 5) {
+      // Boost mercy chance if we're below target FLOAT rate
+      mercyPercent = Math.min(mercyPercent * 1.5, 35); // Cap at 35%
+    }
+    
     // Use daily seed for deterministic real-time rolls
     const heightSeed = this.seed + index + stackHeight;
     const heightRoll = this.quickRandom(heightSeed) * 100;
@@ -78,16 +88,28 @@ class MercyCurveFloat {
     // Keep important initialization logs outside DEBUG
     console.log(`🌙 FLOAT system initialized for ${this.date}`);
     console.log(`📊 Today's FLOAT Distribution:
-      First 100 pieces: ${first100} FLOATs (${(first100/100*100).toFixed(1)}%)
-      First 500 pieces: ${first500} FLOATs (${(first500/500*100).toFixed(1)}%)
-      All 1000 pieces: ${total} FLOATs (${(total/1000*100).toFixed(1)}%)
+      Total FLOAT Pool: ${total}
+      First 100 pieces: ${first100} FLOATs (${(first100/100*100).toFixed(1)}% of pieces, ${total > 0 ? (first100/total*100).toFixed(1) : 0}% of total FLOATs)
+      First 500 pieces: ${first500} FLOATs (${(first500/500*100).toFixed(1)}% of pieces, ${total > 0 ? (first500/total*100).toFixed(1) : 0}% of total FLOATs)
+      All 1000 pieces: ${total} FLOATs (${(total/1000*100).toFixed(1)}% of pieces, 100% of total FLOATs)
     `);
     
-    // Find first few FLOATs
+    // Find first few FLOATs - ensure we have some early ones for engagement
     const firstFloats = [];
     for (let i = 0; i < this.sequence.length && firstFloats.length < 5; i++) {
       if (this.sequence[i] === 1) firstFloats.push(i + 1);
     }
+    
+    // If no early FLOATs found, add some strategic ones for player engagement
+    if (firstFloats.length === 0) {
+      console.log(`🎯 No early FLOATs found - adding strategic ones for player engagement`);
+      // Add FLOATs at pieces 5, 10, 15 for early engagement
+      this.sequence[4] = 1;  // Piece 5
+      this.sequence[9] = 1;  // Piece 10  
+      this.sequence[14] = 1; // Piece 15
+      firstFloats.push(5, 10, 15);
+    }
+    
     console.log(`🎯 First 5 FLOATs at pieces:`, firstFloats);
   }
   
@@ -115,13 +137,21 @@ function generateDailyFloatSequence(dailySeed) {
     // Mercy curve: 5% base → 20% at height 18+
     const mercyPercent = 5 + Math.min(estimatedHeight / 18, 1) * 15;
     
+    // ENHANCED: Ensure early FLOATs for player engagement
+    let earlyBonus = 0;
+    if (i < 50) {
+      // Boost early pieces (first 50) to ensure engagement
+      earlyBonus = 15 - (i * 0.3); // 15% at start, decreasing to 0% at piece 50
+    }
+    
     // Enforce minimum gap
     const gapFromLast = i - lastFloatIndex;
     
-    // Deterministic roll
+    // Deterministic roll with early bonus
     const roll = rng % 100;
+    const adjustedMercy = Math.min(mercyPercent + earlyBonus, 40); // Cap at 40%
     
-    if (roll < mercyPercent && gapFromLast >= 10) {
+    if (roll < adjustedMercy && gapFromLast >= 8) { // Reduced gap for better distribution
       sequence.push(1);
       lastFloatIndex = i;
     } else {
