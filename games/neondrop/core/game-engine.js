@@ -330,6 +330,11 @@ if([a.MENU_TO_COUNTDOWN,a.COUNTDOWN,a.COUNTDOWN_TO_PLAYING].includes(this.state.
 return true;
 }
 
+// EDGE CASE: Block input if countdown timer is still active (extra safety)
+if(this.state.countdownTimer>0){
+return true;
+}
+
 return false;
 }canStartNewGame(){
 return this.gameOverLockout.canStartNewGame||this.state.gameState===a.GAME_OVER
