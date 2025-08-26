@@ -576,14 +576,34 @@ class NeonDrop {
         DEBUG.log('🔄 Generating complete daily package with FLOAT sequence...');
         const seed = this.hashString(today);
         
-        // Generate the FLOAT sequence that was missing from cache
+        // FIXED: Generate realistic FLOAT sequence (not 68,000+ FLOATs!)
         const rng = new ProfessionalRNG(seed);
         const floatSequence = [];
+        let lastFloatIndex = -8; // Minimum 8 piece gap
+        
         for (let i = 0; i < 1000; i++) {
-            const height = Math.floor(rng.random() * 20);
-            const mercyChance = 5 + height; // 5% base + 1% per height level
-            if (rng.random() * 100 < mercyChance) {
-                floatSequence.push(i);
+            // Estimate stack height based on piece number
+            const estimatedHeight = Math.floor(i / 50) + (rng.random() * 3);
+            
+            // PROPER MERCY CURVE: 5% → 25% based on height
+            let mercyChance = 5; // Base 5%
+            if (estimatedHeight >= 3) {
+                const heightFactor = Math.min((estimatedHeight - 3) / 17, 1);
+                mercyChance = 8 + (heightFactor * 17); // 8% to 25%
+            }
+            
+            // Early game bonus: First 50 pieces get slight boost
+            if (i < 50) {
+                mercyChance += 3; // +3% early game boost
+            }
+            
+            // Enforce minimum gap between FLOATs
+            const gapFromLast = i - lastFloatIndex;
+            if (rng.random() * 100 < mercyChance && gapFromLast >= 8) {
+                floatSequence.push(1);
+                lastFloatIndex = i;
+            } else {
+                floatSequence.push(0);
             }
         }
         
@@ -596,46 +616,11 @@ class NeonDrop {
         };
         
         localStorage.setItem(cacheKey, JSON.stringify(dailyPackage));
-        DEBUG.log(`📊 Daily package cached: ${floatSequence.length} FLOATs predetermined`);
+        DEBUG.log(`📊 Daily package cached: ${floatSequence.filter(f => f === 1).length} FLOATs predetermined`);
         return dailyPackage;
     }
     
-    // Generate deterministic FLOAT sequence from daily seed
-    generateDailyFloatSequence(dailySeed) {
-        const sequence = [];
-        let rng = dailySeed;
-        let lastFloatIndex = -10;
-        
-        // Generate 1000 predetermined FLOAT decisions
-        for (let i = 0; i < 1000; i++) {
-            rng = (rng * 1103515245 + 12345) & 0x7fffffff;
-            
-            // Estimate difficulty progression
-            const estimatedHeight = Math.floor(i / 40) + (rng % 3);
-            
-            // Mercy curve: 5% base → 20% at height 18+
-            const mercyPercent = 5 + Math.min(estimatedHeight / 18, 1) * 15;
-            
-            // Enforce minimum gap
-            const gapFromLast = i - lastFloatIndex;
-            
-            // Deterministic roll
-            const roll = rng % 100;
-            
-            if (roll < mercyPercent && gapFromLast >= 10) {
-                sequence.push(1);
-                lastFloatIndex = i;
-            } else {
-                sequence.push(0);
-            }
-        }
-        
-        // Log distribution for debugging
-        const totalFloats = sequence.reduce((a, b) => a + b, 0);
-        console.log(`📊 Daily FLOAT distribution: ${totalFloats}/1000 (${(totalFloats/10).toFixed(1)}%)`);
-        
-        return sequence;
-    }
+
     
     // Clean Architecture: FLOAT-aware piece generation wrapper
     createFloatAwarePieceGenerator() {
