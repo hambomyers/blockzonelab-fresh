@@ -529,9 +529,9 @@ class NeonDrop {
         
         // 🚀 CRITICAL: Initialize mercy system with daily seed
         const dailyPackage = criticalSystems[0];
-        if (dailyPackage && dailyPackage.floatSequence) {
-            this.floatSystem = new MercyCurveFloat(dailyPackage);
-            console.log(`🌙 Mercy system initialized with ${dailyPackage.floatSequence.length} predetermined FLOATs`);
+        if (dailyPackage && dailyPackage.seed) {
+            this.floatSystem = new MercyCurveFloat(dailyPackage, this.config);
+            console.log(`🌙 Mercy system initialized with new elegant FLOAT system`);
             
             // Install FLOAT-aware piece generation
             this.createFloatAwarePieceGenerator();
@@ -563,7 +563,7 @@ class NeonDrop {
             try {
                 const parsed = JSON.parse(cached);
                 // Version check and complete data validation
-                if (parsed.version === 2 && parsed.seed && parsed.floatSequence && parsed.date === today) {
+                if (parsed.version === 2 && parsed.seed && parsed.date === today) {
                     DEBUG.log('✅ Using fully cached daily seed with FLOAT sequence');
                     return parsed;
                 }
@@ -573,50 +573,18 @@ class NeonDrop {
         }
         
         // Generate new complete package
-        DEBUG.log('🔄 Generating complete daily package with FLOAT sequence...');
+        DEBUG.log('🔄 Generating complete daily package...');
         const seed = this.hashString(today);
-        
-        // FIXED: Generate realistic FLOAT sequence (not 68,000+ FLOATs!)
-        const rng = new ProfessionalRNG(seed);
-        const floatSequence = [];
-        let lastFloatIndex = -8; // Minimum 8 piece gap
-        
-        for (let i = 0; i < 1000; i++) {
-            // Estimate stack height based on piece number
-            const estimatedHeight = Math.floor(i / 50) + (rng.random() * 3);
-            
-            // PROPER MERCY CURVE: 5% → 25% based on height
-            let mercyChance = 5; // Base 5%
-            if (estimatedHeight >= 3) {
-                const heightFactor = Math.min((estimatedHeight - 3) / 17, 1);
-                mercyChance = 8 + (heightFactor * 17); // 8% to 25%
-            }
-            
-            // Early game bonus: First 50 pieces get slight boost
-            if (i < 50) {
-                mercyChance += 3; // +3% early game boost
-            }
-            
-            // Enforce minimum gap between FLOATs
-            const gapFromLast = i - lastFloatIndex;
-            if (rng.random() * 100 < mercyChance && gapFromLast >= 8) {
-                floatSequence.push(1);
-                lastFloatIndex = i;
-            } else {
-                floatSequence.push(0);
-            }
-        }
         
         const dailyPackage = {
             seed: seed,
-            floatSequence: floatSequence, // NOW INCLUDED IN CACHE
             date: today,
             version: 2, // Increment to invalidate old caches
             generated: Date.now()
         };
         
         localStorage.setItem(cacheKey, JSON.stringify(dailyPackage));
-        DEBUG.log(`📊 Daily package cached: ${floatSequence.filter(f => f === 1).length} FLOATs predetermined`);
+        DEBUG.log(`📊 Daily package cached with seed: ${seed}`);
         return dailyPackage;
     }
     
