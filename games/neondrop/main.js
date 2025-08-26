@@ -564,16 +564,16 @@ class NeonDrop {
                 const parsed = JSON.parse(cached);
                 // Version check and complete data validation
                 if (parsed.version === 2 && parsed.seed && parsed.date === today) {
-                    DEBUG.log('✅ Using fully cached daily seed with FLOAT sequence');
+                    console.log('✅ Using fully cached daily seed with FLOAT sequence');
                     return parsed;
                 }
             } catch (e) {
-                DEBUG.warn('Cache parse error, regenerating:', e);
+                console.warn('Cache parse error, regenerating:', e);
             }
         }
         
         // Generate new complete package
-        DEBUG.log('🔄 Generating complete daily package...');
+        console.log('🔄 Generating complete daily package...');
         const seed = this.hashString(today);
         
         const dailyPackage = {
@@ -584,7 +584,7 @@ class NeonDrop {
         };
         
         localStorage.setItem(cacheKey, JSON.stringify(dailyPackage));
-        DEBUG.log(`📊 Daily package cached with seed: ${seed}`);
+        console.log(`📊 Daily package cached with seed: ${seed}`);
         return dailyPackage;
     }
     
@@ -1387,7 +1387,7 @@ class NeonDrop {
 
     // Add cleanup function
     cleanupGame() {
-        DEBUG.log('🧹 Cleaning up game resources...');
+        console.log('🧹 Cleaning up game resources...');
         
         // Clear timers
         if (window.gameTimers) {
@@ -1406,7 +1406,7 @@ class NeonDrop {
         window.currentPieceCount = 0;
         
         // Don't clear persistent data like player profile or daily seed
-        DEBUG.log('✅ Cleanup complete');
+        console.log('✅ Cleanup complete');
     }
 
     // Reset to menu (for "Play Again" from game over)
@@ -1535,7 +1535,7 @@ class NeonDrop {
                     const player = window.identityManager?.player || window.IdentityManager?.player;
                     if (player) {
                         playerName = player.displayName || player.username || 'Anonymous';
-                        DEBUG.log('Player for game over:', { 
+                        console.log('Player for game over:', { 
                             name: playerName, 
                             id: player.id 
                         });
@@ -1602,7 +1602,7 @@ class NeonDrop {
                                     // Update localStorage
                                     localStorage.setItem('playerProfile', JSON.stringify(player));
                                     
-                                    DEBUG.log('📊 Updated player stats:', updatedStats);
+                                    console.log('📊 Updated player stats:', updatedStats);
                                 } else {
                                     console.error('❌ Score submission failed:', response.status);
                                 }
