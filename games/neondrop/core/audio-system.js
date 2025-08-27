@@ -63,10 +63,13 @@ export class AudioSystem {
            return;
        }
 
-       // Resume if suspended
+       // Resume if suspended (auto-resume for user interaction)
        if (this.ctx.state === 'suspended') {
            this.ctx.resume().then(() => {
+               console.log('🔊 Audio context resumed');
                this.playSoundInternal(type, params);
+           }).catch(e => {
+               console.warn('Audio resume failed:', e);
            });
            return;
        }
