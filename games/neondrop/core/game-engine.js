@@ -395,9 +395,9 @@ for(const[s,i]of Object.entries(t))this.state.score>=i&&!this.state.unlockedPiec
 e&&this.fillBag()
 }generatePiece(){
 // Check for FLOAT piece generation first
-if (this.floatSystem && this.floatSystem.shouldBeFloat) {
-    const stackHeight = this.calculateStackHeight();
-    if (this.floatSystem.shouldBeFloat(stackHeight)) {
+if(this.floatSystem?.checkFloat){
+    if(this.floatSystem.checkFloat()){
+        console.log(`🎯 ENGINE: Generating FLOAT piece`);
         return this.createPiece('FLOAT');
     }
 }

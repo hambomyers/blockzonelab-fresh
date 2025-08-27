@@ -539,9 +539,15 @@ class NeonDrop {
             this.floatSystem = new MercyCurveFloat(dailyPackage, this.config);
             console.log(`🌙 Mercy system initialized with new elegant FLOAT system`);
             
-            // Connect float system to engine
-            this.engine.floatSystem = this.floatSystem;
-            console.log('🔗 FLOAT system connected to game engine');
+            // Connect float system to engine with wrapper
+            this.engine.floatSystem = {
+                checkFloat: () => {
+                    const stackHeight = this.calculateStackHeight();
+                    return this.floatSystem.shouldBeFloat(stackHeight);
+                },
+                system: this.floatSystem
+            };
+            console.log('🔗 FLOAT system connected to game engine with wrapper');
         } else {
             console.error('❌ Failed to initialize mercy system - no daily package');
         }
