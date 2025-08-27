@@ -26,6 +26,8 @@ class MercyCurveFloat {
         
         const shouldBeFloat = mercyRoll < mercyRate;
         
+        console.log(`🔍 DEBUG: piece=${index + 1}, height=${stackHeight}, mercy=${mercyRate.toFixed(1)}%, roll=${mercyRoll.toFixed(1)}, shouldFloat=${shouldBeFloat}`);
+        
         if (shouldBeFloat) {
             this.totalFloatsGiven++;
             console.log(`✨ FLOAT #${this.totalFloatsGiven} at piece ${index + 1} (height: ${stackHeight}, ${mercyRate.toFixed(1)}%, mercy@${stackHeight})`);

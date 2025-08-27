@@ -1784,12 +1784,12 @@ class NeonDrop {
             }
         });
 
-        // 2. Window blur (focus lost to other applications)
-        window.addEventListener('blur', () => {
-            if (this.engine?.getState().phase === 'PLAYING') {
-                this.emergencyPause('WINDOW_BLUR');
-            }
-        });
+        // 2. Window blur (focus lost to other applications) - DISABLED FOR PARTICLE FIX
+        // window.addEventListener('blur', () => {
+        //     if (this.engine?.getState().phase === 'PLAYING') {
+        //         this.emergencyPause('WINDOW_BLUR');
+        //     }
+        // });
 
         // 3. Window focus (resume when focus returns)
         window.addEventListener('focus', () => {
