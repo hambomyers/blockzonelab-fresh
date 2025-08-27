@@ -394,17 +394,20 @@ let e=!1;
 for(const[s,i]of Object.entries(t))this.state.score>=i&&!this.state.unlockedPieces.includes(s)&&(this.state.unlockedPieces.push(s),this.state.lastUnlockScore=this.state.score,e=!0);
 e&&this.fillBag()
 }generatePiece(){
-// FORCE FLOAT PIECES - BYPASS BROKEN SYSTEM
-if(Math.random() < 0.24){
-    console.log(`🎯 ENGINE: FORCE GENERATING FLOAT PIECE`);
-    return this.createPiece('FLOAT');
-}
+        // Use proper FLOAT mercy system
+        if (this.floatSystem && this.floatSystem.shouldBeFloat) {
+            const stackHeight = this.calculateStackHeight();
+            const shouldBeFloat = this.floatSystem.shouldBeFloat(stackHeight);
+            if (shouldBeFloat) {
+                console.log('✨ MERCY: Generating FLOAT piece at stack height', stackHeight);
+                return this.createPiece('FLOAT');
+            }
+        }
 
 // Normal piece generation
 this.bagRandomizer.currentBag.length===0&&this.fillBag();
 const t=this.bagRandomizer.currentBag.pop();
 return this.createPiece(t)
-}
 
 // Helper method to calculate current stack height
 calculateStackHeight(){
