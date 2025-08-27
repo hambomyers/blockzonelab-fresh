@@ -521,6 +521,11 @@ class NeonDrop {
         // Create the game engine first
         this.engine = new GameEngine(this.config, null, null, this.eventBus);
         
+        // Connect float system to engine immediately
+        if (this.floatSystem) {
+            this.engine.floatSystem = this.floatSystem;
+        }
+        
         // CRITICAL ONLY: Load minimal systems for immediate gameplay
         const criticalSystems = await Promise.all([
             this.generateDailySeedFast(),
@@ -534,8 +539,9 @@ class NeonDrop {
             this.floatSystem = new MercyCurveFloat(dailyPackage, this.config);
             console.log(`🌙 Mercy system initialized with new elegant FLOAT system`);
             
-            // Install FLOAT-aware piece generation
-            this.createFloatAwarePieceGenerator();
+            // Connect float system to engine
+            this.engine.floatSystem = this.floatSystem;
+            console.log('🔗 FLOAT system connected to game engine');
         } else {
             console.error('❌ Failed to initialize mercy system - no daily package');
         }
@@ -591,37 +597,7 @@ class NeonDrop {
     
 
     
-    // Clean Architecture: FLOAT-aware piece generation wrapper
-    createFloatAwarePieceGenerator() {
-        if (!this.engine || !this.floatSystem) {
-            console.error('❌ Cannot create FLOAT wrapper - engine or floatSystem missing');
-            return;
-        }
-
-        // Store original methods
-        const originalGeneratePiece = this.engine.generatePiece.bind(this.engine);
-        const originalCreatePiece = this.engine.createPiece.bind(this.engine);
-
-        // Create clean wrapper that preserves original functionality
-        this.engine.generatePiece = () => {
-            // Get current stack height for mercy calculation
-            const stackHeight = this.calculateStackHeight();
-            
-            // Check if this piece should be a FLOAT using our clean system
-            const shouldBeFloat = this.floatSystem.shouldBeFloat(stackHeight);
-            
-            if (shouldBeFloat) {
-                // Generate FLOAT piece using original createPiece method
-                console.log(`🎯 GENERATING FLOAT PIECE at stack height ${stackHeight}`);
-                return originalCreatePiece('FLOAT');
-            } else {
-                // Use original piece generation logic
-                return originalGeneratePiece();
-            }
-        };
-
-        console.log('🏗️ Clean FLOAT-aware piece generation wrapper installed');
-    }
+    // REMOVED: No longer needed - engine has built-in FLOAT generation
 
     // Clean method to calculate current stack height
     calculateStackHeight() {
