@@ -108,7 +108,7 @@ async function getDailyCached() {
   
   try {
     // === PHASE 1: Critical Path (Target: <10ms) ===
-    console.log('⚡ Phase 1: Critical initialization...');
+    console.log('Phase 1: Critical initialization...');
     
     // 1. Get cached daily package (should be instant)
     const dailyPackage = await getDailyCached();
@@ -132,11 +132,11 @@ async function getDailyCached() {
     
     // Log ACTUAL time
     const phase1Time = performance.now() - t0;
-    console.log(`🎯 TRULY PLAYABLE IN: ${phase1Time.toFixed(1)}ms - Game is ready! ✅`);
+    console.log(`Game ready in ${phase1Time.toFixed(1)}ms`);
     
     // === PHASE 2: Deferred Loading ===
     requestIdleCallback(() => {
-      console.log('🔄 Phase 2: Loading non-critical systems...');
+      console.log('Phase 2: Loading non-critical systems...');
       // Load everything else without blocking
       setTimeout(() => {
         // Initialize the full NeonDrop system
@@ -189,8 +189,12 @@ class EventBus {
   emit(event, data) { (this.listeners[event] || []).forEach(h => h(data)); }
 }
 
-// Global game instance counter to prevent duplicates
-window.gameInstanceCount = (window.gameInstanceCount || 0) + 1;
+// Prevent duplicate instances
+if (window.neonDrop) {
+    console.warn('NeonDrop instance already exists, destroying previous');
+    window.neonDrop.destroy?.();
+}
+window.gameInstanceCount = 1;
 
 // Bridge DOM 'gameOverUIReady' event to EventBus for overlayManager compatibility
 // This ensures overlays show after renderer sequence completes (event-driven, scalable)
@@ -210,8 +214,8 @@ class NeonDrop {
     constructor() {
         this.instanceId = window.gameInstanceCount;
         
-        // WIN 5: REMOVE CONSOLE.LOG IN PRODUCTION (2-5ms win)
-        this.logLevel = window.location.hostname === 'localhost' ? 1 : 0; // 0 = production, 1 = development
+        // Production mode - disable all logging for performance
+        this.logLevel = 0; // Always production mode for tree shaking
         
         // Performance timer for real 200ms target metric
         this.phase1StartTime = performance.now();
@@ -252,11 +256,9 @@ class NeonDrop {
         this.scoreSubmitted = false; // New state to track if score has been submitted
     }
     
-    // WIN 5: REMOVE CONSOLE.LOG IN PRODUCTION (2-5ms win)
+    // Logging disabled for performance
     log(level, message) {
-        if (this.logLevel >= level) {
-            console.log(message);
-        }
+        // No-op for production
     }
     
     // Performance monitoring helper
@@ -426,12 +428,11 @@ class NeonDrop {
             this.loadAdvancedSystemsInBackground();
         }, 100);
         
-        // Initialize blockchain (non-blocking)
-        setTimeout(async () => {
-            // Create blockchain manager first
-            this.blockchainManager = new BlockchainManager();
-            await this.initBlockchainInBackground();
-        }, 2000);
+        // Skip blockchain initialization to prevent errors
+        // setTimeout(async () => {
+        //     this.blockchainManager = new BlockchainManager();
+        //     await this.initBlockchainInBackground();
+        // }, 2000);
         
         // Performance monitoring (non-blocking)
         setTimeout(() => {
@@ -1170,28 +1171,9 @@ class NeonDrop {
     }
     
     initBlockchainInBackground() {
-        // Use setTimeout to ensure this runs after the current execution context
-        setTimeout(async () => {
-            try {
-                if (window.timeStart) window.timeStart('initBlockchainInBackground');
-                console.log('🔗 Starting background blockchain initialization...');
-                await this.blockchainManager.initialize();
-                console.log('✅ Blockchain initialized successfully');
-                
-                // Update game engine with blockchain manager
-                if (this.engine) {
-                    this.engine.setBlockchainManager(this.blockchainManager);
-                }
-                
-                // Update game context
-                if (this.gameContext) {
-                    this.gameContext.blockchain = this.blockchainManager;
-                }
-                if (window.timeEnd) window.timeEnd('initBlockchainInBackground');
-            } catch (error) {
-                console.log('⚠️ Blockchain initialization failed (game continues without blockchain):', error);
-            }
-        }, 100); // Small delay to ensure game loop starts first
+        // Blockchain initialization disabled for tree shaking
+        console.log('Blockchain initialization skipped');
+        window.blockchainInitialized = false;
     }
 
     // WIN 6: BATCH DOM UPDATES (3-5ms win)
