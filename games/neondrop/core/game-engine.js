@@ -395,9 +395,13 @@ for(const[s,i]of Object.entries(t))this.state.score>=i&&!this.state.unlockedPiec
 e&&this.fillBag()
 }generatePiece(){
 // Check for FLOAT piece generation first
-if(this.floatSystem?.checkFloat){
-    if(this.floatSystem.checkFloat()){
-        console.log(`🎯 ENGINE: Generating FLOAT piece`);
+if(this.floatSystem&&this.floatSystem.shouldBeFloat){
+    // Calculate stack height using the engine's own method
+    const stackHeight=this.calculateStackHeight();
+    
+    // Call shouldBeFloat with the calculated stack height
+    if(this.floatSystem.shouldBeFloat(stackHeight)){
+        console.log(`🎯 ENGINE: Generating FLOAT piece at height ${stackHeight}`);
         return this.createPiece('FLOAT');
     }
 }
@@ -413,20 +417,16 @@ calculateStackHeight(){
 if (!this.state || !this.state.board) {
     return 0;
 }
-
 const board = this.state.board;
 let maxHeight = 0;
-
-// Find the highest occupied cell
-for (let row = 0; row < board.length; row++) {
-    for (let col = 0; col < board[row].length; col++) {
-        if (board[row][col] !== null) {
-            const height = board.length - row;
-            maxHeight = Math.max(maxHeight, height);
+for (let x = 0; x < board[0].length; x++) {
+    for (let y = 0; y < board.length; y++) {
+        if (board[y][x] !== 0) {
+            maxHeight = Math.max(maxHeight, board.length - y);
+            break;
         }
     }
 }
-
 return maxHeight;
 }fillBag(){
 const e=[...[...this.state.unlockedPieces]].sort(()=>this.rng.random()-.5);
