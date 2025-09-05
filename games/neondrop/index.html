@@ -2,474 +2,113 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    
-    <!-- Professional CSS Architecture - Handled by Vite -->
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Neon Drop - Block Puzzle Challenge">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Neon Drop - BlockZone Lab</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" href="../../public/favicon.svg" type="image/svg+xml">
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#000000">
-
-    <!-- Performance Optimization: Resource Hints -->
-    <link rel="dns-prefetch" href="https://api.blockzonelab.com">
-    <link rel="preconnect" href="https://api.blockzonelab.com">
-    
-    <!-- Game-specific styles -->
-    <link rel="stylesheet" href="../../assets/css/neondrop-game.css">
-    
-    <!-- Game wrapper styles (welcome screen, identity management) -->
-    <link rel="stylesheet" href="../../assets/css/game-wrapper.css">
-    
-    <!-- Performance Analyzer - Removed (files deleted during optimization) -->
-    
-    <!-- Emergency pause system styles -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonDrop v2 - Clean Architecture</title>
     <style>
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000011;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
         }
         
-        @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        #game-canvas {
+            border: 2px solid #333;
+            background: #000;
+            image-rendering: pixelated;
+        }
+        
+        .controls {
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        .version-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 12px;
+            opacity: 0.5;
+        }
+        
+        .stats {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 12px;
+            text-align: right;
         }
     </style>
-    
-    <!-- Development mode setup -->
-    <script>
-        // Set development mode flag
-        window.isDevelopment = window.location.hostname === 'localhost' || 
-                             window.location.hostname === '127.0.0.1' ||
-                             window.location.search.includes('dev=true');
-        
-        // Clean development mode - bypass paywall entirely
-        if (window.location.search.includes('dev=true')) {
-            window.devMode = {
-                bypassPaywall: true,
-                skipBackendChecks: false, // Keep essential backend checks
-                enableDebugLogs: false // Performance optimized
-            };
-        }
-        
-        if (window.isDevelopment) {
-            window.localStorage.setItem('debug', 'blockzonelab:*');
-        }
-    </script>
-    
-    <!-- Mobile Detection Script -->
-    <script>
-        // Mobile detection and CSS property setup for Neon Drop
-        (function() {
-            window.BlockZoneMobile = {
-                _isMobile: window.innerWidth <= 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent),
-                _isTablet: window.innerWidth > 768 && window.innerWidth <= 1024 && 'ontouchstart' in window,
-                _hasTouch: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
-                _isPWA: window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true,
-                isMobile() { return this._isMobile; },
-                isTablet() { return this._isTablet; },
-                hasTouch() { return this._hasTouch; },
-                isPWA() { return this._isPWA; },
-                hasPhysicalKeyboard() { 
-                    return !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth > 1024;
-                },
-                needsMobileControls() {
-                    return (this._isMobile || this._isTablet) && !this.hasPhysicalKeyboard();
-                },
-                getScreenSize() {
-                    const w = window.innerWidth;
-                    return w <= 480 ? 'small' : w <= 768 ? 'medium' : w <= 1024 ? 'large' : 'xlarge';
-                }
-            };
-            document.documentElement.style.setProperty('--is-mobile', window.BlockZoneMobile._isMobile ? '1' : '0');
-            document.documentElement.style.setProperty('--has-touch', window.BlockZoneMobile._hasTouch ? '1' : '0');
-            document.documentElement.style.setProperty('--has-keyboard', window.BlockZoneMobile.hasPhysicalKeyboard() ? '1' : '0');
-            document.documentElement.style.setProperty('--needs-mobile-controls', window.BlockZoneMobile.needsMobileControls() ? '1' : '0');
-        })();
-    </script>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Bungee&display=swap" rel="stylesheet">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#00d4ff">
-
-    <!-- Web3 Dependencies -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.8.1/ethers.umd.min.js" type="application/javascript"></script>
-    <script>
-        // Verify ethers is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof ethers !== 'undefined') {
-                window.ethers = ethers; // Make sure it's available globally
-            }
-        });
-    </script>
-
 </head>
-
-<body class="game-page">
-    <!-- Game Container -->
-    <div id="gameContainer">
-        <!-- Game Canvas -->
-        <canvas id="bg"></canvas>
-        <canvas id="game"></canvas>
+<body>
+    <div class="version-info">
+        NeonDrop v2.0<br>
+        Clean Architecture<br>
+        50% Smaller
     </div>
     
-    <!-- Touch Controls (Responsive) -->
-    <div id="touch-controls">
-        <div class="touch-left">
-            <button class="touch-btn" data-action="left">◀</button>
-        </div>
-        <div class="touch-center">
-            <button class="touch-btn" data-action="down">▼</button>
-            <button class="touch-btn" data-action="rotate">↻</button>
-        </div>
-        <div class="touch-right">
-            <button class="touch-btn" data-action="right">▶</button>
-        </div>
-        <div class="touch-bottom">
-            <button class="touch-btn" data-action="drop">⬇⬇</button>
-            <button class="touch-btn" data-action="hold">HOLD</button>
+    <div class="stats" id="stats">
+        Loading...
+    </div>
+    
+    <div class="game-container">
+        <canvas id="game-canvas" width="800" height="600"></canvas>
+        
+        <div class="controls">
+            <strong>Controls:</strong><br>
+            Arrow Keys / WASD: Move & Rotate<br>
+            Space: Hard Drop | C: Hold | P/Esc: Pause<br>
+            Enter: Start Game
         </div>
     </div>
 
-    <!-- UI Container -->
-    <div id="ui-container"></div>
-
-    <!-- HYBRID INSTANT PLAY + PERSISTENT PLAYER SYSTEM -->
-    <!-- Revolutionary 0.1-0.3s game loading WITH full player persistence and paywall logic -->
     <script type="module">
-        console.log('🚀 Loading Hybrid Instant Play + Persistent Player Architecture...');
+        import NeonDropV2 from './main-v2.js';
         
-        // Import existing robust systems
-        import IdentityManager from '../../shared/core/IdentityManager.js';
-        import { PlayerProfile } from '../../shared/components/PlayerProfile.js';
-        import { PaywallManager } from '../../shared/components/PaywallManager.js';
+        // Initialize game
+        const game = new NeonDropV2();
         
-        // Progressive enhancement imports removed during dead wood cleanup
-        
-        // Create hybrid instant play system that preserves all existing functionality
-        class NeonDropHybridInstantPlay {
-            constructor() {
-                this.startTime = performance.now();
-                
-                // Use singleton PlayerProfile to avoid multiple instances
-                this.playerProfile = window.globalPlayerProfile || new PlayerProfile();
-                if (!window.globalPlayerProfile) {
-                    window.globalPlayerProfile = this.playerProfile;
-                    console.log('🎯 Created global PlayerProfile singleton');
-                } else {
-                    console.log('🎯 Using existing global PlayerProfile singleton');
-                }
-                
-                // Create IdentityManager as true singleton
-                this.identityManager = window.identityManager || new IdentityManager();
-                if (!window.identityManager) {
-                    window.identityManager = this.identityManager;
-                    console.log('🔐 Created global IdentityManager singleton');
-                } else {
-                    console.log('🔐 Using existing global IdentityManager singleton');
-                }
-                
-                this.paywallManager = new PaywallManager();
-                this.gameStarted = false;
-                
-                console.log('⚡ NeonDrop Hybrid Instant Play: Initialized with optimized persistence');
-            }
+        // Update stats display
+        function updateStats() {
+            const stats = game.getStats();
+            const gameState = game.getGameState();
             
-            async init() {
-                try {
-                    console.log('🎯 Target: Game playable in <200ms WITH player persistence');
-                    
-                    // CRITICAL PATH: Essential checks that must complete before game starts
-                    const criticalPath = await this.initializeCriticalPath();
-                    
-                    // GAME START: Start game immediately with player context
-                    await this.startGameWithContext(criticalPath);
-                    
-                    const totalTime = performance.now() - this.startTime;
-                    const loadTime = totalTime.toFixed(1);
-                // Performance metric logged in main.js - Phase 1 complete
-                    
-                    // BACKGROUND: Load all enhancements in parallel (non-blocking)
-                    this.loadBackgroundEnhancements();
-                    
-                } catch (error) {
-                    console.error('❌ Critical path failed:', error);
-                    this.showFallback();
-                }
-            }
-            
-            async initializeCriticalPath() {
-                // CRITICAL PATH: Essential checks that must complete before game starts
-                
-                try {
-                    // Parallel loading of essential systems + game assets
-                    const [identityResult, paywallResult, gameAssets] = await Promise.all([
-                        this.identityManager.initialize(),
-                        this.paywallManager.initialize(this.identityManager),
-                        this.preloadGameAssets()
-                    ]);
-                    
-                    // Make available globally for compatibility
-                    window.identityManager = this.identityManager;
-                    window.paywallManager = this.paywallManager;
-                    window.playerProfile = this.playerProfile;
-                    
-                    // Critical path ready
-                    
-                    return {
-                        playerData: identityResult,
-                        paywallStatus: paywallResult,
-                        gameAssets: gameAssets
-                    };
-                    
-                } catch (error) {
-                    console.error('❌ Critical path failed:', error);
-                    throw error;
-                }
-            }
-            
-            async preloadGameAssets() {
-                // Performance: Only preload what we immediately use
-                try {
-                    // CRITICAL PATH: Only preload main.js since it's used immediately
-                    const mainModule = await import('./main.js?v=' + Date.now());
-                    
-                    return { 
-                        mainModule: mainModule
-                    };
-                    
-                } catch (error) {
-                    return null;
-                }
-            }
-            
-
-            
-            async startGameWithContext(criticalPath) {
-                // GAME START: Start game immediately with player context
-                
-                try {
-                    // TEMPORARY BYPASS: Skip paywall for testing
-                    if (false) { // BYPASS PAYWALL
-                        const allowed = await this.paywallManager.interceptGameStart('neondrop');
-                        if (!allowed) {
-                            return; // Don't start the game, paywall will handle it
-                        }
-                    }
-                    
-                    // Use preloaded game assets if available
-                    if (criticalPath.gameAssets && criticalPath.gameAssets.gameEntryModule) {
-                        const gameEntryModule = criticalPath.gameAssets.gameEntryModule;
-                        if (gameEntryModule && gameEntryModule.startGame) {
-                            await this.startGameWithPreloadedAssets(gameEntryModule.startGame);
-                        } else {
-                            await this.loadNeonDropGameInstantly();
-                        }
-                    } else {
-                        await this.loadNeonDropGameInstantly();
-                    }
-                    
-                    // Setup paywall logic for subsequent games (non-blocking)
-                    this.setupPaywallLogic();
-                    
-                } catch (error) {
-                    console.error('❌ Game start failed:', error);
-                    throw error;
-                }
-            }
-            
-            async startGameWithPreloadedAssets(startGame) {
-                // Start game with preloaded assets (much faster)
-                console.log('🎮 Starting NeonDrop with preloaded assets');
-                
-                // Paywall already checked - just start the game
-                await startGame();
-                this.gameStarted = true;
-                
-                // Connect game events to our hybrid system
-                this.connectGameEvents();
-            }
-            
-            loadBackgroundEnhancements() {
-                // BACKGROUND: Load all enhancements in parallel (non-blocking)
-                
-                Promise.all([
-                    this.loadProgressiveUI(),
-                    this.loadBlockchainFeatures(),
-                    this.loadTournamentData()
-                ]).then(() => {
-                    // Advanced features ready
-                }).catch(error => {
-                    // Background features failed to load - game continues with graceful degradation
-                });
-            }
-            
-            async loadProgressiveUI() {
-                // Progressive UI removed during dead wood cleanup
-                console.log('🎨 Progressive UI features disabled');
-            }
-            
-            async loadBlockchainFeatures() {
-                // Blockchain features (non-blocking)
-                setTimeout(() => {
-                    console.log('🔗 Blockchain features loading in background...');
-                    // Blockchain initialization happens here
-                }, 200);
-            }
-            
-            async loadTournamentData() {
-                // Tournament data (non-blocking)
-                setTimeout(() => {
-                    console.log('🏆 Tournament data loading in background...');
-                    // Tournament leaderboards and data
-                }, 300);
-            }
-            
-            async loadNeonDropGameInstantly() {
-                // Import and start NeonDrop game directly (instant)
-                const { startGame } = await import('./game-entry.js');
-                
-                console.log('🎮 Starting NeonDrop instantly (player persistence will sync in background)');
-                
-                // Paywall already checked - just start the game
-                await startGame();
-                this.gameStarted = true;
-                
-                // Connect game events to our hybrid system
-                this.connectGameEvents();
-            }
-            
-            connectGameEvents() {
-                // Paywall already checked at game start - no need for additional checks
-                console.log('🎮 Game events connected - paywall already handled');
-                
-                // REMOVED: Duplicate game over event listener - main.js handles this now
-                // The new overlay manager in main.js will show the neon drop overlay
-            }
-            
-            setupPaywallLogic() {
-                // Paywall already checked once at game start - no need for additional checks
-                console.log('💰 Paywall logic already handled at game start');
-            }
-            
-            setupProgressiveEnhancements() {
-                // Initialize progressive UI for post-game enhancements
-                setTimeout(() => {
-                    if (window.identityManager) {
-                        this.progressiveUI = new ProgressiveUI({
-                            getPlayer: () => window.identityManager.getPlayer(),
-                            gameAPI: this.gameAPI
-                        });
-                        console.log('🎨 Progressive UI ready for post-game enhancements');
-                    }
-                }, 200);
-                
-                console.log('🔄 Progressive enhancements loading in background...');
-            }
-            
-            // REMOVED: All old overlay code - main.js handles everything now
-            
-            showFallback() {
-                console.log('🆘 Showing fallback - loading legacy system');
-                // Fallback to legacy system if hybrid fails
-                import('./game-entry.js').catch(error => {
-                    console.error('❌ Even fallback failed:', error);
-                    document.body.innerHTML = `
-                        <div style="display: flex; align-items: center; justify-content: center; height: 100vh; color: white; text-align: center;">
-                            <div>
-                                <h2>🎮 Game Loading...</h2>
-                                <p>Preparing your gaming experience...</p>
-                                <button onclick="location.reload()" style="padding: 10px 20px; margin-top: 20px;">Retry</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
+            document.getElementById('stats').innerHTML = `
+                State: ${gameState.gameState}<br>
+                Score: ${stats.score.toLocaleString()}<br>
+                Lines: ${stats.lines}<br>
+                Level: ${stats.level}<br>
+                Pieces: ${stats.pieces}<br>
+                FLOAT: ${stats.floatPieces} (${stats.floatPercentage || 0}%)
+            `;
         }
         
-        // Pre-generate daily seed for instant game startup
-        function preGenerateDailySeed() {
-            const today = new Date().toISOString().split('T')[0];
-            const cachedKey = `dailySeed_${today}`;
-            
-            // Check if already cached
-            try {
-                const cached = localStorage.getItem(cachedKey);
-                if (cached) {
-                    console.log('⚡ Daily seed already cached - game startup will be instant!');
-                    return;
-                }
-            } catch (error) {
-                // Continue to generate
-            }
-            
-            // Generate seed in background for instant game startup
-            console.log('🎲 Pre-generating daily seed for instant startup...');
-            let hash = 0;
-            const seedStr = `neondrop_${today}`;
-            for (let i = 0; i < seedStr.length; i++) {
-                hash = ((hash << 5) - hash) + seedStr.charCodeAt(i);
-                hash = hash & hash;
-            }
-            const seed = Math.abs(hash);
-            const processed = seed * 1689048361;
-            
-            // Cache for instant game startup
-            try {
-                localStorage.setItem(cachedKey, JSON.stringify({ 
-                    seed, 
-                    processed, 
-                    date: today,
-                    preGenerated: true 
-                }));
-                console.log('✅ Daily seed pre-generated - game startup will be blazing fast!');
-            } catch (error) {
-                console.warn('⚠️ Could not cache seed, game will generate on startup');
-            }
-        }
-
-        // Initialize hybrid system when DOM is ready
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Set log level based on environment
-            window.logLevel = window.location.hostname.includes('pages.dev') ? 'production' : 'development';
-            
-            if (window.logLevel === 'production') {
-                console.log('🎮 BlockZone Lab - NeonDrop');
-            } else {
-                console.log('🌟 NeonDrop - Hybrid Instant Play + Persistent Player Architecture');
-            }
-            
-            // PRE-GENERATE DAILY SEED for instant game startup (0ms lookup!)
-            preGenerateDailySeed();
-            
-            const hybridSystem = new NeonDropHybridInstantPlay();
-            window.neonDropHybridSystem = hybridSystem;
-            
-            await hybridSystem.init();
-        });
+        // Update stats every second
+        setInterval(updateStats, 1000);
+        updateStats();
         
+        // Auto-start game for testing
+        setTimeout(() => {
+            if (game.getGameState().gameState === 'MENU') {
+                game.startGame();
+            }
+        }, 1000);
+        
+        console.log('🎮 NeonDrop v2 ready - press Enter to start');
     </script>
 </body>
 </html>
