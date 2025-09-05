@@ -271,8 +271,8 @@
                 // GAME START: Start game immediately with player context
                 
                 try {
-                    // Check paywall before starting game
-                    if (this.paywallManager) {
+                    // TEMPORARY BYPASS: Skip paywall for testing
+                    if (false) { // BYPASS PAYWALL
                         const allowed = await this.paywallManager.interceptGameStart('neondrop');
                         if (!allowed) {
                             return; // Don't start the game, paywall will handle it
