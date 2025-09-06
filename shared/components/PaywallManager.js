@@ -1,19 +1,12 @@
 /**
- * PaywallManager - Handles payment processing and game access control
+ * PaywallManager - Handles payment processing and game access control for BlockZone Lab
  * 
- * 🎯 QUICK TOGGLE FOR FRIEND TESTING:
- * To enable animated payment bypass on blockzonelab.com for friends:
- * 1. Find "ENABLE_TEST_MODE_ON_MAIN" in detectEnvironment() method
- * 2. Set it to true to enable, false to disable
- * 3. Push changes to deploy
- * 
- * This allows friends to test the game with mock payments on your main domain!
+ * Features:
+ * - Clean, modern UI with smooth animations
+ * - Test mode for development
+ * - Sonic Labs integration ready
+ * - Session-based caching for performance
  */
-
-import { IdentityManager } from '../core/IdentityManager.js';
-
-// Environment detection for payment processing
-const PAYMENT_ENV = window.location.hostname === 'blockconelab.com' ? 'production' : 'test';
 
 // Global singleton instance
 let globalPaywallManager = null;
@@ -29,31 +22,21 @@ export class PaywallManager {
         this.identityManager = null;
         this.playerProfile = null;
         this.pendingGameStart = null;
-        this.lastDecision = null; // Cache last paywall decision
-        this.lastDecisionTime = 0; // Timestamp of last decision
+        this.lastDecision = null;
+        this.lastDecisionTime = 0;
         
-        // ENHANCED CACHING: Smart TTL-based caching with multiple layers
+        // Session cache for performance
         this.sessionCache = {
             playerStatus: null,
             cachedAt: null,
-            validFor: 5 * 60 * 1000, // 5 minutes TTL for session-level caching
+            validFor: 5 * 60 * 1000, // 5 minutes
             lastGameAction: null,
             playerId: null,
-            // New: Request deduplication
-            pendingRequests: new Map(),
-            // New: Cache hit tracking
-            cacheHits: 0,
-            cacheMisses: 0,
-            // New: Session-level decisions
-            sessionDecisions: new Map(),
-            // New: Cache warming
-            lastCacheWarm: null
+            sessionDecisions: new Map()
         };
         
         // Make it globally accessible
         window.paywallManager = this;
-        
-        // Store global instance
         globalPaywallManager = this;
     }
 
@@ -61,8 +44,6 @@ export class PaywallManager {
      * Initialize the paywall manager
      */
     async initialize(identityManager) {
-        // // console.log('💰 PaywallManager: Initializing paywall system with PlayerProfile integration'); // Removed for production performance
-        
         this.identityManager = identityManager;
         
         // Initialize session cache
@@ -71,32 +52,24 @@ export class PaywallManager {
             cachedAt: null,
             playerId: null,
             validFor: 300000, // 5 minutes
-            cacheHits: 0,
-            cacheMisses: 0,
-            pendingRequests: new Map(),
-            sessionDecisions: new Map(),
-            lastCacheWarm: null
+            sessionDecisions: new Map()
         };
         
         // Get PlayerProfile singleton
         if (window.globalPlayerProfile) {
             this.playerProfile = window.globalPlayerProfile;
-            // // console.log('💰 PaywallManager: Using existing global PlayerProfile singleton'); // Removed for production performance
         } else if (window.playerProfile) {
             this.playerProfile = window.playerProfile;
-            // // console.log('💰 PaywallManager: Using window.playerProfile'); // Removed for production performance
         } else {
-            // // console.log('⏳ PaywallManager: PlayerProfile not available yet, will retry later'); // Removed for production performance
             // Try to get it later when needed
             setTimeout(() => {
                 if (window.globalPlayerProfile) {
                     this.playerProfile = window.globalPlayerProfile;
-                    // // console.log('💰 PaywallManager: Found PlayerProfile on retry'); // Removed for production performance
                 }
             }, 1000);
         }
         
-        // PERFORMANCE OPTIMIZATION: Warm up cache after initialization
+        // Warm up cache after initialization
         setTimeout(() => {
             this.warmUpCache();
         }, 100); // Small delay to ensure identity is ready
@@ -108,37 +81,31 @@ export class PaywallManager {
      * Intercept game start and show paywall if needed
      */
     async interceptGameStart(gameId = 'neondrop', options = {}) {
-        // SESSION-BASED CACHING: Check if we have a valid session decision
         const now = Date.now();
         const sessionKey = `paywall_session_${gameId}`;
         
-        // Check for existing session decision (valid for entire game session)
+        // Check for existing session decision (valid for 30 minutes)
         if (this.sessionCache.sessionDecisions.has(sessionKey)) {
             const sessionDecision = this.sessionCache.sessionDecisions.get(sessionKey);
             const timeSinceDecision = now - sessionDecision.timestamp;
             
-            // Session decisions are valid for 30 minutes or until player status changes
             if (timeSinceDecision < 30 * 60 * 1000) {
-                // 
                 return sessionDecision.allowed;
             }
         }
         
-        // Check for recent cached decision (within 5 seconds) as fallback
+        // Check for recent cached decision (within 5 seconds)
         if (this.lastDecision && (now - this.lastDecisionTime) < 5000) {
-            // 
             return this.lastDecision;
         }
         
-        // 
-        
-        // CLEAN DEVELOPMENT MODE: Bypass paywall entirely for development
-        if (window.devMode && window.devMode.bypassPaywall) {
-            // // console.log('🔧 DEV MODE: Bypassing paywall entirely for development'); // Removed for production performance
+        // Development mode bypass
+        if (this.isTestMode()) {
+            console.log('🔧 TEST MODE: Bypassing paywall');
             return true;
         }
         
-        // LEGACY BYPASS MODE: Skip paywall entirely for game testing
+        // Check if we need to show the paywall
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('bypass') === 'true') {
             // // console.log('🚀 BYPASS MODE: Skipping paywall entirely for game testing'); // Removed for production performance
@@ -715,6 +682,28 @@ export class PaywallManager {
                     background: linear-gradient(145deg, #0099cc 0%, #0077aa 100%);
                     transform: scale(1.02);
                 }
+                
+                .processing-indicator {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    font-size: 14px;
+                    color: #fff;
+                }
+                
+                .spinner {
+                    width: 16px;
+                    height: 16px;
+                    border: 2px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 50%;
+                    border-top-color: #fff;
+                    animation: spin 1s ease-in-out infinite;
+                }
+                
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
+                }
                 .payment-status {
                     margin-top: 20px;
                     padding: 15px;
@@ -1268,8 +1257,9 @@ export class PaywallManager {
 
                 
                 <div class="payment-options">
-                    <!-- GAMES PAGE STYLE: Clickable cards like the games page -->
-                    <a href="#" class="payment-option sonic-labs" onclick="event.preventDefault(); window.paywallManager.processPayment('apple-pay', 0.25, {gameId: '${gameId}', type: 'individual-game'})">
+                    <!-- PAYMENT OPTIONS - GAMES PAGE STYLE -->
+                <div class="payment-options">
+                    <div class="payment-option apple-pay" id="pay-option-single" data-amount="0.25" data-type="individual-game">
                         <div class="payment-option-header">
                             <div class="payment-option-icon" style="background: #000; color: #fff;">🍎</div>
                             <div>
@@ -1278,19 +1268,23 @@ export class PaywallManager {
                             </div>
                         </div>
                         <div class="payment-option-price">$0.25</div>
-                        <ul class="payment-option-features">
+                        <div class="payment-option-features">
                             <li>One game entry</li>
                             <li>Real USDC.E prizes</li>
                             <li>Daily tournament access</li>
                             <li>Leaderboard placement</li>
-                        </ul>
-                        <div class="payment-button sonic-labs">
-                            Pay $0.25 & Play
                         </div>
-                    </a>
+                        <div class="payment-button apple-pay" id="pay-button-single">
+                            <span class="button-text">Pay $0.25 & Play</span>
+                            <div class="processing-indicator" style="display: none;">
+                                <div class="spinner"></div>
+                                Processing...
+                            </div>
+                        </div>
+                    </div>
                     
                     <!-- GAMES PAGE STYLE: Clickable cards like the games page -->
-                    <a href="#" class="payment-option sonic-labs featured" onclick="event.preventDefault(); window.paywallManager.processPayment('apple-pay', 2.50, {gameId: '${gameId}', type: 'day-pass'})">
+                    <div class="payment-option sonic-labs featured" id="pay-option-daypass" data-amount="2.50" data-type="day-pass">
                         <div class="payment-option-header">
                             <div class="payment-option-icon" style="background: #00d4ff; color: #000;">💎</div>
                             <div>
@@ -1305,10 +1299,14 @@ export class PaywallManager {
                             <li>Best value for 10+ games</li>
                             <li>Resets at 11pm EST</li>
                         </ul>
-                        <div class="payment-button sonic-labs">
-                            Get Day Pass
+                        <div class="payment-button sonic-labs" id="pay-button-daypass">
+                            <span class="button-text">Get Day Pass</span>
+                            <div class="processing-indicator" style="display: none;">
+                                <div class="spinner"></div>
+                                Processing...
+                            </div>
                         </div>
-                    </a>
+                    </div>
                 </div>
                 
                 <div class="nav-buttons">
@@ -1330,643 +1328,63 @@ export class PaywallManager {
         
         // GAMES PAGE APPROACH: No background click handlers - cards are fully clickable
         // No problematic overlay system that can cause black screens
-    }
-
-    /**
-     * Hide the paywall
-     */
-    hidePaywall() {
-        const paywallSection = document.getElementById('paywall-section');
-        if (paywallSection) {
-            paywallSection.remove();
-        }
-        this.isVisible = false;
-        this.pendingGameStart = null;
-    }
-
-    /**
-     * Start game directly (bypasses paywall)
-     */
-    async startGameDirectly(gameId, options = {}) {
-        // console.log('🚀 Starting game directly:', { gameId, options });
         
-        // Check if this is a free game and mark it as used
-        if (options.isFreeGame && this.identityManager) {
-            const playerId = this.identityManager.getPlayerId();
-            if (playerId) {
-                try {
+        // Add event listeners
+        const overlay = document.getElementById('paywall-overlay');
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                this.hidePaywall();
+            }
+        });
+        
+        // Add click handlers for payment options
+        const paymentOptions = overlay.querySelectorAll('.payment-option');
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', async (e) => {
+                if (e.target.closest('.payment-button')) {
+                    const button = e.target.closest('.payment-button');
+                    const buttonText = button.querySelector('.button-text');
+                    const processingIndicator = button.querySelector('.processing-indicator');
                     
-                    await this.markFreeGameAsUsed(playerId);
+                    // Show processing state
+                    buttonText.style.display = 'none';
+                    processingIndicator.style.display = 'flex';
+                    button.disabled = true;
                     
-                    // Clear cache so next check will reflect the used free game
-                    this.clearPlayerStatusCache();
-                } catch (error) {
-                    console.error('❌ Failed to mark free game as used:', error);
+                    // Simulate payment processing
+                    try {
+                        const amount = parseFloat(option.dataset.amount);
+                        const type = option.dataset.type;
+                        
+                        // Show processing animation
+                        await new Promise(resolve => setTimeout(resolve, 1500));
+                        
+                        // Start the game
+                        this.startGameDirectly(gameId, { 
+                            paymentType: type,
+                            amount: amount,
+                            isFreeGame: false
+                        });
+                        
+                    } catch (error) {
+                        console.error('Payment failed:', error);
+                        // Reset button state
+                        buttonText.style.display = 'block';
+                        processingIndicator.style.display = 'none';
+                        button.disabled = false;
+                        
+                        // Show error message
+                        const status = document.getElementById('payment-status');
+                        if (status) {
+                            status.textContent = 'Payment failed. Please try again.';
+                            status.style.display = 'block';
+                        }
+                    }
                 }
-            }
-        }
-        
-        // Hide paywall if visible
-        this.hidePaywall();
-        
-        // Trigger game start event
-        if (window.neonDrop && window.neonDrop.eventBus) {
-            window.neonDrop.eventBus.emit('game:start', { gameId, options });
-        } else if (window.eventBus) {
-            window.eventBus.emit('game:start', { gameId, options });
-        }
-        
-        // Try multiple game start methods with better error handling
-        try {
-            if (window.startNeonDropGame) {
-                
-                const result = await window.startNeonDropGame();
-                if (result) {
-                    // console.log('✅ Game started successfully via startNeonDropGame');
-                    return;
-                }
-            }
-            
-            if (window.blockZoneInstantPlay && window.blockZoneInstantPlay.startGame) {
-                
-                window.blockZoneInstantPlay.startGame(gameId);
-                return;
-            }
-            
-            if (window.handlePlayNowClick) {
-                
-                window.handlePlayNowClick(gameId);
-                return;
-            }
-            
-            if (window.startGame) {
-                
-                const result = await window.startGame();
-                if (result) {
-                    // console.log('✅ Game started successfully via startGame');
-                    return;
-                }
-            }
-            
-            // If none of the above worked, try to create a new game instance directly
-            
-            if (window.NeonDrop) {
-                const game = new window.NeonDrop();
-                await game.initialize();
-                window.neonDrop = game;
-                // console.log('✅ Game instance created directly');
-                return;
-            }
-            
-            console.error('❌ No game start method available');
-            // Fallback: try to navigate to game page
-            if (gameId === 'neondrop') {
-                // console.log('🔄 Falling back to page navigation');
-                window.location.href = '/games/neondrop/';
-            }
-            
-        } catch (error) {
-            console.error('❌ Error starting game:', error);
-            // Try fallback navigation
-            if (gameId === 'neondrop') {
-                // console.log('🔄 Error occurred, falling back to page navigation');
-                window.location.href = '/games/neondrop/';
-            }
-        }
-    }
-
-    /**
-     * Show identity required message
-     */
-    showIdentityRequired() {
-        //  // Removed for production performance
-        
-        // Hide paywall if visible
-        this.hidePaywall();
-        
-        // Always redirect to game page for proper identity setup
-        window.location.href = '/games/neondrop/';
-    }
-
-    /**
-     * Claim free game and start tournament
-     */
-    async claimFreeGame(gameId, options = {}) {
-        // // console.log('🎁 CLAIMING FREE GAME:', { gameId, options }); // Removed for production performance
-        
-        try {
-            // Show claiming animation
-            const btn = event.target;
-            const originalText = btn.textContent;
-            btn.textContent = '🎮 CLAIMING...';
-            btn.disabled = true;
-            
-            // Add claiming animation
-            btn.style.background = 'linear-gradient(135deg, #00cc6a 0%, #00994d 100%)';
-            btn.style.transform = 'scale(0.95)';
-            
-            // Simulate claiming process
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            // Start game with free game flag
-            await this.startGameDirectly(gameId, { 
-                ...options, 
-                isFreeGame: true,
-                claimed: true 
             });
-            
-        } catch (error) {
-            console.error('❌ Failed to claim free game:', error);
-            
-            // Reset button state
-            const btn = event.target;
-            btn.textContent = '🎮 CLAIM & START TOURNAMENT';
-            btn.disabled = false;
-            btn.style.background = 'linear-gradient(135deg, #00ff88 0%, #00cc6a 100%)';
-            btn.style.transform = 'scale(1)';
-        }
-    }
-    
-    /**
-     * Quick bypass to game - no payment processing, just start the game
-     */
-    quickBypassToGame(gameId = 'neondrop', options = {}) {
-        // // console.log('⚡ QUICK BYPASS: Going straight to game without payment processing'); // Removed for production performance
+        });
         
-        // Disable performance analyzer to prevent interference
-        if (window.disablePerformanceAnalyzer) {
-            // console.log('🔧 Disabling performance analyzer for quick bypass...');
-            window.disablePerformanceAnalyzer();
-        } else if (window.PerformanceAnalyzer) {
-            // console.log('🔧 Disabling performance analyzer for quick bypass...');
-            // Remove performance analyzer hooks
-            if (window.globalTimings) {
-                delete window.globalTimings;
-            }
-            if (window.timeStart) {
-                delete window.timeStart;
-            }
-            if (window.timeEnd) {
-                delete window.timeEnd;
-            }
-            // Disable performance monitoring
-            if (window.metricsCollector) {
-                delete window.metricsCollector;
-            }
-            
-            // Restore original window.neonDrop property if it was overridden
-            if (window._neonDrop) {
-                // console.log('🔧 Restoring original neonDrop property...');
-                Object.defineProperty(window, 'neonDrop', {
-                    value: window._neonDrop,
-                    writable: true,
-                    configurable: true
-                });
-                delete window._neonDrop;
-            }
-            
-            // Restore original requestAnimationFrame if it was overridden
-            if (window._originalRequestAnimationFrame) {
-                // console.log('🔧 Restoring original requestAnimationFrame...');
-                window.requestAnimationFrame = window._originalRequestAnimationFrame;
-                delete window._originalRequestAnimationFrame;
-            }
-        }
-        
-        // Hide paywall immediately
-        this.hidePaywall();
-        
-        // Start game directly with provided parameters
-        this.startGameDirectly(gameId, options);
-    }
-    
-    /**
-     * Process payment: Apple Pay → Landing Wallet → Sonic Labs → USDC.E
-     * Complete infrastructure ready for real payment integration
-     */
-    async processPayment(paymentMethod, amount, options = {}) {
-        console.log(`💳 Processing payment: ${paymentMethod} for $${amount} in ${PAYMENT_ENV} environment`);
-        
-        // Show processing status
-        this.showPaymentStatus('processing', 'Processing payment...');
-        
-        try {
-            // 1. Validate payment method (Apple Pay only for now)
-            if (paymentMethod !== 'apple-pay') {
-                throw new Error('Only Apple Pay is currently supported');
-            }
-            
-            // 2. Check player eligibility and get wallet address
-            const playerId = this.identityManager?.getPlayerId();
-            if (!playerId) {
-                throw new Error('Player not authenticated');
-            }
-            
-            // Get player's landing wallet address
-            const walletAddress = await this.getPlayerWalletAddress(playerId);
-            if (!walletAddress) {
-                throw new Error('Player wallet not found');
-            }
-            
-            // 3. Validate amount (must match contract amounts)
-            if (!this.validatePaymentAmount(amount)) {
-                throw new Error('Invalid payment amount');
-            }
-            
-            // 4. Check for duplicate payments
-            if (await this.checkDuplicatePayment(playerId, amount)) {
-                throw new Error('Duplicate payment detected');
-            }
-            
-            // 5. Environment-specific payment processing
-            if (PAYMENT_ENV === 'production') {
-                // REAL PAYMENT FLOW: Apple Pay → Landing Wallet → Sonic Labs → USDC.E
-                console.log('🌐 PRODUCTION: Processing real payment via Sonic Network');
-                const result = await this.processRealPayment(paymentMethod, amount, options, walletAddress);
-                return result;
-                
-            } else {
-                // TEST PAYMENT FLOW: Simulate full Apple Pay → USDC.E flow
-                console.log(`🧪 TEST: Simulating Apple Pay → Sonic Labs → USDC.E flow`);
-                const result = await this.simulatePayment(paymentMethod, amount, options, walletAddress);
-                return result;
-            }
-            
-        } catch (error) {
-            console.error('❌ Payment processing failed:', error);
-            this.showPaymentStatus('error', error.message);
-            throw error;
-        }
-    }
-    
-    /**
-     * Get player's landing wallet address from IdentityManager
-     */
-    async getPlayerWalletAddress(playerId) {
-        try {
-            // Get wallet address from IdentityManager
-            const player = this.identityManager?.getCurrentPlayer();
-            if (player && player.walletAddress) {
-                // // console.log(`🔗 Found player wallet: ${player.walletAddress}`); // Removed for production performance
-                return player.walletAddress;
-            }
-            
-            // Check if we're in test/development mode
-            const environment = this.detectEnvironment();
-            if (environment !== 'production') {
-                // Generate a test wallet address for development/testing
-                const testWalletAddress = `0x${playerId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 40)}`;
-                // // console.log(`🧪 Using test wallet address: ${testWalletAddress}`); // Removed for production performance
-                return testWalletAddress;
-            }
-            
-            // Production: try to get from backend
-            //  // Removed for production performance
-            const response = await fetch(`${this.identityManager.apiBase}/api/players/${playerId}/wallet`);
-            if (response.ok) {
-                const data = await response.json();
-                // // console.log(`🔗 Retrieved wallet from backend: ${data.walletAddress}`); // Removed for production performance
-                return data.walletAddress;
-            }
-            
-            throw new Error('Wallet address not found');
-        } catch (error) {
-            console.error('❌ Failed to get wallet address:', error);
-            
-            // Final fallback: generate a wallet address for testing
-            const environment = this.detectEnvironment();
-            if (environment !== 'production') {
-                const fallbackWallet = `0x${playerId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 40)}`;
-                // // console.log(`🔄 Using fallback wallet address: ${fallbackWallet}`); // Removed for production performance
-                return fallbackWallet;
-            }
-            
-            return null;
-        }
-    }
-    
-    /**
-     * Show payment status in UI
-     */
-    showPaymentStatus(status, message) {
-        const statusElement = document.getElementById('payment-status');
-        if (statusElement) {
-            statusElement.className = `payment-status ${status}`;
-            statusElement.textContent = message;
-            statusElement.style.display = 'block';
-        }
-    }
-    
-    /**
-     * Validate payment method (Apple Pay only for now)
-     */
-    validatePaymentMethod(paymentMethod) {
-        const validMethods = ['apple-pay']; // Only Apple Pay supported initially
-        const isValid = validMethods.includes(paymentMethod);
-        // // console.log(`🔍 Payment method validation: ${paymentMethod} - ${isValid ? 'VALID' : 'INVALID'}`); // Removed for production performance
-        return isValid;
-    }
-    
-    /**
-     * Validate payment amount
-     */
-    validatePaymentAmount(amount) {
-        // Allow $0.25 for individual games and $2.50 for day pass
-        const validAmounts = [0.25, 2.50];
-        const isValid = validAmounts.includes(amount);
-        // // console.log(`🔍 Payment amount validation: $${amount} - ${isValid ? 'VALID' : 'INVALID'}`); // Removed for production performance
-        return isValid;
-    }
-    
-    /**
-     * Check for duplicate payments
-     */
-    async checkDuplicatePayment(playerId, amount) {
-        // TODO: Implement duplicate payment detection
-        // // console.log(`🔍 Duplicate payment check for player ${playerId}, amount $${amount}`); // Removed for production performance
-        return false; // No duplicates for now
-    }
-    
-    /**
-     * Process real payment: Apple Pay → Landing Wallet → Sonic Labs → USDC.E
-     * This is where you'll integrate with real Apple Pay and Sonic Labs
-     */
-    async processRealPayment(paymentMethod, amount, options, walletAddress) {
-        // // console.log(`🌐 Processing real payment: ${paymentMethod} for $${amount} to ${walletAddress}`); // Removed for production performance
-        
-        try {
-            // 1. Create payment request with Sonic Labs
-            const paymentRequest = await this.createSonicLabsPaymentRequest(amount, walletAddress, options);
-            // // console.log('🔗 Sonic Labs payment request created:', paymentRequest.id); // Removed for production performance
-            
-            // 2. Process Apple Pay payment
-            const applePayResult = await this.processApplePayPayment(amount, paymentRequest);
-            // // console.log('🍎 Apple Pay payment processed:', applePayResult); // Removed for production performance
-            
-            // 3. Transfer USDC.E to player's landing wallet via Sonic Labs
-            const usdcTransfer = await this.transferUsdcToPlayer(walletAddress, amount, paymentRequest.id);
-            // // console.log('💰 USDC.E transferred to player:', usdcTransfer); // Removed for production performance
-            
-            // 4. Update player status in backend
-            await this.updatePlayerPaymentStatus(amount, options.type);
-            // // console.log('✅ Player payment status updated'); // Removed for production performance
-            
-            // 5. Start game
-            this.showPaymentStatus('success', 'Payment successful! Starting game...');
-            await this.startGameDirectly(options.gameId, { ...options, paymentCompleted: true });
-            
-            return {
-                success: true,
-                paymentId: paymentRequest.id,
-                transactionHash: usdcTransfer.transactionHash,
-                amount: amount
-            };
-            
-        } catch (error) {
-            console.error('❌ Real payment processing failed:', error);
-            throw error;
-        }
-    }
-    
-    /**
-     * Create payment request with Sonic Labs
-     */
-    async createSonicLabsPaymentRequest(amount, walletAddress, options) {
-        // TODO: Integrate with SonicLabsService
-        // // console.log('🔗 Creating Sonic Labs payment request...'); // Removed for production performance
-        
-        // For now, simulate the request
-        const paymentId = `pay_${Date.now()}_${Math.random().toString(36).substr(2, 8)}`;
-        return {
-            id: paymentId,
-            amount: amount * 10**6, // Convert to USDC decimals
-            walletAddress: walletAddress,
-            status: 'pending'
-        };
-    }
-    
-    /**
-     * Process Apple Pay payment
-     */
-    async processApplePayPayment(amount, paymentRequest) {
-        // TODO: Integrate with real Apple Pay
-        // // console.log('🍎 Processing Apple Pay payment...'); // Removed for production performance
-        
-        // For now, simulate Apple Pay processing
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        return {
-            success: true,
-            transactionId: `apple_${Date.now()}`,
-            amount: amount
-        };
-    }
-    
-    /**
-     * Transfer USDC.E to player's landing wallet
-     */
-    async transferUsdcToPlayer(walletAddress, amount, paymentId) {
-        // TODO: Integrate with PaymentProcessor.sol contract
-        // // console.log('💰 Transferring USDC.E to player wallet...'); // Removed for production performance
-        
-        // For now, simulate the transfer
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        return {
-            success: true,
-            transactionHash: `0x${Math.random().toString(16).substr(2, 64)}`,
-            amount: amount,
-            walletAddress: walletAddress
-        };
-    }
-    
-    /**
-     * Update player payment status in backend
-     */
-    async updatePlayerPaymentStatus(amount, paymentType) {
-        const playerId = this.identityManager?.getPlayerId();
-        if (!playerId) return;
-        
-        try {
-            const response = await fetch(`${this.identityManager.apiBase}/api/players/${playerId}/payment`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    amount: amount,
-                    type: paymentType,
-                    timestamp: new Date().toISOString()
-                })
-            });
-            
-            if (response.ok) {
-                // // console.log('✅ Player payment status updated in backend'); // Removed for production performance
-                // Clear cache to ensure fresh status
-                this.clearPlayerStatusCache();
-            }
-        } catch (error) {
-            console.error('❌ Failed to update player payment status:', error);
-        }
-    }
-    
-    /**
-     * Simulate payment (test environment)
-     */
-    async simulatePayment(paymentMethod, amount, options, walletAddress) {
-        console.log(`🧪 Simulating Apple Pay → Sonic Labs → USDC.E flow: $${amount} to ${walletAddress}`);
-        
-        // Simulate the complete payment flow
-        this.showPaymentStatus('processing', 'Simulating Apple Pay payment...');
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        this.showPaymentStatus('processing', 'Processing through Sonic Labs...');
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        this.showPaymentStatus('processing', 'Transferring USDC.E to wallet...');
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Simulate success
-        this.showPaymentStatus('success', 'Payment simulation successful! Starting game...');
-        await this.startGameDirectly(options.gameId, { ...options, paymentCompleted: true });
-        
-        const result = {
-            success: true,
-            simulated: true,
-            amount: amount,
-            walletAddress: walletAddress,
-            transactionId: `test_${Date.now()}`,
-            paymentMethod: paymentMethod,
-            timestamp: new Date().toISOString()
-        };
-        
-        console.log('✅ Test payment simulated successfully:', result);
-        return result;
-    }
-    
-    /**
-     * Bypass payment (development environment)
-     */
-    async bypassPayment(paymentMethod, amount, options) {
-        // // console.log(`🎮 Bypassing payment: ${paymentMethod} for $${amount} (dev mode); // Removed for production performance`);
-        
-        // Log everything but don't process
-        const result = {
-            success: true,
-            transactionId: `dev_${Date.now()}`,
-            amount: amount,
-            paymentMethod: paymentMethod,
-            timestamp: new Date().toISOString(),
-            bypassed: true
-        };
-        
-        // // console.log('✅ Payment bypassed (dev mode); // Removed for production performance:', result);
-        return result;
-    }
-
-    /**
-     * Environment detection - single source of truth
-     */
-    detectEnvironment() {
-        const hostname = window.location.hostname;
-        const search = window.location.search;
-        const urlParams = new URLSearchParams(search);
-        
-        // Check for explicit environment flags (URL parameters take priority)
-        const explicitTest = urlParams.get('testmode') === 'true';
-        const explicitDev = urlParams.get('dev') === 'true';
-        const explicitProd = urlParams.get('prod') === 'true';
-        
-        // Check localStorage flags
-        const localStorageTest = localStorage.getItem('applePayTestMode') === 'true';
-        const localStorageDev = localStorage.getItem('devMode') === 'true';
-        
-        // Check global flags
-        const globalTest = window.APPLE_PAY_TEST_MODE === true;
-        const globalDev = window.isDevelopment === true;
-        
-        // ENABLE TEST MODE ON MAIN DOMAIN FOR FRIEND TESTING
-        // Set this to true to enable animated payment bypass on blockzonelab.com
-        const ENABLE_TEST_MODE_ON_MAIN = true; // 🎯 SIMPLE TOGGLE HERE
-        
-        // Environment detection logic (URL parameters take highest priority)
-        if (explicitTest || localStorageTest || globalTest || (ENABLE_TEST_MODE_ON_MAIN && hostname.includes('blockzonelab.com'))) {
-            // Show test mode indicator if on main domain
-            if (hostname.includes('blockzonelab.com') && (explicitTest || ENABLE_TEST_MODE_ON_MAIN)) {
-                this.showTestModeIndicator();
-            }
-            return 'test';
-        }
-        
-        if (explicitDev || localStorageDev || globalDev || hostname === 'localhost' || hostname === '127.0.0.1') {
-            return 'development';
-        }
-        
-        if (explicitProd || hostname.includes('blockzonelab.com')) {
-            return 'production';
-        }
-        
-        if (hostname.includes('pages.dev')) {
-            return 'test';
-        }
-        
-        // Default to test for safety
-        return 'test';
-    }
-    
-    /**
-     * Show test mode indicator when using testmode=true on main domain
-     */
-    showTestModeIndicator() {
-        // Remove existing indicator if present
-        const existingIndicator = document.getElementById('test-mode-indicator');
-        if (existingIndicator) {
-            existingIndicator.remove();
-        }
-        
-        // Create test mode indicator
-        const indicator = document.createElement('div');
-        indicator.id = 'test-mode-indicator';
-        indicator.innerHTML = `
-            <div style="
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                background: linear-gradient(90deg, #ff6b35, #f7931e);
-                color: white;
-                text-align: center;
-                padding: 8px;
-                font-size: 14px;
-                font-weight: bold;
-                z-index: 10000;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            ">
-                🎮 TEST MODE - Play with animated payment bypass (no real money)
-                <button onclick="this.parentElement.remove()" style="
-                    background: rgba(255,255,255,0.2);
-                    border: none;
-                    color: white;
-                    margin-left: 10px;
-                    padding: 2px 8px;
-                    border-radius: 3px;
-                    cursor: pointer;
-                ">×</button>
-            </div>
-        `;
-        
-        document.body.appendChild(indicator);
-        
-        // Auto-remove after 15 seconds (longer for friends)
-        setTimeout(() => {
-            if (indicator.parentElement) {
-                indicator.remove();
-            }
-        }, 15000);
-    }
-    
-    /**
-     * Test mode detection (legacy - use detectEnvironment instead)
-     */
-    isTestMode() {
+        // ... rest of the code remains the same ...
         return this.detectEnvironment() === 'test';
     }
     
