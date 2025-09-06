@@ -177,6 +177,29 @@ const config = {
 export class Config {
     constructor() {
         Object.assign(this, config);
+        
+        // Add game constants for NeonDrop compatibility
+        this.CONSTANTS = {
+            BOARD: {
+                WIDTH: 10,
+                HEIGHT: 20,
+                BLOCK_SIZE: 30
+            },
+            GAME: {
+                FALL_SPEED: 500,
+                LOCK_DELAY: 500,
+                LINE_CLEAR_DELAY: 300
+            },
+            COLORS: {
+                I: '#00FFFF', // Cyan
+                O: '#FFFF00', // Yellow
+                T: '#800080', // Purple
+                S: '#00FF00', // Green
+                Z: '#FF0000', // Red
+                J: '#0000FF', // Blue
+                L: '#FFA500'  // Orange
+            }
+        };
     }
 }
 

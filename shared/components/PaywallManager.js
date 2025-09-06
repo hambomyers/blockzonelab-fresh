@@ -52,7 +52,11 @@ export class PaywallManager {
             cachedAt: null,
             playerId: null,
             validFor: 300000, // 5 minutes
-            sessionDecisions: new Map()
+            sessionDecisions: new Map(),
+            pendingRequests: new Map(),
+            cacheHits: 0,
+            cacheMisses: 0,
+            lastCacheWarm: null
         };
         
         // Get PlayerProfile singleton
@@ -1383,8 +1387,12 @@ export class PaywallManager {
                 }
             });
         });
-        
-        // ... rest of the code remains the same ...
+    }
+    
+    /**
+     * Check if running in test mode
+     */
+    isTestMode() {
         return this.detectEnvironment() === 'test';
     }
     
