@@ -414,11 +414,11 @@
 
             <!-- Game Cards Grid -->
             <div class="games-grid">
-                <a href="neondrop/" class="game-card">
+                <div class="game-card" onclick="startNeonDropGame()">
                     <h3>⚡ NeonDrop Tournament</h3>
                     <p>Fast-paced arcade action with USDC.E prizes. $0.25 per game or $2.50 unlimited. 30% to 1st place with hyperbolic decay distribution.</p>
                     <button class="btn">Play Now</button>
-                </a>
+                </div>
 
                 <a href="#coming-soon" class="game-card">
                     <h3>⚡ Electric Eel</h3>
@@ -568,6 +568,26 @@
 
         // Initialize games welcome system
         new GamesWelcome();
+        
+        // Game start function with paywall integration
+        window.startNeonDropGame = async function() {
+            try {
+                // Check if paywall manager is available
+                if (window.paywallManager) {
+                    // Show paywall and handle payment
+                    const shouldStart = await window.paywallManager.interceptGameStart('neondrop');
+                    if (!shouldStart) return; // Paywall will handle the flow
+                }
+                
+                // If no paywall or paywall approved, redirect to game
+                window.location.href = '/games/neondrop/';
+                
+            } catch (error) {
+                console.error('❌ Failed to start NeonDrop:', error);
+                // Fallback: direct to game
+                window.location.href = '/games/neondrop/';
+            }
+        };
     </script>
 
     <!-- Main Entry Point -->
