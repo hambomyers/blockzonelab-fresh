@@ -472,20 +472,43 @@
         </div>
     </div>
 
-    <!-- Identity Manager Integration -->
+    <!-- Application Initialization -->
     <script type="module">
-        import { identityManager } from '../shared/core/IdentityManager.js';
+        import { IdentityManager } from '../shared/core/IdentityManager.js';
+        import { PaywallManager } from '../shared/components/PaywallManager.js';
+        
+        // Initialize Identity and Paywall Managers
+        async function initManagers() {
+            try {
+                const identityManager = new IdentityManager();
+                await identityManager.initialize();
+                
+                const paywallManager = new PaywallManager();
+                await paywallManager.initialize(identityManager);
+                
+                // Make available globally
+                window.identityManager = identityManager;
+                window.paywallManager = paywallManager;
+                
+                console.log('🎮 Game hub initialized');
+                return { identityManager, paywallManager };
+            } catch (error) {
+                console.error('❌ Failed to initialize game hub:', error);
+                throw error;
+            }
+        }
 
         class GamesWelcome {
             constructor() {
-                this.init();
+                // Initialize managers first
+                initManagers().then(() => this.init());
             }
 
             async init() {
                 try {
-                    await identityManager.initialize();
+                    await window.identityManager.initialize();
                     
-                    if (identityManager.hasValidIdentity()) {
+                    if (window.identityManager.hasValidIdentity()) {
                         // User has existing identity - show welcome banner
                         this.showWelcomeBanner();
                     }

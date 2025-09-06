@@ -9,7 +9,7 @@ import { GameEngineV2 } from './core/game-engine-v2.js';
 import { RendererV2 } from './core/renderer-v2.js';
 import { InputSystemV2 } from './core/input-system-v2.js';
 import { FloatSystemV2 } from './core/float-system-v2.js';
-import { Config } from '../config.js';
+import { Config } from '../../config/sonic-labs.config.js';
 
 export class NeonDropV2 {
     constructor(canvasId = 'game-canvas') {

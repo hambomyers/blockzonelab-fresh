@@ -76,38 +76,88 @@
         </div>
     </div>
 
+    <!-- Initialize Identity and Paywall Managers -->
     <script type="module">
+        import { IdentityManager } from '../../shared/core/IdentityManager.js';
+        import { PaywallManager } from '../../shared/components/PaywallManager.js';
         import NeonDropV2 from './main-v2.js';
         
-        // Initialize game
-        const game = new NeonDropV2();
-        
-        // Update stats display
-        function updateStats() {
-            const stats = game.getStats();
-            const gameState = game.getGameState();
-            
-            document.getElementById('stats').innerHTML = `
-                State: ${gameState.gameState}<br>
-                Score: ${stats.score.toLocaleString()}<br>
-                Lines: ${stats.lines}<br>
-                Level: ${stats.level}<br>
-                Pieces: ${stats.pieces}<br>
-                FLOAT: ${stats.floatPieces} (${stats.floatPercentage || 0}%)
-            `;
+        // Initialize managers and game
+        async function initGame() {
+            try {
+                // Initialize Identity Manager
+                const identityManager = new IdentityManager();
+                await identityManager.initialize();
+                
+                // Initialize Paywall Manager
+                const paywallManager = new PaywallManager();
+                await paywallManager.initialize(identityManager);
+                
+                // Make available globally
+                window.identityManager = identityManager;
+                window.paywallManager = paywallManager;
+                
+                console.log('🎮 NeonDrop initialized with PaywallManager');
+                
+                // Check if we should show paywall
+                if (paywallManager) {
+                    const shouldStart = await paywallManager.interceptGameStart('neondrop');
+                    if (!shouldStart) return; // Paywall will handle starting the game
+                }
+                
+                // If we get here, either there's no paywall or paywall allowed the game to start
+                startGame();
+                
+            } catch (error) {
+                console.error('❌ Failed to initialize game:', error);
+                // Try to start game anyway in case of error
+                startGame();
+            }
         }
         
-        // Update stats every second
-        setInterval(updateStats, 1000);
-        updateStats();
-        
-        // Auto-start game for testing
-        setTimeout(() => {
-            if (game.getGameState().gameState === 'MENU') {
-                game.startGame();
+        // Start the game directly (bypassing paywall)
+        function startGame() {
+            const game = new NeonDropV2();
+            window.neonDrop = game;
+            
+            // Update stats display
+            function updateStats() {
+                const stats = game.getStats();
+                const gameState = game.getGameState();
+                
+                const statsEl = document.getElementById('stats');
+                if (statsEl) {
+                    statsEl.innerHTML = `
+                        State: ${gameState.gameState}<br>
+                        Score: ${stats.score.toLocaleString()}<br>
+                        Lines: ${stats.lines}<br>
+                        Level: ${stats.level}<br>
+                        Pieces: ${stats.pieces}<br>
+                        FLOAT: ${stats.floatPieces} (${stats.floatPercentage || 0}%)
+                    `;
+                }
             }
-        }, 1000);
+            
+            // Update stats every second
+            setInterval(updateStats, 1000);
+            updateStats();
+            
+            // Auto-start game
+            setTimeout(() => {
+                if (game.getGameState().gameState === 'MENU') {
+                    game.startGame();
+                }
+            }, 1000);
+        }
         
+        // Make startGame function available for paywall
+        window.startNeonDropGame = function() {
+            startGame();
+            return Promise.resolve(true);
+        };
+        
+        // Start the game initialization
+        initGame();
         console.log('🎮 NeonDrop v2 ready - press Enter to start');
     </script>
 </body>
