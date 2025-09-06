@@ -2,35 +2,32 @@
  * Sonic Labs Configuration
  * 
  * Configuration settings for the Sonic Labs integration.
+ * Browser-compatible version without Node.js dependencies.
  */
-
-// Load environment variables
-import dotenv from 'dotenv';
-dotenv.config();
 
 const config = {
     // API Configuration
     api: {
         // Base URL for Sonic Labs API
-        baseUrl: process.env.SONIC_LABS_API_URL || 'https://api.soniclabs.xyz',
+        baseUrl: 'https://api.soniclabs.xyz',
         
-        // API key for authentication (keep this secure!)
-        apiKey: process.env.SONIC_LABS_API_KEY || '',
+        // API key for authentication (will be set at runtime)
+        apiKey: '',
         
         // Request timeout in milliseconds
-        timeout: parseInt(process.env.SONIC_LABS_TIMEOUT || '10000'),
+        timeout: 10000,
         
         // Maximum retries for failed requests
-        maxRetries: parseInt(process.env.SONIC_LABS_MAX_RETRIES || '3'),
+        maxRetries: 3,
         
         // Retry delay in milliseconds
-        retryDelay: parseInt(process.env.SONIC_LABS_RETRY_DELAY || '1000')
+        retryDelay: 1000
     },
     
     // Blockchain Network Configuration
     network: {
         // Supported networks: 'ethereum', 'polygon', 'arbitrum', 'optimism', 'sonic-testnet'
-        defaultNetwork: process.env.BLOCKCHAIN_NETWORK || 'sonic-testnet',
+        defaultNetwork: 'sonic-testnet',
         
         // USDC token contract addresses by network
         usdcTokenAddresses: {
@@ -70,13 +67,13 @@ const config = {
     // Payment Configuration
     payments: {
         // Default payment expiration time in minutes
-        paymentExpiryMinutes: parseInt(process.env.PAYMENT_EXPIRY_MINUTES || '30'),
+        paymentExpiryMinutes: 30,
         
         // Minimum payment amount in USDC (e.g., 1.00 for $1.00)
-        minPaymentAmount: parseFloat(process.env.MIN_PAYMENT_AMOUNT || '1.00'),
+        minPaymentAmount: 1.00,
         
         // Maximum payment amount in USDC
-        maxPaymentAmount: parseFloat(process.env.MAX_PAYMENT_AMOUNT || '10000.00'),
+        maxPaymentAmount: 10000.00,
         
         // Default payment description
         defaultDescription: 'BlockZone Lab Payment'
@@ -85,19 +82,19 @@ const config = {
     // Payout Configuration
     payouts: {
         // Minimum payout amount in USDC
-        minPayoutAmount: parseFloat(process.env.MIN_PAYOUT_AMOUNT || '5.00'),
+        minPayoutAmount: 5.00,
         
         // Maximum payout amount in USDC
-        maxPayoutAmount: parseFloat(process.env.MAX_PAYOUT_AMOUNT || '10000.00'),
+        maxPayoutAmount: 10000.00,
         
         // Payout fee percentage (e.g., 1.5 for 1.5%)
-        feePercentage: parseFloat(process.env.PAYOUT_FEE_PERCENTAGE || '1.5'),
+        feePercentage: 1.5,
         
         // Minimum fee amount in USDC
-        minFeeAmount: parseFloat(process.env.MIN_FEE_AMOUNT || '0.50'),
+        minFeeAmount: 0.50,
         
         // Maximum fee amount in USDC
-        maxFeeAmount: parseFloat(process.env.MAX_FEE_AMOUNT || '100.00'),
+        maxFeeAmount: 100.00,
         
         // Default payout description
         defaultDescription: 'BlockZone Lab Payout'
@@ -106,10 +103,10 @@ const config = {
     // Webhook Configuration
     webhooks: {
         // Webhook URL for payment callbacks
-        paymentCallbackUrl: process.env.PAYMENT_CALLBACK_URL || '',
+        paymentCallbackUrl: '',
         
         // Webhook secret for verifying callbacks
-        webhookSecret: process.env.WEBHOOK_SECRET || '',
+        webhookSecret: '',
         
         // Maximum age of webhook events in milliseconds
         maxEventAge: 5 * 60 * 1000 // 5 minutes
@@ -118,28 +115,28 @@ const config = {
     // Logging Configuration
     logging: {
         // Enable/disable request/response logging
-        enabled: process.env.LOGGING_ENABLED !== 'false',
+        enabled: true,
         
         // Log level: 'error', 'warn', 'info', 'debug', 'trace'
-        level: process.env.LOG_LEVEL || 'info',
+        level: 'info',
         
         // Log file path (leave empty for console only)
-        filePath: process.env.LOG_FILE_PATH || ''
+        filePath: ''
     },
     
     // Feature Flags
     features: {
         // Enable/disable test mode (uses testnet)
-        testMode: process.env.TEST_MODE === 'true',
+        testMode: true,
         
         // Enable/disable payment processing
-        paymentsEnabled: process.env.PAYMENTS_ENABLED !== 'false',
+        paymentsEnabled: true,
         
         // Enable/disable payouts
-        payoutsEnabled: process.env.PAYOUTS_ENABLED !== 'false',
+        payoutsEnabled: true,
         
         // Enable/disable webhook verification
-        webhookVerification: process.env.WEBHOOK_VERIFICATION !== 'false'
+        webhookVerification: false
     },
     
     // Get the USDC token address for the configured network
@@ -157,8 +154,8 @@ const config = {
     validate: function() {
         const errors = [];
         
-        if (!this.api.apiKey) {
-            errors.push('SONIC_LABS_API_KEY is required');
+        if (!this.api.apiKey && !this.features.testMode) {
+            errors.push('SONIC_LABS_API_KEY is required for production mode');
         }
         
         if (!this.network.usdcTokenAddresses[this.network.defaultNetwork]) {
@@ -176,12 +173,11 @@ const config = {
     }
 };
 
-// Validate the configuration
-const validation = config.validate();
-if (!validation.isValid) {
-    console.error('Invalid Sonic Labs configuration:');
-    console.error(validation.errors.join('\n'));
-    process.exit(1);
+// Create a Config class for compatibility with the game
+export class Config {
+    constructor() {
+        Object.assign(this, config);
+    }
 }
 
 export default config;
